@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "packages/pvz-pakc",
+    "packages/pvz-reanimc",
     "packages/pvz-utils"
 ]
 
@@ -15,3 +16,4 @@ flate2 = "1.1.9"
 roxmltree = "0.21.1"
 static_assertions = "1.1.0"
 windows-sys = "0.61.2"
+itertools = "0.14.0"

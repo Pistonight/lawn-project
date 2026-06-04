@@ -6,8 +6,9 @@ includes:
     optional: true
     flatten: true
 
-  pvz-pakc:  { taskfile: packages/pvz-pakc,   dir: packages/pvz-pakc,   internal: true }
-  pvz-utils: { taskfile: packages/pvz-utils,  dir: packages/pvz-utils,  internal: true }
+  pvz-pakc:    { taskfile: packages/pvz-pakc,     dir: packages/pvz-pakc,     internal: true }
+  pvz-reanimc: { taskfile: packages/pvz-reanimc,  dir: packages/pvz-reanimc,  internal: true }
+  pvz-utils:   { taskfile: packages/pvz-utils,    dir: packages/pvz-utils,    internal: true }
 
 tasks:
   install:
@@ -22,7 +23,21 @@ tasks:
         vars:
           PACKAGES: lisensor
 
+  setup:
+    - silent: true
+      cmd: >
+        if ! [ -e packages/pvz-assets/main.pak ]; then
+          echo 'please get main.pak from GOTY EN version and put it in packages/pvz-assets';
+          exit 2;
+        fi;
+    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main.pak packages/pvz-assets/main
+
+
   check:
     - lisensor
     - task: pvz-utils:check
     - task: pvz-pakc:check
+    - task: pvz-reanimc:check
+
+  test:
+    - task: pvz-reanimc:test

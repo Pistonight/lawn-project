@@ -1,0 +1,4 @@
+*.reanim
+*.reanim.compiled
+*.json
+/tests/output

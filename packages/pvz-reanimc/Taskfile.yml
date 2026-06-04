@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  cargo: 
+    taskfile: ../../mono-dev/task/cargo.yaml
+    internal: true
+    optional: true
+
+tasks:
+  check:
+    - task: cargo:clippy-all
+    - task: cargo:fmt-check
+  fix:
+    - task: cargo:fmt-fix
+  test:
+    - cargo test --release
+  diff:
+    - delta tests/output/original_dump/{{.CLI_ARGS}}.reanim.compiled.json tests/output/our_dump/{{.CLI_ARGS}}.reanim.compiled.json

@@ -1,0 +1,14 @@
+[package]
+name = "pvz-reanimc"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+cu.workspace = true
+cu.features = ["cli", "derive", "fs", "json"]
+flate2.workspace = true
+roxmltree.workspace = true
+static_assertions.workspace = true
+itertools.workspace = true
+
+pvz-utils = { path = "../pvz-utils" }
