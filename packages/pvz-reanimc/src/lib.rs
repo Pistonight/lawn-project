@@ -59,29 +59,43 @@ pub fn compile(inputs: Inputs) -> cu::Result<()> {
             cu::lv::disable_print_time();
         }
         Inputs::Files(files) => {
-            let len = files.len();
-            for (output_path, input) in files {
-                let input_path = input
-                    .path
-                    .map(|x| format!("'{}'", x.display()))
-                    .unwrap_or("<stdin>".into());
-                cu::debug!("compiling {input_path}");
-                let stream = cu::check!(
-                    (|| {
-                        let xml_src = xml::format_document(&input.bytes)?;
-                        let document = xml::ReanimDocument::parse_xml(&xml_src)?;
-                        let stream = document.parse()?.compile()?;
-                        cu::Ok(stream)
-                    })(),
-                    "failed to parse input file: '{input_path}'",
-                )?;
-                let mut writer = cu::fs::writer(output_path)?;
-                stream.write(&mut writer)?;
-                writer.flush()?;
-            }
-            if len > 1 {
-                cu::info!("compiled {len} files");
-            }
+            // compiling is a bit slow (on my machine takes 3 seconds to compile all from the
+            // original main.pak), so parallelize to get free perf
+            cu::co::run(async move {
+                let len = files.len();
+                let mut handles = Vec::with_capacity(len);
+                let pool = cu::co::pool(-1);
+                for (output_path, input) in files {
+                    let input_path = input
+                        .path
+                        .map(|x| format!("'{}'", x.display()))
+                        .unwrap_or("<stdin>".into());
+                    cu::debug!("compiling {input_path}");
+                    let handle = pool.spawn_blocking(move || {
+                        let stream = (|| {
+                            let xml_src = xml::format_document(&input.bytes)?;
+                            let document = xml::ReanimDocument::parse_xml(&xml_src)?;
+                            let stream = document.parse()?.compile()?;
+                            cu::Ok(stream)
+                        })();
+                        let stream =
+                            cu::check!(stream, "failed to parse input file: '{input_path}'")?;
+                        cu::Ok((stream, output_path))
+                    });
+                    handles.push(handle);
+                }
+                let mut set = cu::co::set(handles);
+                while let Some(result) = set.next().await {
+                    let (stream, output_path) = result???;
+                    let mut writer = cu::fs::writer(output_path)?;
+                    stream.write(&mut writer)?;
+                    writer.flush()?;
+                }
+                if len > 1 {
+                    cu::info!("compiled {len} files");
+                }
+                cu::Ok(())
+            })?;
         }
     }
     Ok(())

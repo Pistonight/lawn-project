@@ -90,7 +90,7 @@ impl ReanimData<'_, '_> {
             r##"{{
   "magic": "0x{magic:08x}",
   "uncompressed_len": {uncompressed_len},
-  "schema_hash": {schema_hash},
+  "schema_hash": 0x{schema_hash:08x},
 "##,
             magic = self.header.magic,
             uncompressed_len = self.header.uncompressed_len,
