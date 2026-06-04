@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = [
+    "packages/pvz-pakc",
+    "packages/pvz-utils"
+]
+
+[workspace.dependencies.cu]
+package = "pistonite-cu"
+version = "0.8.3"
+
+[workspace.dependencies]
+chrono = "0.4.44"
+flate2 = "1.1.9"
+roxmltree = "0.21.1"
+static_assertions = "1.1.0"
+windows-sys = "0.61.2"

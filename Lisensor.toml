@@ -1,0 +1,3 @@
+["Pistonight/lawn-project contributors"]
+"packages/pvz-pakc/src/*.rs" = "GPL-3.0-or-later"
+"packages/pvz-utils/src/*.rs" = "MIT"

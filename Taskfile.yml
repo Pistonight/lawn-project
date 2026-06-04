@@ -1,0 +1,28 @@
+version: '3'
+
+includes:
+  common:
+    taskfile: mono-dev/task/common.yaml
+    optional: true
+    flatten: true
+
+  pvz-pakc:  { taskfile: packages/pvz-pakc,   dir: packages/pvz-pakc,   internal: true }
+  pvz-utils: { taskfile: packages/pvz-utils,  dir: packages/pvz-utils,  internal: true }
+
+tasks:
+  install:
+    - rm -rf mono-dev
+    - git clone https://github.com/Pistonight/mono-dev --depth 1
+
+
+  install-cargo-extra-tools:
+    aliases: [icets]
+    cmds:
+      - task: cargo-binstall
+        vars:
+          PACKAGES: lisensor
+
+  check:
+    - lisensor
+    - task: pvz-utils:check
+    - task: pvz-pakc:check
