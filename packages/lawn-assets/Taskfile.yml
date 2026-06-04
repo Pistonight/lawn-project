@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  build:
+    - rm -rf ../lawn-app/Export/properties
+    - cp -R ../pvz-assets/properties ../lawn-app/Export
+    - cp -R properties ../lawn-app/Export
+    - cargo run --release --bin pvz-pakc -- --unpack ../pvz-assets/main.pak main
+    - cp -R mod/* main
+    - cargo run --release --bin pvz-pakc -- --pack main main.pak
+    - cp main.pak ../lawn-app/Export
+

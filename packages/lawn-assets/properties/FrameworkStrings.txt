@@ -1,0 +1,43 @@
+[SETTINGS_HEADER]
+Settings
+
+[SETTINGS_BACK]
+Back
+
+[SETTINGS_BUTTON]
+More
+
+[SETTINGS_VIDEO]
+Video Settings
+
+[SETTINGS_VSYNC]
+V-Sync
+
+[SETTINGS_FULLSCREEN]
+Fullscreen
+
+[SETTINGS_HIGHQUALITY]
+High Quality
+
+[SETTINGS_RENDERER_BACKEND]
+Renderer Backend
+
+[SETTINGS_RENDERER_RESTART_NOTIF]
+Restart the game to change the rendering backend.
+
+[SETTINGS_WINDOW_SIZE]
+Window Size
+
+[SETTINGS_MISC]
+Miscellaneous Settings
+
+[SETTINGS_OPEN_SAVE_FOLDER]
+Open Save Folder
+
+[UPDATE_OUTDATED_MESSAGE]
+You are playing an outdated version of the mod.
+Your Version: %s | Latest Version: %s
+It is recommended you update the mod.
+
+[UPDATE_OUTDATED_HEADER]
+Outdated Version

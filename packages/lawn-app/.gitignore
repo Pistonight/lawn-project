@@ -1,0 +1,24 @@
+# .gitignore
+build/
+build-msvc/
+out/
+*.exe
+*.pdb
+.cache
+.vscode/
+.vs/
+crash.txt
+
+Export/
+assets/base
+/assets/main.pak
+/pseudocode
+
+/mainpak/main.unpack
+/mainpak/main.pak
+/data
+/logs
+
+# temporary not commit binaries until we figure out what to do
+/thirdparty/x64
+/thirdparty/x86

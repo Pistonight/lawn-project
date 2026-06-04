@@ -1,0 +1,13 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+UseTab: Always
+SortIncludes: false
+ReflowComments: false
+AllowShortFunctionsOnASingleLine: false
+BinPackParameters: true
+BinPackArguments: true
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignArrayOfStructures: None
+BreakArrays: false

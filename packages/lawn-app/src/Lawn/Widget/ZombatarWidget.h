@@ -1,0 +1,267 @@
+#pragma once
+#include "../../ConstEnums.h"
+#include "../../SexyAppFramework/Widget.h"
+#include "../../SexyAppFramework/ButtonListener.h"
+#include "GameButton.h"
+#include "../System/PlayerInfo.h"
+
+
+using namespace Sexy;
+
+class LawnApp;
+class Zombie;
+
+enum ZombatarItem
+{
+	ZOMBATAR_CLOTHES_1,
+	ZOMBATAR_CLOTHES_2,
+	ZOMBATAR_CLOTHES_3,
+	ZOMBATAR_CLOTHES_4,
+	ZOMBATAR_CLOTHES_5,
+	ZOMBATAR_CLOTHES_6,
+	ZOMBATAR_CLOTHES_7,
+	ZOMBATAR_CLOTHES_8,
+	ZOMBATAR_CLOTHES_9,
+	ZOMBATAR_CLOTHES_10,
+	ZOMBATAR_CLOTHES_11,
+	ZOMBATAR_CLOTHES_12,
+
+	ZOMBATAR_HATS_1,
+	ZOMBATAR_HATS_2,
+	ZOMBATAR_HATS_3,
+	ZOMBATAR_HATS_4,
+	ZOMBATAR_HATS_5,
+	ZOMBATAR_HATS_6,
+	ZOMBATAR_HATS_7,
+	ZOMBATAR_HATS_8,
+	ZOMBATAR_HATS_9,
+	ZOMBATAR_HATS_10,
+	ZOMBATAR_HATS_11,
+	ZOMBATAR_HATS_12,
+	ZOMBATAR_HATS_13,
+	ZOMBATAR_HATS_14,
+
+	ZOMBATAR_HAIR_1,
+	ZOMBATAR_HAIR_2,
+	ZOMBATAR_HAIR_3,
+	ZOMBATAR_HAIR_4,
+	ZOMBATAR_HAIR_5,
+	ZOMBATAR_HAIR_6,
+	ZOMBATAR_HAIR_7,
+	ZOMBATAR_HAIR_8,
+	ZOMBATAR_HAIR_9,
+	ZOMBATAR_HAIR_10,
+	ZOMBATAR_HAIR_11,
+	ZOMBATAR_HAIR_12,
+	ZOMBATAR_HAIR_13,
+	ZOMBATAR_HAIR_14,
+	ZOMBATAR_HAIR_15,
+	ZOMBATAR_HAIR_16,
+
+	ZOMBATAR_EYEWEAR_1,
+	ZOMBATAR_EYEWEAR_2,
+	ZOMBATAR_EYEWEAR_3,
+	ZOMBATAR_EYEWEAR_4,
+	ZOMBATAR_EYEWEAR_5,
+	ZOMBATAR_EYEWEAR_6,
+	ZOMBATAR_EYEWEAR_7,
+	ZOMBATAR_EYEWEAR_8,
+	ZOMBATAR_EYEWEAR_9,
+	ZOMBATAR_EYEWEAR_10,
+	ZOMBATAR_EYEWEAR_11,
+	ZOMBATAR_EYEWEAR_12,
+	ZOMBATAR_EYEWEAR_13,
+	ZOMBATAR_EYEWEAR_14,
+	ZOMBATAR_EYEWEAR_15,
+	ZOMBATAR_EYEWEAR_16,
+
+	ZOMBATAR_FACIALHAIR_1,
+	ZOMBATAR_FACIALHAIR_2,
+	ZOMBATAR_FACIALHAIR_3,
+	ZOMBATAR_FACIALHAIR_4,
+	ZOMBATAR_FACIALHAIR_5,
+	ZOMBATAR_FACIALHAIR_6,
+	ZOMBATAR_FACIALHAIR_7,
+	ZOMBATAR_FACIALHAIR_8,
+	ZOMBATAR_FACIALHAIR_9,
+	ZOMBATAR_FACIALHAIR_10,
+	ZOMBATAR_FACIALHAIR_11,
+	ZOMBATAR_FACIALHAIR_12,
+	ZOMBATAR_FACIALHAIR_13,
+	ZOMBATAR_FACIALHAIR_14,
+	ZOMBATAR_FACIALHAIR_15,
+	ZOMBATAR_FACIALHAIR_16,
+	ZOMBATAR_FACIALHAIR_17,
+	ZOMBATAR_FACIALHAIR_18,
+	ZOMBATAR_FACIALHAIR_19,
+	ZOMBATAR_FACIALHAIR_20,
+	ZOMBATAR_FACIALHAIR_21,
+	ZOMBATAR_FACIALHAIR_22,
+	ZOMBATAR_FACIALHAIR_23,
+	ZOMBATAR_FACIALHAIR_24,
+
+	ZOMBATAR_TIDBITS_1,
+	ZOMBATAR_TIDBITS_2,
+	ZOMBATAR_TIDBITS_3,
+	ZOMBATAR_TIDBITS_4,
+	ZOMBATAR_TIDBITS_5,
+	ZOMBATAR_TIDBITS_6,
+	ZOMBATAR_TIDBITS_7,
+	ZOMBATAR_TIDBITS_8,
+	ZOMBATAR_TIDBITS_9,
+	ZOMBATAR_TIDBITS_10,
+	ZOMBATAR_TIDBITS_11,
+	ZOMBATAR_TIDBITS_12,
+	ZOMBATAR_TIDBITS_13,
+	ZOMBATAR_TIDBITS_14,
+
+	ZOMBATAR_ACCESSORY_1,
+	ZOMBATAR_ACCESSORY_2,
+	ZOMBATAR_ACCESSORY_3,
+	ZOMBATAR_ACCESSORY_4,
+	ZOMBATAR_ACCESSORY_5,
+	ZOMBATAR_ACCESSORY_6,
+	ZOMBATAR_ACCESSORY_7,
+	ZOMBATAR_ACCESSORY_8,
+	ZOMBATAR_ACCESSORY_9,
+	ZOMBATAR_ACCESSORY_10,
+	ZOMBATAR_ACCESSORY_11,
+	ZOMBATAR_ACCESSORY_12,
+	ZOMBATAR_ACCESSORY_13,
+	ZOMBATAR_ACCESSORY_14,
+	ZOMBATAR_ACCESSORY_15,
+
+	ZOMBATAR_BACKGROUND_CRAZYDAVE,
+	ZOMBATAR_BACKGROUND_MENU,
+	ZOMBATAR_BACKGROUND_MENU_DOS,
+	ZOMBATAR_BACKGROUND_ROOF,
+	ZOMBATAR_BACKGROUND_BLANK,
+
+	NUM_ZOMBATAR_ITEMS,
+};
+
+enum ZombatarPage
+{
+	PAGE_SKIN,
+	PAGE_HAIR,
+	PAGE_FACIAL_HAIR,
+	PAGE_TIDBITS,
+	PAGE_EYEWEAR,
+	PAGE_CLOTHES,
+	PAGE_ACCESSORIES,
+	PAGE_HATS,
+	PAGE_BACKDROPS,
+};
+
+enum ZombatarState
+{
+	STATE_AVATAR_LIST,
+	STATE_AVATAR_TRANSITION,
+	STATE_AVATAR_CREATION,
+	STATE_CONFIRM_TRANSITION,
+	STATE_CONFIRM,
+};
+
+class ZombatarWidget : public Widget, public ButtonListener
+{
+	enum
+	{
+		ZOMBATAR_BACK = 300,
+		ZOMBATAR_VIEW,
+		ZOMBATAR_FINISHED,
+		ZOMBATAR_BACK_AVATAR,
+		ZOMBATAR_NEW,
+		ZOMBATAR_NEXT_PORTRAIT,
+		ZOMBATAR_PREV_BUTTON,
+		ZOMBATAR_NEXT_PAGE,
+		ZOMBATAR_PREV_PAGE,
+		ZOMBATAR_DELETE,
+		ZOMBATAR_SKIN,
+		ZOMBATAR_HAIR,
+		ZOMBATAR_FACIAL_HAIR,
+		ZOMBATAR_TIDBITS,
+		ZOMBATAR_EYEWEAR,
+		ZOMBATAR_CLOTHES,
+		ZOMBATAR_ACCESSORIES,
+		ZOMBATAR_HATS,
+		ZOMBATAR_BACKDROPS,
+	};
+  public:
+	LawnApp *mApp;
+	GameButton *mBackButton;
+	GameButton *mViewButton;
+	GameButton *mFinishedButton;
+	GameButton *mAvatarBackButton;
+	GameButton *mDeleteZombatarButton;
+	GameButton *mNewZombatarButton;
+	GameButton *mNextButton;
+	GameButton *mPrevButton;
+
+	GameButton *mNextPageButton;
+	GameButton *mPrevPageButton;
+
+
+	GameButton *mToggledButton;
+
+
+	GameButton *mSkinButton;
+	GameButton *mHairButton;
+	GameButton *mFacialHairButton;
+	GameButton *mTidbitsButton;
+	GameButton *mEyewearButton;
+	GameButton *mClothesButton;
+	GameButton *mAccessoriesButton;
+	GameButton *mHatsButton;
+	GameButton *mBackdropsButton;
+
+	Rect mColorRects[18];
+	Rect mItemRects[18];
+
+	int mMaxSubPages;
+	int mSubPage;
+	ZombatarPage mPage;
+	ZombatarState mState;
+	int mTransitionTimer;
+	Zombatar mZombatar;
+	Zombie *mZombie;
+
+  public:
+	ZombatarWidget(LawnApp *theApp);
+	~ZombatarWidget();
+
+	void ChangePage(ZombatarPage thePage);
+	void ChangeState(ZombatarState theState);
+	int GetPageColorIndex(ZombatarPage thePage);
+	int GetPageItemIndex(ZombatarPage thePage);
+	int GetItemCount(ZombatarPage thePage);
+
+	void DrawCurrentPortrait(Graphics *g, int theX, int theY);
+	void DrawIndexedPortrait(int theIndex, Graphics *g, int theX, int theY);
+	void DrawPortraitItem(int theItem, Graphics *g, const Zombatar &theZombatarInstance);
+	virtual void Draw(Graphics *g);
+	virtual void Update();
+	void ResetPortrait();
+	void DeleteCurrentZombatar();
+	void GetPortraitItemOffset(int theItem, int *theOffsetX, int *theOffsetY);
+	void GetPortraitItemScale(int theItem, float *theScaleX, float *theScaleY);
+
+	virtual void MouseDown(int x, int y, int theClickCount);
+	virtual void MouseUp(int x, int y, int theClickCount);
+  private:
+};
+
+extern Color gSkinColors[12];
+extern Color gMoreColors[18];
+
+class PortraitItem
+{
+  public:
+	Image **mLine;
+	Image **mColor;
+	bool mAllowColor;
+	float mOffsetX;
+	float mOffsetY;
+	float mColorOffsetX;
+	float mColorOffsetY;
+};
+extern PortraitItem gPortraitItems[ZombatarItem::NUM_ZOMBATAR_ITEMS];

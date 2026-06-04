@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  configure:
+    cmds:
+      - cmake --preset=windows-x64-debug-msvc -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      - cmake --preset=windows-x64-debug-msvc -B build-msvc -G "Visual Studio 18 2026"
+
+  build:
+    vars:
+      NPROC:
+        sh: nproc
+    cmds:
+      - cmake --build build-msvc --config Debug -- /m:{{.NPROC}}
+
+  build-release:
+    vars:
+      NPROC:
+        sh: nproc
+    cmds:
+      - cmake --build build-msvc --config Release -- /m:{{.NPROC}}
+
+  run:
+    - cd Export && ./LawnProject.exe
