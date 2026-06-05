@@ -1138,7 +1138,7 @@ void LawnApp::DoConfirmPurchaseDialog(const SexyString &theMessage)
 {
 	// PISTON_PATCH
 	LawnDialog *aComfirmDialog = (LawnDialog *)DoDialog(
-		Dialogs::DIALOG_STORE_PURCHASE, true, "[BUY_HEADER]", theMessage, "", Dialog::BUTTONS_YES_NO);
+		Dialogs::DIALOG_STORE_PURCHASE, true, "[BUY_ITEM_HEADER]", theMessage, "", Dialog::BUTTONS_YES_NO);
 	aComfirmDialog->mLawnYesButton->mLabel = TodStringTranslate("[DIALOG_BUTTON_YES]");
 	aComfirmDialog->mLawnNoButton->mLabel = TodStringTranslate("[DIALOG_BUTTON_NO]");
 }

@@ -1,4 +1,5 @@
 ["Pistonight/lawn-project contributors"]
+"packages/lawn-assets/*.py" = "MIT"
 "packages/pvz-pakc/src/*.rs" = "GPL-3.0-or-later"
 "packages/pvz-reanimc/src/*.rs" = "GPL-3.0-or-later"
 "packages/pvz-utils/src/*.rs" = "MIT"

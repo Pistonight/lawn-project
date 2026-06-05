@@ -211,6 +211,7 @@ pub fn make_path(rel_path: &[u8]) -> cu::Result<Vec<u8>> {
 /// - 2fc4e9e8e1ecf40f7c53c03df5cc5a3d553dbabc63a1a833c4656975ccb8a933  // 1.0.0.1051 EN
 /// - 1f7d91d4b2e127ca1183a109fb74babe05e2368873aabc4fbab6f6cb302b5d23  // 1.2.0.1065 EN
 /// - 0cbdba7ecd6106cca3190976061922ef61011c1896205b10cbc204aaa9d88cba  // 1.2.0.1073 EN Origin
+/// - 5878326408285cb01f83b4fa4edcc66d65e727f6d6ee88563b5b3b287dd259fc  // 1.2.0.1096 EN Steam
 fn cmp_paths(a: &[u8], b: &[u8]) -> Ordering {
     for (c1, c2) in std::iter::zip(a, b) {
         // fast path

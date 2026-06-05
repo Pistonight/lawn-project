@@ -20,4 +20,3 @@ tasks:
         python add-resources.py;
         cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
         cp main.pak ../lawn-app/Export;
-

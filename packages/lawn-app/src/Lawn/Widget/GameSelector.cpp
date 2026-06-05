@@ -140,6 +140,10 @@ GameSelector::GameSelector(LawnApp *theApp)
 	mZombatarButton->Resize(327, 428, Sexy::IMAGE_REANIM_SELECTORSCREEN_WOODSIGN3_PRESS->mWidth, Sexy::IMAGE_REANIM_SELECTORSCREEN_WOODSIGN3_PRESS->mHeight);
 	mZombatarButton->mMouseVisible = false;
 	mZombatarButton->mClip = false;
+#ifdef PISTON_PATCH
+	mZombatarButton->mDisabled = true;
+	mZombatarButton->mBtnNoDraw = true;
+#endif
 
 	mZenGardenButton = MakeNewButton(GameSelector::GameSelector_ZenGarden,
 									 this,
