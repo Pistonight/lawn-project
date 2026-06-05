@@ -201,7 +201,11 @@ TodWeightedArray *TodPickArrayItemFromWeightedArray(const TodWeightedArray *theA
 		}
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+#else
 	TOD_ASSERT();
+#endif
 	return nullptr;
 }
 
@@ -234,7 +238,11 @@ TodWeightedGridArray *TodPickFromWeightedGridArray(const TodWeightedGridArray *t
 		}
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+#else
 	TOD_ASSERT();
+#endif
 	return nullptr;
 }
 
@@ -452,7 +460,11 @@ float TodCurveEvaluate(float theTime, float thePositionStart, float thePositionE
 		aWarpedTime = sinf(2 * PI * TodCurveS(theTime));
 		break;
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 	return (thePositionEnd - thePositionStart) * aWarpedTime + thePositionStart;
@@ -1232,7 +1244,18 @@ bool TodResourceManager::TodLoadResources(const std::string &theGroup)
 		return false;
 	}
 
+#ifdef PISTON_PATCH
+    #pragma warning(push)
+    #pragma warning(disable:4551) // function call missing arguments ... not sure what the intention is
+    #pragma warning(disable:4068) // clang pragma
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wpointer-bool-conversion"
+#endif
 	if (ExtractResourcesByName && !ExtractResourcesByName(this, theGroup.c_str()))
+#ifdef PISTON_PATCH
+    #pragma clang diagnostic pop
+    #pragma warning(pop)
+#endif
 	{
 		gSexyAppBase->ShowResourceError(true);
 		return false;

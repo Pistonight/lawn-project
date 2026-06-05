@@ -936,7 +936,11 @@ SeedType Challenge::BeghouledPickSeed(int theGridX,
 			aSeedType = SeedType::SEED_PEASHOOTER;
 			break;
 		default:
+#ifdef PISTON_PATCH
+			TOD_ASSERT(false);
+#else
 			TOD_ASSERT();
+#endif
 			break;
 		}
 
@@ -1822,7 +1826,11 @@ void Challenge::UpdateConveyorBelt()
 		aSeedPickArray[5].mWeight = 10;
 	}
 	else
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 
 	for (int i = 0; i < aSeedPickCount; i++)
 	{
@@ -2919,6 +2927,9 @@ bool Challenge::UpdateZombieSpawning()
 	if (mApp->IsWhackAZombieLevel())
 	{
 		WhackAZombieSpawning();
+#ifdef PISTON_PATCH
+		return false;
+#endif
 	}
 	else
 		return mApp->IsFinalBossLevel() || mApp->mGameMode == GAMEMODE_CHALLENGE_ICE ||
@@ -4107,7 +4118,11 @@ void Challenge::ScaryPotterPopulate()
 			break;
 		}
 		default:
+#ifdef PISTON_PATCH
+			TOD_ASSERT(false);
+#else
 			TOD_ASSERT();
+#endif
 			break;
 		}
 	}
@@ -4261,7 +4276,11 @@ void Challenge::ScaryPotterOpenPot(GridItem *theScaryPot)
 		break;
 	}
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 
@@ -4413,7 +4432,12 @@ ZombieType Challenge::IZombieSeedTypeToZombieType(SeedType theSeedType)
 	case SEED_ZOMBIE_IMP:
 		return ZOMBIE_IMP;
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+		return ZOMBIE_NORMAL;
+#else
 		TOD_ASSERT();
+#endif
 	}
 }
 
@@ -4795,7 +4819,11 @@ void Challenge::IZombieInitLevel()
 		break;
 	}
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 	}
 
 	mBoard->mBonusLawnMowersRemaining = 0;

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!-- contains extra resources to be appended to original resources -->
+<ResourceManifest>
+
+<Resources id="Init"></Resources>
+<Resources id="LoaderBar"></Resources>
+<Resources id="LoadingFonts"></Resources>
+
+<Resources id="LoadingImages">
+  <SetDefaults path="reanim" idprefix="IMAGE_REANIM_" />
+  <Image id="TEST_TEST_TEST" path="test" />
+</Resources>
+
+<Resources id="LoadingSounds"></Resources>
+<Resources id="DelayLoad_Background1"></Resources>
+<Resources id="DelayLoad_BackgroundUnsodded"></Resources>
+<Resources id="DelayLoad_Background2"></Resources>
+<Resources id="DelayLoad_Background3"></Resources>
+<Resources id="DelayLoad_Background4"></Resources>
+<Resources id="DelayLoad_Background5"></Resources>
+<Resources id="DelayLoad_Background6"></Resources>
+<Resources id="DelayLoad_MushroomGarden"></Resources>
+<Resources id="DelayLoad_GreenHouseGarden"></Resources>
+<Resources id="DelayLoad_GreenHouseOverlay"></Resources>
+<Resources id="DelayLoad_Zombiquarium"></Resources>  
+<Resources id="DelayLoad_TreeOfWisdom"></Resources>
+<Resources id="DelayLoad_AwardScreen"></Resources>  
+<Resources id="DelayLoad_ChallengeScreen"></Resources>  
+<Resources id="DelayLoad_Almanac"></Resources>
+<Resources id="DelayLoad_Store"></Resources>
+<Resources id="DelayLoad_ZombieNote"></Resources>
+<Resources id="DelayLoad_ZombieNote1"></Resources>
+<Resources id="DelayLoad_ZombieNote2"></Resources>
+<Resources id="DelayLoad_ZombieNote3"></Resources>
+<Resources id="DelayLoad_ZombieNote4"></Resources>
+<Resources id="DelayLoad_ZombieFinalNote"></Resources>
+<Resources id="DelayLoad_ZombieNoteHelp"></Resources>
+<Resources id="DelayLoad_Credits"></Resources>
+<Resources id="DelayLoad_Zombatar"></Resources>
+
+</ResourceManifest>

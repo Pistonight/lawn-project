@@ -82,15 +82,16 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${EXPORT_DIR}"
 )
 
+# PISTON_PATCH: we are building assets separately
 # Assets
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND}
-        -DSRC="${CMAKE_SOURCE_DIR}/assets"
-        -DDST="${EXPORT_DIR}"
-        -DMANIFEST="${CMAKE_BINARY_DIR}/asset_manifest.txt"
-        -P "${CMAKE_SOURCE_DIR}/cmake/sync_assets.cmake"
-    COMMENT "Syncing assets..."
-)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND}
+#         -DSRC="${CMAKE_SOURCE_DIR}/assets"
+#         -DDST="${EXPORT_DIR}"
+#         -DMANIFEST="${CMAKE_BINARY_DIR}/asset_manifest.txt"
+#         -P "${CMAKE_SOURCE_DIR}/cmake/sync_assets.cmake"
+#         COMMENT ""
+# )
 # DLL
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -114,5 +115,6 @@ foreach(DLL ${DLLS_TO_COPY})
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${THIRDPARTY_DIR}/${DLL}"
             "${EXPORT_DIR}"
+            COMMENT ""
     )
 endforeach()

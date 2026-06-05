@@ -899,7 +899,11 @@ void CutScene::StartLevelIntro()
 			}
 			else
 			{
-				TOD_ASSERT();
+#ifdef PISTON_PATCH
+                TOD_ASSERT(false);
+#else
+                TOD_ASSERT();
+#endif
 			}
 		}
 		else

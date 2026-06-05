@@ -165,7 +165,11 @@ bool ReanimAtlas::PlaceAtlasImage(ReanimAtlasImage *theAtlasImageToPlace, int th
 	if (ImageFindPlace(theAtlasImageToPlace, theImageCount, theMaxWidth))
 		return true;
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+#else
 	TOD_ASSERT();
+#endif
 	return false;
 }
 
@@ -238,7 +242,9 @@ void ReanimAtlas::ReanimAtlasCreate(ReanimatorDefinition *theReanimDef)
 			{
 				int aImageIndex = FindImage(aImage);
 				TOD_ASSERT(aImageIndex >= 0);
+#ifndef PISTON_PATCH // assigned value is never read, not sure what casting index to pointer is about
 				aImage = (Image *)(aImageIndex + 1);
+#endif
 			}
 		}
 	}

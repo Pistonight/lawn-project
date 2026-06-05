@@ -357,7 +357,11 @@ void Coin::CoinInitialize(int theX, int theY, CoinType theCoinType, CoinMotion t
 		break;
 
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 
@@ -1034,7 +1038,11 @@ void Coin::Draw(Graphics *g)
 	}
 	else
 	{
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 	}
 
 	g->SetColorizeImages(true);

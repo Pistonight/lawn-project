@@ -139,7 +139,11 @@ void MessageWidget::SetLabel(const SexyString &theNewLabel, MessageStyle theMess
 			break;
 
 		default:
+#ifdef PISTON_PATCH
+			TOD_ASSERT(false);
+#else
 			TOD_ASSERT();
+#endif
 			break;
 		}
 
@@ -328,7 +332,12 @@ Font *MessageWidget::GetFont()
 		return Sexy::FONT_HOUSEOFTERROR16;
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+	return nullptr;
+#else
 	TOD_ASSERT();
+#endif
 }
 
 //0x4599E0
@@ -421,7 +430,11 @@ void MessageWidget::Draw(Graphics *g)
 		break;
 
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 

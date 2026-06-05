@@ -43,7 +43,7 @@ TitleScreen::TitleScreen(LawnApp *theApp)
 	mStartButton->mVisible = false;
 }
 
-//0x48D6B0��0x48D6D0
+//0x48D6B0 / 0x48D6D0
 TitleScreen::~TitleScreen()
 {
 	if (mStartButton)
@@ -245,7 +245,11 @@ void TitleScreen::Update()
 		{
 			if (mDisplayPartnerLogo)
 			{
-				mTitleState = TitleState::TITLESTATE_SCREEN;
+#ifdef PISTON_PATCH
+                mTitleState = TitleState::TITLESTATE_PARTNER_LOGO;
+#else
+                mTitleState = TitleState::TITLESTATE_SCREEN;
+#endif
 				mTitleStateDuration = 200;
 				mTitleStateCounter = 200;
 			}

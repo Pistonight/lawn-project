@@ -1,10 +1,20 @@
 version: '3'
 
+includes:
+  assets:
+    taskfile: ../lawn-assets
+    dir: ../lawn-assets
+    internal: true
+
 tasks:
   configure:
     cmds:
-      - cmake --preset=windows-x64-debug-msvc -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-      - cmake --preset=windows-x64-debug-msvc -B build-msvc -G "Visual Studio 18 2026"
+      - task: configure-ninja
+      - task: configure-msvc
+  configure-ninja:
+    - cmake --preset=windows-x64-debug-msvc -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  configure-msvc:
+    - cmake --preset=windows-x64-debug-msvc -B build-msvc -G "Visual Studio 18 2026"
 
   build:
     vars:
@@ -20,5 +30,11 @@ tasks:
     cmds:
       - cmake --build build-msvc --config Release -- /m:{{.NPROC}}
 
+  build-assets:
+    - task: assets:build
+
   run:
     - cd Export && ./LawnProject.exe
+
+  clean:
+    - rm -rf build build-msvc Export

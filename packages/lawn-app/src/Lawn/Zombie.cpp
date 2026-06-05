@@ -3026,7 +3026,11 @@ void Zombie::SummonBackupDancers()
 				aPosX = mPosX + 100;
 				break;
 			default:
-				TOD_ASSERT();
+#ifdef PISTON_PATCH
+                TOD_ASSERT(false);
+#else
+                TOD_ASSERT();
+#endif
 				break;
 			}
 
@@ -4968,7 +4972,11 @@ void Zombie::UpdateYuckyFace()
 		}
 		else
 		{
-			TOD_ASSERT();
+#ifdef PISTON_PATCH
+            TOD_ASSERT(false);
+#else
+            TOD_ASSERT();
+#endif
 		}
 	}
 }
@@ -5222,7 +5230,11 @@ void Zombie::DrawZombie(Graphics *g, const ZombieDrawPosition &theDrawPos)
 		//    break;
 
 	default:
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 		break;
 	}
 }
@@ -9129,7 +9141,11 @@ void Zombie::AttachShield()
 	}
 	else
 	{
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 	}
 
 	aBodyReanim->AssignRenderGroupToTrack(aTrackName, RENDER_GROUP_SHIELD);
@@ -9168,7 +9184,11 @@ void Zombie::DetachShield()
 		}
 		else
 		{
-			TOD_ASSERT();
+#ifdef PISTON_PATCH
+            TOD_ASSERT(false);
+#else
+            TOD_ASSERT();
+#endif
 		}
 	}
 
@@ -9919,7 +9939,12 @@ int Zombie::GetBobsledPosition()
 		}
 	}
 
-	TOD_ASSERT();
+#ifdef PISTON_PATCH
+    TOD_ASSERT(false);
+    return 0; // unreachable, suppress warning
+#else
+    TOD_ASSERT();
+#endif
 }
 
 bool Zombie::IsBobsledTeamWithSled()
@@ -10229,7 +10254,11 @@ void Zombie::BossStompAttack()
 		aTrackName = "anim_stomp_4";
 		break;
 	default:
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 		break;
 	}
 	PlayZombieReanim(aTrackName, ReanimLoopType::REANIM_PLAY_ONCE_AND_HOLD, 20, 12.0f);
@@ -10838,7 +10867,11 @@ void Zombie::UpdateBoss()
 	}
 	else
 	{
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 	}
 }
 
@@ -11076,7 +11109,11 @@ void Zombie::EnableFuture(bool theEnableFuture)
 			aImage = IMAGE_REANIM_ZOMBIE_HEAD_SUNGLASSES4;
 			break;
 		default:
-			TOD_ASSERT();
+#ifdef PISTON_PATCH
+            TOD_ASSERT(false);
+#else
+            TOD_ASSERT();
+#endif
 			break;
 		}
 		aBodyReanim->SetImageOverride("anim_head1", aImage);

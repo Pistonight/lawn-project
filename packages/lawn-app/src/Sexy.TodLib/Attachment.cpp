@@ -72,7 +72,11 @@ void Attachment::Update()
 		}
 
 		default:
+#ifdef PISTON_PATCH
+			TOD_ASSERT(false);
+#else
 			TOD_ASSERT();
+#endif
 			break;
 		}
 
@@ -810,6 +814,9 @@ Reanimation *FindReanimAttachment(AttachmentID &theAttachmentID)
 			}
 		}
 	}
+#ifdef PISTON_PATCH
+    return nullptr;
+#endif
 }
 
 //0x405500

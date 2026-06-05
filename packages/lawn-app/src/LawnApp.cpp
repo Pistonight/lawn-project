@@ -53,7 +53,9 @@
 #include "SexyAppFramework/Dialog.h"
 #include "SexyAppFramework/resource.h"
 #include "SexyAppFramework/SEHCatcher.h"
+#ifdef NDEBUG
 #include "Lawn/ResoddedFramework/UpdateChecker.h"
+#endif
 
 #include <PakInterface.h>
 
@@ -1134,8 +1136,9 @@ void LawnApp::DoConfirmSellDialog(const SexyString &theMessage)
 
 void LawnApp::DoConfirmPurchaseDialog(const SexyString &theMessage)
 {
+	// PISTON_PATCH
 	LawnDialog *aComfirmDialog = (LawnDialog *)DoDialog(
-		Dialogs::DIALOG_STORE_PURCHASE, true, "Buy this item?", theMessage, "", Dialog::BUTTONS_YES_NO);
+		Dialogs::DIALOG_STORE_PURCHASE, true, "[BUY_HEADER]", theMessage, "", Dialog::BUTTONS_YES_NO);
 	aComfirmDialog->mLawnYesButton->mLabel = TodStringTranslate("[DIALOG_BUTTON_YES]");
 	aComfirmDialog->mLawnNoButton->mLabel = TodStringTranslate("[DIALOG_BUTTON_NO]");
 }
@@ -1281,9 +1284,10 @@ void LawnApp::Init()
 	gBetaSubmitFunc = BetaSubmitFunc;
 	TodTraceAndLog("[LawnProject] - session id: %u", mSessionID);
 #endif
-	
-	// [SETUP] - Here you (can) add a link that contains the LATEST version of your mod. I recommend Github as it's free and easy to setup. (And you are probably using it now)
 
+#ifdef NDEBUG
+	
+    // TODO - update update host
 	UpdateChecker::gUpdateHost =
 		"https://raw.githubusercontent.com/LawnProject/ResoddedFramework/refs/heads/work-in-progress/LawnVersion.txt";
 
@@ -1294,6 +1298,8 @@ void LawnApp::Init()
 			   UpdateChecker::gLatestVersion.toString().c_str());
 	else
 		TodTraceAndLog("[LawnProject] - UP TO DATE: Version : %s", gVersion.toString().c_str());
+
+#endif
 
 
 #if SEXY_CRASH_HANDLER
@@ -1378,16 +1384,17 @@ void LawnApp::Init()
 	aDuration = mTimer.GetDuration();
 	TodTraceAndLog("[LawnProject] - loading: 'system' %d ms", aDuration);
 #endif
-	mTimer.Start();
 
-	ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
-	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
-	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
+    // PISTON_PATCH moved to TitleScreen
+	//mTimer.Start();
+	//ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
+	//ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
+	//ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
 
-#ifdef _DEBUG
-	aDuration = mTimer.GetDuration();
-	TodTraceAndLog("[LawnProject] - loading: 'loaderbar' %d ms", aDuration);
-#endif
+//#ifdef _DEBUG
+	//aDuration = mTimer.GetDuration();
+	//TodTraceAndLog("[LawnProject] - loading: 'loaderbar' %d ms", aDuration);
+//#endif
 	mTimer.Start();
 }
 
@@ -1805,6 +1812,12 @@ void LawnApp::LoadingThreadProc()
 	TodStringListLoad("properties/LawnStrings.txt");
 	TodStringListLoad("properties/ZombatarTOS.txt");
 	TodStringListLoad("properties/FrameworkStrings.txt");
+	// PISTON_PATCH
+	TodStringListLoad("properties/ModStrings.txt");
+	TodStringListLoad("properties/ExtraLawnStrings.txt");
+    ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
+	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
+	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
 
 	if (mTitleScreen)
 	{

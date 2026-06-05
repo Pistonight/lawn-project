@@ -202,6 +202,9 @@ int SeedChooserScreen::PickFromWeightedArrayUsingSpecialRandSeed(TodWeightedArra
 			return theArray[j].mItem;
 	}
 	DBG_ASSERT(false);
+#ifdef PISTON_PATCH
+    return theArray[theCount-1].mItem; // unreachable, suppress warning
+#endif
 }
 
 //0x483F70

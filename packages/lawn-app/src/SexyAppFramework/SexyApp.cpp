@@ -1,5 +1,9 @@
 #include "SexyApp.h"
+#ifdef PISTON_PATCH
+#include "../BuildInfo.h"
+#else
 #include "BuildInfo.h"
+#endif
 
 //#include "..\Crypt\RegKey.h"
 #include "SEHCatcher.h"
@@ -496,8 +500,13 @@ std::string SexyApp::GetGameSEHInfo()
 	char aGamesPlayedStr[16];
 	sprintf(aGamesPlayedStr, "%d", mTimesPlayed);
 
+#ifdef PISTON_PATCH
+	std::string anInfoString = SexyAppBase::GetGameSEHInfo() + "Times Played: " + std::string(aGamesPlayedStr) + "\r\n"+
+	"Build Num: " + StrFormat("%d", mBuildNum) + "\r\n" + "Build Date: " + mBuildDate + "\r\n";
+#else
 	std::string anInfoString = SexyAppBase::GetGameSEHInfo() + "Times Played: " + std::string(aGamesPlayedStr) + "\r\n";
 	"Build Num: " + StrFormat("%d", mBuildNum) + "\r\n" + "Build Date: " + mBuildDate + "\r\n";
+#endif
 
 	if (mReferId.length() != 0)
 	{

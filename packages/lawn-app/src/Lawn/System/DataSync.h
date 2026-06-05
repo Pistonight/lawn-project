@@ -52,7 +52,10 @@ class DataWriter
 	void OpenMemory(unsigned long theReserveAmount = 0x20);
 	void Close();
 	inline bool WriteToFile(const std::string &theFileName)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
+#ifdef PISTON_PATCH
+        return false;
+#endif
 	}
 	void WriteBytes(const void *theData, unsigned long theDataLen);
 	void WriteLong(unsigned long theLong);
@@ -63,16 +66,19 @@ class DataWriter
 	void WriteDouble(double theDouble);
 	void WriteString(const SexyString &theStr);
 	inline unsigned long GetPos()
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
+#ifdef PISTON_PATCH
+        return 0;
+#endif
 	}
 	inline void SetLong(unsigned long, unsigned long)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void SetShort(unsigned int, unsigned long)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void SetByte(unsigned int, unsigned long)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void *GetDataPtr()
 	{
@@ -108,7 +114,7 @@ class DataSync
 	virtual ~DataSync();
 
 	inline void SyncPointers()
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void SetReader(DataReader *theReader)
 	{
@@ -174,10 +180,10 @@ class DataSync
 	void SyncDouble(double &theDouble);
 	void SyncString(SexyString &theStr);
 	inline void SyncPointer(void **)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void RegisterPointer(void *)
-	{ /* δ�ҵ� */
+	{ /* 未找到 */
 	}
 	inline void SetVersion(int theVersion)
 	{
@@ -190,3 +196,5 @@ class DataSync
 };
 
 #endif
+
+

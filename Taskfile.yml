@@ -30,7 +30,7 @@ tasks:
           echo 'please get main.pak from GOTY EN version and put it in packages/pvz-assets';
           exit 2;
         fi;
-    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main.pak packages/pvz-assets/main
+    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main.pak
 
 
   check:

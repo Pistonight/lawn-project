@@ -175,20 +175,37 @@ void SEHCatcher::DoHandleDebugEvent(LPEXCEPTION_POINTERS lpEP)
 
 	if (szName != NULL)
 	{
+#ifdef PISTON_PATCH
+		sprintf(aBuffer,
+				"Exception: %s (code 0x%lx) at address %p in thread %lX\r\n",
+				szName,
+				lpEP->ExceptionRecord->ExceptionCode,
+				lpEP->ExceptionRecord->ExceptionAddress,
+				GetCurrentThreadId());
+#else
 		sprintf(aBuffer,
 				"Exception: %s (code 0x%x) at address %08X in thread %X\r\n",
 				szName,
 				lpEP->ExceptionRecord->ExceptionCode,
 				lpEP->ExceptionRecord->ExceptionAddress,
 				GetCurrentThreadId());
+#endif
 	}
 	else
 	{
+#ifdef PISTON_PATCH
+		sprintf(aBuffer,
+				"Unknown exception: (code 0x%lx) at address %p in thread %lX\r\n",
+				lpEP->ExceptionRecord->ExceptionCode,
+				lpEP->ExceptionRecord->ExceptionAddress,
+				GetCurrentThreadId());
+#else
 		sprintf(aBuffer,
 				"Unknown exception: (code 0x%x) at address %08X in thread %X\r\n",
 				lpEP->ExceptionRecord->ExceptionCode,
 				lpEP->ExceptionRecord->ExceptionAddress,
 				GetCurrentThreadId());
+#endif
 	}
 
 	aDebugDump += aBuffer;

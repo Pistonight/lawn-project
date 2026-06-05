@@ -31,7 +31,11 @@
 #include "PropertiesParser.h"
 #include "PerfTimer.h"
 #include "MTRand.h"
+#ifdef PISTON_PATCH
+#include "../BuildInfo.h"
+#else
 #include "BuildInfo.h"
+#endif
 
 #include <fstream>
 
@@ -2091,7 +2095,19 @@ std::string SexyAppBase::GetGameSEHInfo()
 	sprintf(aTimeStr, "%02d:%02d:%02d", (aSecLoaded / 60 / 60), (aSecLoaded / 60) % 60, aSecLoaded % 60);
 
 	char aThreadIdStr[16];
+#ifdef PISTON_PATCH
+#pragma warning(push)
+#pragma warning(disable:4477) // std::thread::id to int conversion
+#pragma warning(disable:4068) // unknown pragma
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat"
+#endif
 	sprintf(aThreadIdStr, "%X", mPrimaryThreadId);
+#ifdef PISTON_PATCH
+#pragma clang diagnostic pop
+#pragma warning(pop)
+#endif
+
 
 	std::string anInfoString = "Product: " + mProdName + "\r\n" + "Version: " + mProductVersion + "\r\n";
 
@@ -4911,7 +4927,11 @@ int SexyAppBase::InitRenderer()
 {
 	PreRendererInitHook();
 	DeleteNativeImageData();
+#ifdef PISTON_PATCH
+	bool aResult = mRenderer->Init();
+#else
 	int aResult = mRenderer->Init();
+#endif
 	DemoSyncRefreshRate();
 	if (true == aResult)
 	{

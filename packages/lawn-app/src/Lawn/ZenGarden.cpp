@@ -382,7 +382,11 @@ int ZenGarden::GetPlantSellPrice(Plant *thePlant)
 		{
 			return 300;
 		}
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 	}
 	if (aPottedPlant->mPlantAge == PottedPlantAge::PLANTAGE_SPROUT)
 	{
@@ -404,7 +408,12 @@ int ZenGarden::GetPlantSellPrice(Plant *thePlant)
 		}
 		return 800;
 	}
-	TOD_ASSERT();
+#ifdef PISTON_PATCH
+    TOD_ASSERT(false);
+    return 0; // unreachable, suppress warning
+#else
+    TOD_ASSERT();
+#endif
 }
 
 //0x51DA00
@@ -1931,7 +1940,11 @@ void ZenGarden::GotoNextGarden()
 	}
 	else
 	{
-		TOD_ASSERT();
+#ifdef PISTON_PATCH
+        TOD_ASSERT(false);
+#else
+        TOD_ASSERT();
+#endif
 	}
 
 	if ((mBoard->mBackground == BackgroundType::BACKGROUND_MUSHROOM_GARDEN ||
@@ -2019,7 +2032,11 @@ SpecialGridPlacement *ZenGarden::GetSpecialGridPlacements(int &theCount)
 		theCount = LENGTH(gGreenhouseGridPlacement);
 		return gGreenhouseGridPlacement;
 	}
-	TOD_ASSERT();
+#ifdef PISTON_PATCH
+    TOD_ASSERT(false);
+#else
+    TOD_ASSERT();
+#endif
 	return nullptr;
 }
 

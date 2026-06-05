@@ -464,6 +464,9 @@ SDL_BlendMode SDL3Renderer::Get_SDL_NativeBlendMode(BlendMode theBlendMode)
 			return SDL_BLENDMODE_MUL;
 		}
 	}
+#ifdef PISTON_PATCH
+    return SDL_BLENDMODE_NONE;
+#endif
 }
 
 void SDL3Renderer::Blt(Image *theImage, float theX, float theY, const Rect &theSrcRect, const Color &theColor,

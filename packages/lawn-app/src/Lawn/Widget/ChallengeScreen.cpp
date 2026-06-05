@@ -336,12 +336,19 @@ int ChallengeScreen::MoreTrophiesNeeded(int theChallengeIndex)
 			}
 			else
 			{
+#ifdef PISTON_PATCH
+				TOD_ASSERT(false);
+#else
 				TOD_ASSERT();
+#endif
 			}
 
 			return aIdxInPage >= aNumTrophies ? aIdxInPage - aNumTrophies + 1 : 0;
 		}
 	}
+#ifdef PISTON_PATCH
+	return 0;
+#endif
 }
 
 //0x42E6E0

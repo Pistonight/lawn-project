@@ -112,7 +112,11 @@ void GridItem::DrawGridItem(Graphics *g)
 		DrawIZombieBrain(g);
 		break;
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 

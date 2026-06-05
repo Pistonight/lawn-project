@@ -762,7 +762,18 @@ bool DefinitionReadVector2Field(XMLParser *theXmlParser, SexyVector2 *theValue)
 	if (!DefinitionReadXMLString(theXmlParser, aStringValue))
 		return false;
 
+#ifdef PISTON_PATCH
+#pragma warning(push)
+#pragma warning(disable:4477 4473) // scanf has extra argument ..
+#pragma warning(disable:4068) // clang
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat"
+#endif
 	if (sexysscanf(aStringValue.c_str(), "%f %f", theValue) == 1)
+#ifdef PISTON_PATCH
+#pragma clang diagnostic pop
+#pragma warning(pop)
+#endif
 		return true;
 
 	DefinitionXmlError(theXmlParser, "Can't parse vector2 value '%s'", aStringValue.c_str());
@@ -1012,7 +1023,18 @@ bool DefinitionReadFlagField(XMLParser *theXmlParser,
 		return false;
 
 	int aFlag;
+#ifdef PISTON_PATCH
+#pragma warning(push)
+#pragma warning(disable:4477 4473) // scanf has extra argument and converting float to int
+#pragma warning(disable:4068) // clang
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat"
+#endif
 	if (sexysscanf(aStringValue.c_str(), "%f %f", &aFlag) != 1)
+#ifdef PISTON_PATCH
+#pragma clang diagnostic pop
+#pragma warning(pop)
+#endif
 	{
 		DefinitionXmlError(theXmlParser, "Can't parse int value '%s'", aStringValue.c_str());
 		return false;
@@ -1041,6 +1063,9 @@ bool DefinitionReadImageField(XMLParser *theXmlParser, Image **theImage)
 	std::string aMessgae = StrFormat(
 		"Failed to find image '%s' in %s", aStringValue.c_str(), theXmlParser->GetFileName().c_str());
 	TodErrorMessageBox(aMessgae.c_str(), "Missing image");
+#ifdef PISTON_PATCH
+    return false;
+#endif
 }
 
 bool DefinitionReadFontField(XMLParser *theXmlParser, Font **theFont)
@@ -1054,6 +1079,9 @@ bool DefinitionReadFontField(XMLParser *theXmlParser, Font **theFont)
 
 	std::string aMessgae = StrFormat("Failed to find font '%s' in %s", aStringValue.c_str(), theXmlParser->GetFileName().c_str());
 	TodErrorMessageBox(aMessgae.c_str(), "Missing font");
+#ifdef PISTON_PATCH
+    return false;
+#endif
 }
 
 bool DefinitionReadField(XMLParser *theXmlParser, DefMap *theDefMap, void *theDefinition, bool *theDone)

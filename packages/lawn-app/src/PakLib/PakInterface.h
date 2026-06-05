@@ -83,8 +83,10 @@ class PakInterfaceBase
 class PakInterface : public PakInterfaceBase
 {
   public:
-	PakCollectionList mPakCollectionList; //+0x4：通过 AddPakFile() 添加的各个资源包的内存映射文件数据的链表
-	PakRecordMap mPakRecordMap;			  //+0x10：所有已添加的资源包中的所有资源文件的、从文件名到文件数据的映射容器
+    // linked list for paks added with AddPakFile()
+	PakCollectionList mPakCollectionList; //+0x4
+    // file name -> data mapping for all files in all pak files
+	PakRecordMap mPakRecordMap;			  //+0x10
 
   public:
 	PakInterface();

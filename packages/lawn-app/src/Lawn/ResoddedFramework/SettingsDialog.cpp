@@ -4,7 +4,11 @@
 #include "../../SexyAppFramework/Renderer.h"
 #include "../../SexyAppFramework/Checkbox.h"
 #include "../../LawnApp.h"
+#ifdef PISTON_PATCH
+#include "../../BuildInfo.h"
+#else
 #include "../../SexyAppFramework/BuildInfo.h"
+#endif
 #include "../../SexyAppFramework/Window.h"
 #include "../../SexyAppFramework/ListWidget.h"
 #ifdef _WIN32

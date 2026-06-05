@@ -100,7 +100,11 @@ void Projectile::ProjectileInitialize(
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_FIREBALL)
 	{
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_COBBIG)
 	{
@@ -1045,7 +1049,11 @@ void Projectile::Draw(Graphics *g)
 	}
 	else
 	{
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 	}
 
 	bool aMirror = false;

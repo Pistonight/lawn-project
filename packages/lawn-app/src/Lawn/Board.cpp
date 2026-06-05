@@ -871,7 +871,11 @@ void Board::LoadBackgroundImages()
 		break;
 
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 }
@@ -1016,7 +1020,11 @@ void Board::PickBackground()
 		break;
 
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 	LoadBackgroundImages();
@@ -1082,7 +1090,11 @@ void Board::PickBackground()
 	}
 	else
 	{
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 	}
 
 	for (int x = 0; x < MAX_GRID_SIZE_X; x++)
@@ -1166,7 +1178,11 @@ void Board::PickBackground()
 			}
 			else
 			{
+#ifdef PISTON_PATCH
+				TOD_ASSERT(false);
+#else
 				TOD_ASSERT();
+#endif
 			}
 		}
 	}
@@ -2349,7 +2365,12 @@ Plant *Board::GetTopPlantAt(int theGridX, int theGridY, PlantPriority thePriorit
 	case PlantPriority::TOPPLANT_ONLY_UNDER_PLANT:
 		return aPlantOnLawn.mUnderPlant;
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+		return nullptr;
+#else
 		TOD_ASSERT();
+#endif
 	}
 }
 
@@ -4080,7 +4101,11 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 	}
 	else
 	{
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 	}
 
 	if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN)
@@ -4600,7 +4625,11 @@ void Board::PickUpTool(GameObjectType theObjectType)
 		break;
 
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 
@@ -6637,7 +6666,11 @@ void Board::DrawBackdrop(Graphics *g)
 		aBgImage = nullptr;
 		break;
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 
@@ -7396,7 +7429,11 @@ void Board::DrawGameObjects(Graphics *g)
 			break;
 
 		default:
+#ifdef PISTON_PATCH
+			TOD_ASSERT(false);
+#else
 			TOD_ASSERT();
+#endif
 			break;
 		}
 	}
@@ -8092,7 +8129,11 @@ void Board::DrawDebugText(Graphics *g)
 		break;
 #endif
 	default:
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		break;
 	}
 
@@ -9914,7 +9955,12 @@ int Board::LeftFogColumn()
 		return 5;
 	if (mLevel >= 37 && mLevel <= 40)
 		return 4;
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+	return 5;
+#else
 	TOD_ASSERT();
+#endif
 }
 
 //0x41C210
@@ -10818,7 +10864,12 @@ int Board::GetNumWavesPerSurvivalStage()
 		return 20;
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+	return 10;
+#else
 	TOD_ASSERT();
+#endif
 }
 
 //0x41DA50
@@ -10907,7 +10958,12 @@ bool Board::CanUseGameObject(GameObjectType theGameObject)
 		return false;
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+	return false;
+#else
 	TOD_ASSERT();
+#endif
 }
 
 void Board::ShakeBoard(int theShakeAmountX, int theShakeAmountY)
@@ -10971,7 +11027,11 @@ int Board::NumberZombiesInWave(int theWaveIndex)
 		}
 	}
 
+#ifdef PISTON_PATCH
+	TOD_ASSERT(false);
+#else
 	TOD_ASSERT();
+#endif
 	return 0;
 }
 

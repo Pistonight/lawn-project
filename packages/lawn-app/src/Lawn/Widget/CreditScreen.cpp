@@ -595,7 +595,11 @@ Reanimation *CreditScreen::PlayReanim(int aIndex)
 	}
 	else
 	{
+#ifdef PISTON_PATCH
+		TOD_ASSERT(false);
+#else
 		TOD_ASSERT();
+#endif
 		return nullptr;
 	}
 
