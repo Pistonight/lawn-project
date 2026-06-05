@@ -27,7 +27,8 @@ foreach(EXCLUDED_FILE IN LISTS EXCLUDE_FILES)
     list(REMOVE_ITEM SOURCES "${EXCLUDED_FILE}")
 endforeach()
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+# PISTON_PATCH: don't show terminal
+add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:Debug>:DEBUG>

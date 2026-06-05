@@ -1,6 +1,9 @@
 #include "LawnApp.h"
-#include "Resources.h"
+// PISTON_PATCH
+// #include "Resources.h"
 #include "Sexy.TodLib/TodStringFile.h"
+// PISTON_PATCH use WinMain to hide terminal
+#include <windows.h>
 
 using namespace Sexy;
 
@@ -9,8 +12,17 @@ bool (*gAppHasUsedCheatKeys)();
 SexyString (*gGetCurrentLevelName)();
 
 //0x44E8F0
-int main(int argc, char **argv)
+// PISTON_PATCH use WinMain to hide terminal
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+    // PISTON_PATCH
+	// Attach to parent console when launched from a terminal
+	if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+		FILE* dummy;
+		freopen_s(&dummy, "CONOUT$", "w", stdout);
+		freopen_s(&dummy, "CONOUT$", "w", stderr);
+	}
+
 	TodStringListSetColors(gLawnStringFormats, gLawnStringFormatCount);
 	gGetCurrentLevelName = LawnGetCurrentLevelName;
 	gAppCloseRequest = LawnGetCloseRequest;
