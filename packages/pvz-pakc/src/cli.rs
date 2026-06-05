@@ -19,10 +19,12 @@ pub struct Cli {
     #[clap(short, long)]
     pub unpack: bool,
 
-    /// Input file (if unpack mode) or directory (if pack mode)
-    pub input: String,
-    /// Output directory (if unpack mode) or file (if pack mode)
-    pub output: String,
+    /// Path to the .pak file to pack or unpack
+    pub pak_file: String,
+    /// Path to the directory to pack from or unpack to
+    ///
+    /// Default is pak_file without the .pak suffix
+    pub directory: Option<String>,
 
     /// When unpacking, keep existing files in the output directory
     /// even if it's not part of the pak file

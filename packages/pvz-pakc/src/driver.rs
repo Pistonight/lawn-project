@@ -81,16 +81,20 @@ pub fn pack(input: &str, output: &str) -> cu::Result<()> {
     let mut file_list = BTreeSet::new();
     let input = Path::new(input);
     let mut walk = cu::check!(cu::fs::walk(input), "failed to walk input directory")?;
+    let mut count = 0;
     while let Some(entry) = walk.next() {
         let entry = entry?;
         if !entry.is_file() {
             continue;
         }
         file_list.insert(entry.path());
+        count += 1;
     }
 
     cu::check!(
         pak::write(input, file_list.iter(), Path::new(output)),
         "failed to create .pak file"
-    )
+    )?;
+    cu::info!("packed {count} files");
+    Ok(())
 }

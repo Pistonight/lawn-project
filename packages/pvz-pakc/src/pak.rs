@@ -7,6 +7,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) Imintlcx
 
+use std::cmp::Ordering;
 use std::fs::File;
 use std::io::{BufReader, Read as _, Write};
 use std::os::windows::fs::MetadataExt;
@@ -79,6 +80,12 @@ pub fn write(
     let mut file_buf = Vec::new();
 
     PakHeader::new().write(&mut index_buf);
+
+    let mut file_vec = match files.size_hint() {
+        (lower, None) => Vec::with_capacity(lower),
+        (_, Some(upper)) => Vec::with_capacity(upper),
+    };
+
     for file in files {
         let path = file.as_ref().normalize()?;
         let rel_path = path.try_to_rel_from(&base);
@@ -87,6 +94,13 @@ pub fn write(
             "failed to make path for file: '{}'",
             path.display()
         )?;
+        file_vec.push((entry_path, path));
+    }
+
+    // sort the files to use the same order as how they were originally packed
+    file_vec.sort_unstable_by(|a, b| cmp_paths(&a.0, &b.0));
+
+    for (entry_path, path) in file_vec {
         let mut file = cu::check!(
             File::open(&path),
             "failed to open file: '{}'",
@@ -110,6 +124,7 @@ pub fn write(
             "{file_time} 0x{file_size:08x} {}",
             String::from_utf8_lossy(&entry_path)
         );
+
         index_buf.push(INDEX_BLOCK_OK);
         let index = cu::check!(
             PakIndex::new(&entry_path, file_size as u32, file_time),
@@ -183,6 +198,63 @@ pub fn make_path(rel_path: &[u8]) -> cu::Result<Vec<u8>> {
         }
     }
     Ok(file_name)
+}
+
+/// Compare entry paths to pack the files in the order the appear in original .pak file
+///
+/// Why the comparison behave this way? no idea - maybe it's just the way Windows
+/// returns the paths?
+///
+/// But this allows us to reproduce the exact same bytes when unpacking and repacking
+///
+/// Tested with:
+/// - 2fc4e9e8e1ecf40f7c53c03df5cc5a3d553dbabc63a1a833c4656975ccb8a933  // 1.0.0.1051 EN
+/// - 1f7d91d4b2e127ca1183a109fb74babe05e2368873aabc4fbab6f6cb302b5d23  // 1.2.0.1065 EN
+/// - 0cbdba7ecd6106cca3190976061922ef61011c1896205b10cbc204aaa9d88cba  // 1.2.0.1073 EN Origin
+fn cmp_paths(a: &[u8], b: &[u8]) -> Ordering {
+    for (c1, c2) in std::iter::zip(a, b) {
+        // fast path
+        if c1 == c2 {
+            continue;
+        }
+        // they should both be ascii but fall back to comparison by value
+        if !c1.is_ascii() || !c2.is_ascii() {
+            let ordering = c1.cmp(c2);
+            if ordering != Ordering::Equal {
+                return ordering;
+            }
+        }
+        let c1 = *c1;
+        let c2 = *c2;
+        // order: <specialcase>, <alphanumeric>, <special>
+        for x in [b'-', b' ', b'.'] {
+            if c1 == x {
+                if c2 != x {
+                    return Ordering::Less;
+                }
+            } else if c2 == x {
+                return Ordering::Greater;
+            }
+        }
+        let c1 = c1 as char;
+        let c2 = c2 as char;
+        let ordering = match (c1.is_alphanumeric(), c2.is_alphanumeric()) {
+            (true, true) => {
+                // case-insensitive
+                let c1 = c1.to_ascii_lowercase();
+                let c2 = c2.to_ascii_lowercase();
+                c1.cmp(&c2)
+            }
+            (false, true) => Ordering::Greater,
+            (true, false) => Ordering::Less,
+            (false, false) => c1.cmp(&c2),
+        };
+        if ordering != Ordering::Equal {
+            return ordering;
+        }
+    }
+    // shorter is before
+    a.len().cmp(&b.len())
 }
 
 pub struct PakFile<'a> {
