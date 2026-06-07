@@ -16,7 +16,9 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/thirdparty/src"
+    # PISTON_PATCH: changed lib organization
+    "${CMAKE_SOURCE_DIR}/lib/stb/include"
+    # "${CMAKE_SOURCE_DIR}/thirdparty/src"
 )
 
 foreach(FILE_PATH IN LISTS SOURCES)

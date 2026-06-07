@@ -21,9 +21,8 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-    "${CMAKE_SOURCE_DIR}/thirdparty/src/*.c"
-    "${CMAKE_SOURCE_DIR}/thirdparty/src/*.cpp"
-    "${CMAKE_SOURCE_DIR}/thirdparty/src/*.h"
+    "${CMAKE_SOURCE_DIR}/lib/glad/src/*.c"
+    "${CMAKE_SOURCE_DIR}/lib/imgui/imgui/*.cpp"
 )
 
 # popcap...WHYYYY
@@ -87,39 +86,41 @@ if(WIN32)
     )
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(AVCODEC REQUIRED libavcodec)
-    pkg_check_modules(AVDEVICE REQUIRED libavdevice)
-    pkg_check_modules(AVFORMAT REQUIRED libavformat)
-    pkg_check_modules(AVUTIL REQUIRED libavutil)
-    pkg_check_modules(SWRESAMPLE REQUIRED libswresample)
-    pkg_check_modules(SWSCALE REQUIRED libswscale)
-
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        ${AVCODEC_INCLUDE_DIRS}
-        ${AVDEVICE_INCLUDE_DIRS}
-        ${AVFORMAT_INCLUDE_DIRS}
-        ${AVUTIL_INCLUDE_DIRS}
-        ${SWRESAMPLE_INCLUDE_DIRS}
-        ${SWSCALE_INCLUDE_DIRS}
-    )
-
-    target_link_libraries(${PROJECT_NAME} PUBLIC
-        ${AVCODEC_LIBRARIES}
-        ${AVDEVICE_LIBRARIES}
-        ${AVFORMAT_LIBRARIES}
-        ${AVUTIL_LIBRARIES}
-        ${SWRESAMPLE_LIBRARIES}
-        ${SWSCALE_LIBRARIES}
-    )
-
-    find_library(BASS_LIBRARY NAMES bass)
-    if(BASS_LIBRARY)
-        target_link_libraries(${PROJECT_NAME} PUBLIC ${BASS_LIBRARY})
-    else()
-        message(WARNING "BASS library not found by CMake! Falling back to linking dynamically to 'bass'.")
-        target_link_libraries(${PROJECT_NAME} PUBLIC bass)
-    endif()
+    # PISTON_PATCH - changed library organization and won't test on Linux
+    message(FATAL_ERROR "Linux builds currently not supported")
+    # find_package(PkgConfig REQUIRED)
+    # pkg_check_modules(AVCODEC REQUIRED libavcodec)
+    # pkg_check_modules(AVDEVICE REQUIRED libavdevice)
+    # pkg_check_modules(AVFORMAT REQUIRED libavformat)
+    # pkg_check_modules(AVUTIL REQUIRED libavutil)
+    # pkg_check_modules(SWRESAMPLE REQUIRED libswresample)
+    # pkg_check_modules(SWSCALE REQUIRED libswscale)
+    #
+    # target_include_directories(${PROJECT_NAME} PUBLIC
+    #     ${AVCODEC_INCLUDE_DIRS}
+    #     ${AVDEVICE_INCLUDE_DIRS}
+    #     ${AVFORMAT_INCLUDE_DIRS}
+    #     ${AVUTIL_INCLUDE_DIRS}
+    #     ${SWRESAMPLE_INCLUDE_DIRS}
+    #     ${SWSCALE_INCLUDE_DIRS}
+    # )
+    #
+    # target_link_libraries(${PROJECT_NAME} PUBLIC
+    #     ${AVCODEC_LIBRARIES}
+    #     ${AVDEVICE_LIBRARIES}
+    #     ${AVFORMAT_LIBRARIES}
+    #     ${AVUTIL_LIBRARIES}
+    #     ${SWRESAMPLE_LIBRARIES}
+    #     ${SWSCALE_LIBRARIES}
+    # )
+    #
+    # find_library(BASS_LIBRARY NAMES bass)
+    # if(BASS_LIBRARY)
+    #     target_link_libraries(${PROJECT_NAME} PUBLIC ${BASS_LIBRARY})
+    # else()
+    #     message(WARNING "BASS library not found by CMake! Falling back to linking dynamically to 'bass'.")
+    #     target_link_libraries(${PROJECT_NAME} PUBLIC bass)
+    # endif()
 endif()
 
 # PISTON_PATCH changed lib organization
@@ -169,8 +170,15 @@ add_dependencies(${PROJECT_NAME} build_info)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/lib/bass/include"
     # PISTON_PATCH: changed lib organization
+    "${CMAKE_SOURCE_DIR}/lib/bass/include"
+    "${CMAKE_SOURCE_DIR}/lib/utf8/include"
+    "${CMAKE_SOURCE_DIR}/lib/glad/include"
+    "${CMAKE_SOURCE_DIR}/lib/au_reader/include" # note: not sure where this header is from
+    "${CMAKE_SOURCE_DIR}/lib/dr_libs/include"
+    "${CMAKE_SOURCE_DIR}/lib/EGL-Registry/include"
+    "${CMAKE_SOURCE_DIR}/lib/imgui"
+    "${CMAKE_SOURCE_DIR}/lib/json/include"
     # "${CMAKE_SOURCE_DIR}/thirdparty/src"
 )
 
