@@ -82,6 +82,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${EXPORT_DIR}"
     RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${EXPORT_DIR}"
 )
+# PISTON_PATCH: changed lib organization
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "${CMAKE_SOURCE_DIR}/lib/bass/include"
+)
 
 # PISTON_PATCH: we are building assets separately
 # Assets
@@ -93,29 +97,25 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 #         -P "${CMAKE_SOURCE_DIR}/cmake/sync_assets.cmake"
 #         COMMENT ""
 # )
+
+# PISTON_PATCH: we are packaging libraries ourselves
 # DLL
-
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x64")
-else()
-    set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x86")
-endif()
-
-set(DLLS_TO_COPY
-    bass.dll
-    avcodec-61.dll
-    avdevice-61.dll
-    avformat-61.dll
-    avutil-59.dll
-    swresample-5.dll
-    swscale-8.dll
-)
-
-foreach(DLL ${DLLS_TO_COPY})
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${THIRDPARTY_DIR}/${DLL}"
-            "${EXPORT_DIR}"
-            COMMENT ""
-    )
-endforeach()
+#
+# if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+#     set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x64")
+# else()
+#     set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x86")
+# endif()
+#
+# set(DLLS_TO_COPY
+#     bass.dll
+# )
+#
+# foreach(DLL ${DLLS_TO_COPY})
+#     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#             "${THIRDPARTY_DIR}/${DLL}"
+#             "${EXPORT_DIR}"
+#             COMMENT ""
+#     )
+# endforeach()

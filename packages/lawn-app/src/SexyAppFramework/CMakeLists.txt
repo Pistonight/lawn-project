@@ -68,21 +68,22 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ImageLib
     PakLib
 )
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x64")
-else()
-    set(THIRDPARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty/x86")
-endif()
 
 if(WIN32)
+    find_library(AVCODEC_LIBRARY avcodec)
+    find_library(AVDEVICE_LIBRARY avdevice)
+    find_library(AVFORMAT_LIBRARY avformat)
+    find_library(AVUTIL_LIBRARY avutil)
+    find_library(SWRESAMPLE_LIBRARY swresample)
+    find_library(SWSCALE_LIBRARY swresample)
     target_link_libraries(${PROJECT_NAME} PUBLIC
-        bass.lib
-        avcodec.lib
-        avdevice.lib
-        avformat.lib
-        avutil.lib
-        swresample.lib
-        swscale.lib
+        ${CMAKE_SOURCE_DIR}/lib/bass/lib/bass.lib
+        ${AVCODEC_LIBRARY}
+        ${AVDEVICE_LIBRARY}
+        ${AVFORMAT_LIBRARY}
+        ${AVUTIL_LIBRARY}
+        ${SWRESAMPLE_LIBRARY}
+        ${SWSCALE_LIBRARY}
     )
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -121,9 +122,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     endif()
 endif()
 
-target_link_directories(${PROJECT_NAME} PUBLIC
-    ${THIRDPARTY_DIR}
-)
+# PISTON_PATCH changed lib organization
+# target_link_directories(${PROJECT_NAME} PUBLIC
+#     ${THIRDPARTY_DIR}
+# )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:Debug>:DEBUG>
@@ -167,7 +169,9 @@ add_dependencies(${PROJECT_NAME} build_info)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/thirdparty/src"
+    "${CMAKE_SOURCE_DIR}/lib/bass/include"
+    # PISTON_PATCH: changed lib organization
+    # "${CMAKE_SOURCE_DIR}/thirdparty/src"
 )
 
 

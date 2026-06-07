@@ -1140,7 +1140,7 @@ void LawnApp::DoConfirmSellDialog(const SexyString &theMessage)
 
 void LawnApp::DoConfirmPurchaseDialog(const SexyString &theMessage)
 {
-	// PISTON_PATCH
+	// PISTON_PATCH chinese characters
 	LawnDialog *aComfirmDialog = (LawnDialog *)DoDialog(
 		Dialogs::DIALOG_STORE_PURCHASE, true, "[BUY_ITEM_HEADER]", theMessage, "", Dialog::BUTTONS_YES_NO);
 	aComfirmDialog->mLawnYesButton->mLabel = TodStringTranslate("[DIALOG_BUTTON_YES]");
@@ -1389,16 +1389,17 @@ void LawnApp::Init()
 	TodTraceAndLog("[LawnProject] - loading: 'system' %d ms", aDuration);
 #endif
 
-    // PISTON_PATCH moved to TitleScreen
-	//mTimer.Start();
-	//ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
-	//ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
-	//ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
+#ifndef PISTON_PATCH // PISTON_PATCH moved to TitleScreen
+    mTimer.Start();
+    ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
+    ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
+    ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
 
-//#ifdef _DEBUG
-	//aDuration = mTimer.GetDuration();
-	//TodTraceAndLog("[LawnProject] - loading: 'loaderbar' %d ms", aDuration);
-//#endif
+#ifdef _DEBUG
+    aDuration = mTimer.GetDuration();
+    TodTraceAndLog("[LawnProject] - loading: 'loaderbar' %d ms", aDuration);
+#endif
+#endif
 	mTimer.Start();
 }
 
@@ -1429,8 +1430,9 @@ bool LawnApp::DebugKeyDown(int theKey)
 			mDebugWindow->mEnabled = !mDebugWindow->mEnabled;
 		mDebuggerEnabled = mDebugWindow->mEnabled;
 #endif
-	// PISTON_PATCH	
+#ifdef PISTON_PATCH
         return true;
+#endif
 	}
 	else
 		return SexyAppBase::DebugKeyDown(theKey);
@@ -1816,12 +1818,14 @@ void LawnApp::LoadingThreadProc()
 	TodStringListLoad("properties/LawnStrings.txt");
 	TodStringListLoad("properties/ZombatarTOS.txt");
 	TodStringListLoad("properties/FrameworkStrings.txt");
-	// PISTON_PATCH
+
+#ifdef PISTON_PATCH // PISTON_PATCH load extra strings and perf
 	TodStringListLoad("properties/ModStrings.txt");
 	TodStringListLoad("properties/ExtraLawnStrings.txt");
     ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
 	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
 	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
+#endif
 
 	if (mTitleScreen)
 	{

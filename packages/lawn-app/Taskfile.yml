@@ -8,34 +8,36 @@ includes:
 
 tasks:
   configure:
-    cmds:
-      - task: configure-clang
-      - task: configure-msvc
-  configure-clang:
+    # Hack to use Ninja generator to generate compile_commands.json for clangd
+    - rm build/CMakeCache.txt
     - >
       cmake --preset=windows-msvc-x64
       -B build -G Ninja
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
       -DCMAKE_BUILD_TYPE=Debug
     - rm build/CMakeCache.txt
-  configure-msvc:
+    # use MSVC to generate the actual configs
     - >
       cmake --preset=windows-msvc-x64
       -B build -G "Visual Studio 18 2026"
 
   build:
-    vars:
-      NPROC:
-        sh: nproc
-    cmds:
-      - cmake --build build --config Debug -- /m:{{.NPROC}}
+    - task: do-build
+      vars:
+        CONFIG: Debug
+  build-rel:
+    - task: do-build
+      vars:
+        CONFIG: Release
 
-  build-release:
+  do-build:
+    internal: true
     vars:
-      NPROC:
+      THREADS:
         sh: nproc
     cmds:
-      - cmake --build build --config Release -- /m:{{.NPROC}}
+      - cmake --build build --config {{.CONFIG}} -- /m:{{.THREADS}}
+      - cp lib/bass/bin/bass.dll Export
 
   build-assets:
     - task: assets:build
