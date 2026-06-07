@@ -1,2 +1,5 @@
 /target
 /mono-dev
+.task
+.cache
+/build

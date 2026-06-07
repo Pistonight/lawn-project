@@ -1,2 +1,2 @@
-[KEEP]
-temporary so the file is kept
+[PISTON_SETTINGS_ALLOW_BACKGROUND_PLAY]
+Allow Background Play

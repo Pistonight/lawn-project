@@ -2,21 +2,32 @@ version: '3'
 
 tasks:
   build:
-    - silent: true
-      cmd: >
-        cp -R ../pvz-assets/properties ../lawn-app/Export;
-        echo '==> building pvz-pakc';
-        cargo build --release --bin pvz-pakc;
-        cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main.pak main;
-        echo '==> copy mod assets';
-        mv main/properties/LawnStrings.txt main/LawnStrings.txt;
-        mv main/properties/resources.xml main/resources.xml;
-        cp -R mod main;
-        echo '==> patch LawnStrings';
-        mv main/LawnStrings.txt main/properties/LawnStrings.txt;
-        python change-strings.py;
-        echo '==> patch resources.xml';
-        mv main/resources.xml main/properties/resources.xml;
-        python add-resources.py;
-        cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
-        cp main.pak ../lawn-app/Export;
+    sources:
+      - 'mod/**/*'
+      - ../pvz-assets/main.pak
+      - ../pvz-assets/properties/**
+      - '*.py'
+      - Taskfile.yml
+    generates:
+      - main.pak
+      - ../lawn-app/exports/main.pak
+    cmds:
+      - silent: true
+        cmd: >
+          echo '==> building pvz-pakc';
+          cargo build --release --bin pvz-pakc;
+          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main.pak main;
+          mkdir -p main/properties;
+          cp -R ../pvz-assets/properties main/properties;
+          echo '==> copy mod assets';
+          mv main/properties/LawnStrings.txt main/LawnStrings.txt;
+          mv main/properties/resources.xml main/resources.xml;
+          cp -R mod main;
+          echo '==> patch LawnStrings';
+          mv main/LawnStrings.txt main/properties/LawnStrings.txt;
+          python change-strings.py;
+          echo '==> patch resources.xml';
+          mv main/resources.xml main/properties/resources.xml;
+          python add-resources.py;
+          cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
+          cp main.pak ../lawn-app/export;
