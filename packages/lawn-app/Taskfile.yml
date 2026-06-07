@@ -9,26 +9,33 @@ includes:
 tasks:
   configure:
     cmds:
-      - task: configure-ninja
+      - task: configure-clang
       - task: configure-msvc
-  configure-ninja:
-    - cmake --preset=windows-x64-debug-msvc -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  configure-clang:
+    - >
+      cmake --preset=windows-msvc-x64
+      -B build -G Ninja
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      -DCMAKE_BUILD_TYPE=Debug
+    - rm build/CMakeCache.txt
   configure-msvc:
-    - cmake --preset=windows-x64-debug-msvc -B build-msvc -G "Visual Studio 18 2026"
+    - >
+      cmake --preset=windows-msvc-x64
+      -B build -G "Visual Studio 18 2026"
 
   build:
     vars:
       NPROC:
         sh: nproc
     cmds:
-      - cmake --build build-msvc --config Debug -- /m:{{.NPROC}}
+      - cmake --build build --config Debug -- /m:{{.NPROC}}
 
   build-release:
     vars:
       NPROC:
         sh: nproc
     cmds:
-      - cmake --build build-msvc --config Release -- /m:{{.NPROC}}
+      - cmake --build build --config Release -- /m:{{.NPROC}}
 
   build-assets:
     - task: assets:build
@@ -37,4 +44,4 @@ tasks:
     - cd Export && ./LawnProject.exe
 
   clean:
-    - rm -rf build build-msvc Export
+    - rm -rf build Export

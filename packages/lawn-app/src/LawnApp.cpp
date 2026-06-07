@@ -139,9 +139,13 @@ LawnApp::LawnApp()
 	mTodCheatKeys = false;
 
 	mProdName = "PlantsVsZombies";
-	std::string aTitleName = "Plants vs. Zombies";
+    std::string aTitleName = "Plants vs. Zombies";
+#ifdef PISTON_PATCH
+	aTitleName += StrFormat(" PISTON EDITION %s ", gVersion.toString().c_str());
+#else
 #ifdef _DEBUG
 	aTitleName += StrFormat(" BETA %s ", gVersion.toString().c_str());
+#endif
 #endif
 
 	mTitle = aTitleName;
