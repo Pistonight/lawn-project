@@ -9,7 +9,7 @@ includes:
 tasks:
   configure:
     # Hack to use Ninja generator to generate compile_commands.json for clangd
-    - rm build/CMakeCache.txt
+    - rm -f build/CMakeCache.txt
     - >
       cmake --preset=windows-msvc-x64
       -B build -G Ninja
@@ -37,13 +37,13 @@ tasks:
         sh: nproc
     cmds:
       - cmake --build build --config {{.CONFIG}} -- /m:{{.THREADS}}
-      - cp lib/bass/bin/bass.dll Export
+      - cp lib/bass/bin/bass.dll export
 
   build-assets:
     - task: assets:build
 
   run:
-    - cd Export && ./LawnProject.exe
+    - cd export && ./LawnProject.exe
 
   clean:
-    - rm -rf build Export
+    - rm -rf build export

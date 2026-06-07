@@ -73,7 +73,7 @@ foreach(FILE_PATH IN LISTS SOURCES)
     source_group("${GROUP_NAME}" FILES "${FILE_PATH}")
 endforeach()
 
-set(EXPORT_DIR "${CMAKE_SOURCE_DIR}/Export")
+set(EXPORT_DIR "${CMAKE_SOURCE_DIR}/export")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${EXPORT_DIR}"

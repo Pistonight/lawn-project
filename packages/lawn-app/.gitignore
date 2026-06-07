@@ -9,16 +9,10 @@ out/
 .vs/
 crash.txt
 
-Export/
+/export/
 assets/base
 /assets/main.pak
 /pseudocode
 
-/mainpak/main.unpack
-/mainpak/main.pak
 /data
 /logs
-
-# temporary not commit binaries until we figure out what to do
-/thirdparty/x64
-/thirdparty/x86
