@@ -10,7 +10,7 @@ tasks:
       - Taskfile.yml
     generates:
       - main.pak
-      - ../lawn-app/exports/main.pak
+      - ../lawn/export/main.pak
     cmds:
       - silent: true
         cmd: >
@@ -30,4 +30,5 @@ tasks:
           mv main/resources.xml main/properties/resources.xml;
           python add-resources.py;
           cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
-          cp main.pak ../lawn-app/export;
+          mkdir -p ../lawn/export;
+          cp main.pak ../lawn/export;

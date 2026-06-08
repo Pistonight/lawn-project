@@ -38,13 +38,13 @@ tasks:
   do-build:
     internal: true
     cmds:
-      - txtpp -rN src/Piston
+      # - txtpp -rN src/Piston
       - python build.py {{.BUILD_ROOT}} {{.CONFIG}}
       - cp ../lawn-libs/bass/bin/bass.dll export
       - task: assets:build
 
   run:
-    - cd export && ./LawnProject.exe
+    - cd export && ./PlantsVzZombies.exe
 
   clean:
     - rm -rf {{.BUILD_ROOT}} export

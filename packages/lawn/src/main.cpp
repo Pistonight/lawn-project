@@ -1,11 +1,6 @@
-#include "LawnApp.h"
-// PISTON_PATCH
-// #include "Resources.h"
-#include "Sexy.TodLib/TodStringFile.h"
-// PISTON_PATCH use WinMain to hide terminal
 #include <windows.h>
-
-using namespace Sexy;
+#include <LawnProject/LawnApp.h>
+#include <Sexy.TodLib/TodStringFile.h>
 
 bool (*gAppCloseRequest)();
 bool (*gAppHasUsedCheatKeys)();

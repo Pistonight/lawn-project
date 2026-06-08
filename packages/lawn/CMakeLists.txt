@@ -1,6 +1,6 @@
 # CMakeLists.txt
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
-project(ResoddedFramework LANGUAGES C CXX)
+# project(ResoddedFramework LANGUAGES C CXX)
 
 project(PlantsVzZombies)
 
@@ -31,7 +31,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_USE_FOLDERS ON)
 
 # PISTON_PATCH library reorganization
-add_subdirectory(../lawn-game lawn-game)
+add_subdirectory(../lawn-resodded lawn-resodded)
 add_subdirectory(../lawn-sexy lawn-sexy)
 add_subdirectory(../lawn-imagelib lawn-imagelib)
 add_subdirectory(../lawn-paklib lawn-paklib)

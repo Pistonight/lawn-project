@@ -40,9 +40,9 @@ find_package(Ogg CONFIG REQUIRED)
 find_package(Vorbis CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(Freetype REQUIRED)
-if (SEXY_CRASH_HANDLER)
+# if (SEXY_CRASH_HANDLER)
 find_package(cpptrace CONFIG REQUIRED)
-endif()
+# endif()
 find_package(CURL CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC 
     SDL3::SDL3
@@ -53,7 +53,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Freetype::Freetype
     Vorbis::vorbisfile
     Vorbis::vorbis
-    $<$<BOOL:${SEXY_CRASH_HANDLER}>:cpptrace::cpptrace>
+    cpptrace::cpptrace
+    # $<$<BOOL:${SEXY_CRASH_HANDLER}>:cpptrace::cpptrace>
     CURL::libcurl
     ImageLib
     PakLib
@@ -68,7 +69,7 @@ if(WIN32)
     find_library(SWRESAMPLE_LIBRARY swresample)
     find_library(SWSCALE_LIBRARY swresample)
     target_link_libraries(${PROJECT_NAME} PUBLIC
-        ${CMAKE_SOURCE_DIR}/lib/bass/lib/bass.lib
+        ${CMAKE_SOURCE_DIR}/../lawn-libs/bass/lib/bass.lib
         ${AVCODEC_LIBRARY}
         ${AVDEVICE_LIBRARY}
         ${AVFORMAT_LIBRARY}
