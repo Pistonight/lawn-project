@@ -2,6 +2,7 @@
 #define __SEEDPACKET_H__
 
 #include <LawnProject/GameConstants.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include "GameObject.h"
 
 constexpr const int SLOT_MACHINE_TIME = 400;

@@ -32,6 +32,7 @@ set(CMAKE_USE_FOLDERS ON)
 
 # PISTON_PATCH library reorganization
 add_subdirectory(../lawn-resodded lawn-resodded)
+add_subdirectory(../lawn-tod lawn-tod)
 add_subdirectory(../lawn-sexy lawn-sexy)
 add_subdirectory(../lawn-imagelib lawn-imagelib)
 add_subdirectory(../lawn-paklib lawn-paklib)

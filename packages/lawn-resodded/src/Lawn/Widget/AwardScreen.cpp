@@ -7,11 +7,11 @@
 #include <Lawn/System/PlayerInfo.h>
 #include <Lawn/System/Achievements.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include "GameButton.h"
 #include "StoreScreen.h"
 #include "AlmanacDialog.h"

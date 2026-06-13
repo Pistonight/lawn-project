@@ -2,8 +2,9 @@
 #ifdef _WIN32
 #include <ShlObj_core.h>
 #endif
-#include <LawnProject/Resources.h>
+#include <Lawn/LawnCommon.h>
 #include <LawnProject/LawnApp.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/Checkbox.h>

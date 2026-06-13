@@ -2,6 +2,7 @@
 #define __CREDITSCREEN_H__
 
 #include <LawnProject/ConstEnums.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include <SexyAppFramework/Widget.h>
 #include <SexyAppFramework/PerfTimer.h>
 #include <SexyAppFramework/ButtonListener.h>

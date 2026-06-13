@@ -1,6 +1,5 @@
 #include "Challenge.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodDebug.h>
 #include <Sexy.TodLib/TodFoley.h>
@@ -8,10 +7,12 @@
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodParticle.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/MTRand.h>
 #include <SexyAppFramework/WidgetManager.h>
+#include "LawnCommon.h"
 #include "Coin.h"
 #include "Board.h"
 #include "Plant.h"

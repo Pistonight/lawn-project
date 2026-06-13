@@ -2,6 +2,7 @@
 #define __MESSAGEWIDGET_H__
 
 #include <LawnProject/ConstEnums.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/Color.h>
 

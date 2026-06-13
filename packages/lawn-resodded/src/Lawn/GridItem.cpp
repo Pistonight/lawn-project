@@ -1,9 +1,9 @@
 #include "GridItem.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodParticle.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/WidgetManager.h>
 #include "Board.h"
 #include "Challenge.h"

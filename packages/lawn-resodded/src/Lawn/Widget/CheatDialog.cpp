@@ -2,8 +2,8 @@
 #include <Lawn/LawnCommon.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/WidgetManager.h>
 #include "ChallengeScreen.h"
 

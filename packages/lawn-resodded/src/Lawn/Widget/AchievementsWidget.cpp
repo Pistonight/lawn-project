@@ -3,8 +3,8 @@
 #include <Lawn/System/PlayerInfo.h>
 #include <LawnProject/LawnApp.h>
 #include <LawnProject/GameConstants.h>
-#include <LawnProject/Resources.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/WidgetManager.h>
 #include "GameSelector.h"
 

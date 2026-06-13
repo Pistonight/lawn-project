@@ -1,6 +1,7 @@
 #ifndef __ALMANACDIALOG_H__
 #define __ALMANACDIALOG_H__
 
+#include <LawnProject/ConstEnums.h>
 #include "LawnDialog.h"
 
 #define NUM_ALMANAC_SEEDS 49
@@ -21,6 +22,7 @@ class Plant;
 class Zombie;
 class LawnApp;
 class GameButton;
+class LawnScrollbar;
 class Reanimation;
 class AlmanacDialog : public LawnDialog
 {

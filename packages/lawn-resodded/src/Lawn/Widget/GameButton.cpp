@@ -1,8 +1,8 @@
 #include "GameButton.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/SysFont.h>
 #include <SexyAppFramework/Graphics.h>

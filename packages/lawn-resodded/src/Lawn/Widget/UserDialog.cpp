@@ -1,6 +1,6 @@
 #include "UserDialog.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
+#include <Piston/TodLib/Resources.h>
 #include <Lawn/System/ProfileMgr.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <Sexy.TodLib/TodStringFile.h>

@@ -1,6 +1,7 @@
 #ifndef __COIN_H__
 #define __COIN_H__
 
+#include <Sexy.TodLib/TodConstants.h>
 #include "GameObject.h"
 #include "System/PlayerInfo.h"
 

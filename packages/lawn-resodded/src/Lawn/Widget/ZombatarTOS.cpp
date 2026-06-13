@@ -1,7 +1,8 @@
 #include "ZombatarTOS.h"
+#include <Lawn/LawnCommon.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
+#include <Piston/TodLib/Resources.h>
 #include <Sexy.TodLib/TodStringFile.h>
 #include <SexyAppFramework/Slider.h>
 #include <SexyAppFramework/Checkbox.h>

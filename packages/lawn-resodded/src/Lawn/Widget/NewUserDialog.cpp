@@ -1,7 +1,9 @@
 #include "NewUserDialog.h"
+#include <Lawn/LawnCommon.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/WidgetManager.h>
+#include <SexyAppFramework/EditWidget.h>
 
 //0x45D610
 NewUserDialog::NewUserDialog(LawnApp *theApp, bool isRename)

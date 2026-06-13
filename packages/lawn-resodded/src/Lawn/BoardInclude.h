@@ -12,7 +12,6 @@
 #include "LawnMower.h"
 #include "SeedPacket.h"
 #include "Projectile.h"
-#include "ResourceInclude.h"
 #include "CursorObject.h"
 #include "ToolTipWidget.h"
 #include "MessageWidget.h"

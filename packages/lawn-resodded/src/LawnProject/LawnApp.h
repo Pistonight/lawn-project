@@ -2,6 +2,7 @@
 #define __LAWNAPP_H__
 
 #include "ConstEnums.h"
+#include <Sexy.TodLib/TodConstants.h>
 #include <SexyAppFramework/SexyApp.h>
 #include <Piston/Sexy/Upscale.h>
 
@@ -390,9 +391,6 @@ bool LawnGetCloseRequest();
 bool LawnHasUsedCheatKeys();
 void BetaSubmitFunc();
 
-extern bool (*gAppCloseRequest)();	   //[0x69E6A0]
-extern bool (*gAppHasUsedCheatKeys)(); //[0x69E6A4]
-extern SexyString (*gGetCurrentLevelName)();
 
 extern bool gIsPartnerBuild;
 extern bool gFastMo;	   //0x6A9EAB

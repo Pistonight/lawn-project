@@ -6,6 +6,7 @@
 #include "GameConstants.h"
 #include "Lawn/Challenge.h"
 #include "Lawn/ZenGarden.h"
+#include "Resodded/FrameworkResources.h"
 #include "Piston/Sexy/Upscale.h"
 #include "Sexy.TodLib/Trail.h"
 #include "Lawn/System/Music.h"
@@ -16,7 +17,6 @@
 #include "Lawn/System/PlayerInfo.h"
 #include "Lawn/System/PoolEffect.h"
 #include "Lawn/System/ProfileMgr.h"
-#include "Lawn/System/PopDRMComm.h"
 #include "Lawn/Widget/GameButton.h"
 #include "Sexy.TodLib/Reanimator.h"
 #include "Lawn/Widget/UserDialog.h"
@@ -44,7 +44,6 @@
 #include "Lawn/Widget/SeedChooserScreen.h"
 
 #include "Lawn/ResoddedFramework/SettingsDialog.h"
-#include "Lawn/ResourceInclude.h"
 
 #include "SexyAppFramework/WidgetManager.h"
 #include "SexyAppFramework/ResourceManager.h"

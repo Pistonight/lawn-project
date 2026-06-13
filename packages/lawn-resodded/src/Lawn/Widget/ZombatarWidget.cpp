@@ -2,7 +2,7 @@
 #include <imagelib/ImageLib.h>
 #include <LawnProject/LawnApp.h>
 #include <LawnProject/GameConstants.h>
-#include <LawnProject/Resources.h>
+#include <Piston/TodLib/Resources.h>
 #include <Lawn/Zombie.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodStringFile.h>

@@ -1,22 +1,17 @@
 #pragma once
 
-#ifdef PISTON_PATCH
 #include <Lawn/Widget/LawnDialog.h>
 #include <Lawn/Widget/GameButton.h>
 #include <SexyAppFramework/CheckboxListener.h>
 #include <SexyAppFramework/ListListener.h>
-#else
-#include "../Widget/LawnDialog.h"
-#include "../Widget/GameButton.h"
-#include "../../SexyAppFramework/CheckboxListener.h"
-#include "../../SexyAppFramework/ListListener.h"
-#endif
 
 class LawnApp;
 namespace Sexy
 {
 class ListWidget;
 };
+
+class LawnScrollbar;
 
 struct LawnWindowSizePreset
 {

@@ -1,8 +1,8 @@
 #include "LawnCommon.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodCommon.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/SexyMatrix.h>

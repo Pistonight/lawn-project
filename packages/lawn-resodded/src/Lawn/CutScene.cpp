@@ -1,6 +1,5 @@
 #include "Cutscene.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodCommon.h>
@@ -8,6 +7,7 @@
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodParticle.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/PerfTimer.h>
 #include <SexyAppFramework/WidgetManager.h>
 #include "Board.h"

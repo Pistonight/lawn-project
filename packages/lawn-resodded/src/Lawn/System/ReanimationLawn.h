@@ -2,6 +2,7 @@
 #define __REANIMATORCACHE_H__
 
 #include <LawnProject/ConstEnums.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include <Sexy.TodLib/TodList.h>
 
 namespace Sexy

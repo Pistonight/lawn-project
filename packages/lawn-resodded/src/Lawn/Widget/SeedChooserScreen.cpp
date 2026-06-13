@@ -7,11 +7,10 @@
 #include <Lawn/ToolTipWidget.h>
 #include <Lawn/System/Music.h>
 #include <Lawn/System/PlayerInfo.h>
-#include <Lawn/System/PopDRMComm.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/MTRand.h>

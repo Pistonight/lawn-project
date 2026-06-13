@@ -1,10 +1,11 @@
 #include "ContinueDialog.h"
+#include <Lawn/LawnCommon.h>
 #include <Lawn/Board.h>
 #include <Lawn/Zombie.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include "GameButton.h"
 
 //0x4330D0

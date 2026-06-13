@@ -1,9 +1,9 @@
 #include "Achievements.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <Lawn/Board.h>
 #include <Lawn/Widget/GameSelector.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include "PlayerInfo.h"
 
 AchievementDefinition gAchievementDefs[NUM_ACHIEVEMENT_TYPES] = {

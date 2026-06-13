@@ -4,6 +4,10 @@
 #include <SexyAppFramework/EditListener.h>
 #include "LawnDialog.h"
 
+namespace Sexy {
+class EditWidget;
+}
+
 class NewUserDialog : public LawnDialog, public EditListener
 {
   public:

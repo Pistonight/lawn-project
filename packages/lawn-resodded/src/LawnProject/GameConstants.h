@@ -1,13 +1,10 @@
 #pragma once
 
-#include "ConstEnums.h"
-constexpr const double PI = 3.141592653589793;
+// #include "ConstEnums.h"
 
 // ============================================================
 // * General Constants
 // ============================================================
-const int BOARD_WIDTH = 800;
-const int BOARD_HEIGHT = 600;
 const int WIDE_BOARD_WIDTH = 800;
 const int BOARD_OFFSET = 220;
 const int BOARD_EDGE = -100;

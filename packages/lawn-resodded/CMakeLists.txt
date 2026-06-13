@@ -6,15 +6,6 @@ add_library(${PROJECT_NAME} STATIC)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
-# popcap...WHYYYY
-set(EXCLUDE_FILES
-    "Sexy.TodLib/TodDrawTriangle.cpp"
-    "Sexy.TodLib/TodDrawTriangleInc.cpp"
-)
-
-foreach(EXCLUDED_FILE IN LISTS EXCLUDE_FILES)
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/${EXCLUDED_FILE}")
-endforeach()
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Include Paths
@@ -25,6 +16,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Libraries
 target_link_libraries(${PROJECT_NAME} PUBLIC
     SexyAppFramework
+    TodLib
 )
 
 # Defines

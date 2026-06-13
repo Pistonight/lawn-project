@@ -1,6 +1,7 @@
 #include "BoardInclude.h"
 #include <cmath>
 #include <bass.h>
+#include <Resodded/FrameworkResources.h>
 #include <Sexy.TodLib/Trail.h>
 #include <Sexy.TodLib/TodDebug.h>
 #include <Sexy.TodLib/TodFoley.h>
@@ -22,7 +23,6 @@
 #include "Widget/LawnDialog.h"
 #include "System/PlayerInfo.h"
 #include "System/PoolEffect.h"
-#include "System/PopDRMComm.h"
 #include "System/TypingCheck.h"
 #include "System/Achievements.h"
 #include "System/Music.h"

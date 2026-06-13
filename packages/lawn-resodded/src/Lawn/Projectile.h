@@ -2,6 +2,7 @@
 #define __PROJECTILE_H__
 
 #include <LawnProject/ConstEnums.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include "GameObject.h"
 
 class Plant;

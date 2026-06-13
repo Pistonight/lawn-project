@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <Sexy.TodLib/TodConstants.h>
 #include "GameObject.h"
 
 #define MAX_MAGNET_ITEMS 5

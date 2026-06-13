@@ -1,10 +1,10 @@
 #include "MessageWidget.h"
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <SexyAppFramework/Font.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include "Board.h"
 #include "Challenge.h"
 

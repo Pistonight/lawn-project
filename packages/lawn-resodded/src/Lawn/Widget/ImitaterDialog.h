@@ -1,6 +1,7 @@
 #ifndef __IMITATERDIALOG_H__
 #define __IMITATERDIALOG_H__
 
+#include <LawnProject/ConstEnums.h>
 #include "LawnDialog.h"
 
 class ToolTipWidget;

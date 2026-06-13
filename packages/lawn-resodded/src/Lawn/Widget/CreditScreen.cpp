@@ -3,7 +3,6 @@
 #include <Lawn/System/Music.h>
 #include <Lawn/System/PoolEffect.h>
 #include <LawnProject/LawnApp.h>
-#include <LawnProject/Resources.h>
 #include <LawnProject/GameConstants.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/Attachment.h>
@@ -11,6 +10,7 @@
 #include <Sexy.TodLib/TodParticle.h>
 #include <Sexy.TodLib/EffectSystem.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <Piston/TodLib/Resources.h>
 #include <SexyAppFramework/Dialog.h>
 #include "GameButton.h"
 

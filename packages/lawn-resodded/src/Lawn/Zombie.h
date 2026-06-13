@@ -2,6 +2,7 @@
 #define __ZOMBIE_H__
 
 #include <LawnProject/GameConstants.h>
+#include <Sexy.TodLib/TodConstants.h>
 #include <Lawn/System/PlayerInfo.h>
 #include "GameObject.h"
 
