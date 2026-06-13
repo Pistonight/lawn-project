@@ -97,6 +97,10 @@ void Renderer::RemoveImage(Image *theImage)
 		mImageSet.erase(anItr);
 }
 
+#ifdef PISTON_PATCH
+piston::Upscaler* Renderer::GetUpscaler() { return nullptr; }
+#endif
+
 TextureData::TextureData()
 {
 	mWidth = 0;

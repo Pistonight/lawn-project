@@ -844,6 +844,10 @@ void SDL3Renderer::BltRawTexture(void *theTexture, int theTexWidth, int theTexHe
 	SDL_SetRenderTarget(mBackendRenderer, nullptr);
 }
 
+#ifdef PISTON_PATCH
+piston::Upscaler* SDL3Renderer::GetUpscaler() { return nullptr; }
+#endif
+
 bool SDL3Renderer::TestSDL3()
 {
 	int aNumRenderers = SDL_GetNumRenderDrivers();

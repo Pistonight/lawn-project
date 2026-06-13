@@ -1305,6 +1305,12 @@ void OpenGLRenderer::BltRawTexture(void *theTexture,
 	AddCommand(aCmd);
 }
 
+#ifdef PISTON_PATCH
+piston::Upscaler* OpenGLRenderer::GetUpscaler() {
+    return &mUpscaler;
+}
+#endif
+
 bool OpenGLRenderer::TestOpenGL(SDL_Window *theWindow)
 {
 	SDL_GLContext theContext = SDL_GL_CreateContext(theWindow);

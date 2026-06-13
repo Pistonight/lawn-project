@@ -102,6 +102,21 @@ SettingsDialog::SettingsDialog(LawnApp *theApp)
 	}
 	mSizesList->AddLine("Custom", false);
 	mSizesList->SetSelect(aSelectedIndex);
+
+    const auto* aUpscaler = mApp->mRenderer->GetUpscaler();
+    if (aUpscaler) {
+        mShaderList = new ListWidget(SETTINGS_SHADER, Sexy::FONT_PICO129, this);
+        mShaderList->SetColors(gUserListWidgetColors, LENGTH(gUserListWidgetColors));
+        mShaderList->mDrawOutline = true;
+        mShaderList->mJustify = ListWidget::JUSTIFY_CENTER;
+        mShaderList->mItemHeight = 24;
+        mShaderList->AddLine("Nearest", false);
+        mShaderList->AddLine("Bilinear", false);
+        mShaderList->AddLine("FSR", false);
+        int aSelectedShader = static_cast<int>(mApp->GetUpscaleMode());
+        mShaderList->SetSelect(aSelectedShader);
+    }
+
 	CalcSize(211, 214);
 }
 
@@ -115,13 +130,14 @@ SettingsDialog::~SettingsDialog()
 	delete mHighQualityCheckbox;
 	delete mRendererList;
 	delete mSizesList;
+    delete mShaderList;
 }
 
 void SettingsDialog::Draw(Graphics* g)
 {
 	LawnDialog::Draw(g);
 
-	int aMaxContentHeight = 800;
+	int aMaxContentHeight = 250;
 	float aMaxScroll = std::max(0.0f, (float)aMaxContentHeight - mOptionsSlider->mAllowedMouseZone.mHeight);
 
 	float aScrollOffset = mOptionsSlider->GetValue() * aMaxScroll;
@@ -130,6 +146,12 @@ void SettingsDialog::Draw(Graphics* g)
 	g->Translate(mApplyButton->mX, mApplyButton->mY);
 	mApplyButton->Draw(g);
 	g->PopState();
+
+	g->PushState();
+	g->Translate(mSaveFileButton->mX, mSaveFileButton->mY);
+	mSaveFileButton->Draw(g);
+	g->PopState();
+
 	g->PushState();
 	g->SetClipRect(Rect(mOptionsSlider->mAllowedMouseZone.mX - mX,
 						mOptionsSlider->mAllowedMouseZone.mY - mY,
@@ -137,94 +159,26 @@ void SettingsDialog::Draw(Graphics* g)
 						mOptionsSlider->mAllowedMouseZone.mHeight));
 	g->Translate(35, 120 - aScrollOffset);
 
+    int aScroll = aScrollOffset - GetTop();
+    int aX = 0;
 	int aY = 0;
 
-	TodDrawString(g, "[SETTINGS_VIDEO]", 20, 20 + aY, Sexy::FONT_BRIANNETOD12, Color::White, DrawStringJustification::DS_ALIGN_LEFT);
+    DrawCheckbox(g, 40 + aX, aY, aScroll, *mVSyncCheckbox, "[SETTINGS_VSYNC]");
+    aX += 120;
+    DrawCheckbox(g, 40 + aX, aY, aScroll, *mFullscreenCheckbox, "[SETTINGS_FULLSCREEN]");
+    aX += 120;
+    DrawCheckbox(g, 40 + aX, aY, aScroll , *mHighQualityCheckbox, "[SETTINGS_HIGHQUALITY]");
 
-	aY += 20;
+	aY += 65;
+    aX = 0;
 
-	mVSyncCheckbox->Resize(40, aY - aScrollOffset + GetTop(), 46, 45);
-
-	mVSyncCheckbox->mDisabled =
-		(mVSyncCheckbox->mY + mY + mVSyncCheckbox->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mVSyncCheckbox->mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
-	TodDrawString(g, "[SETTINGS_VSYNC]", mVSyncCheckbox->mX + 20, aY + 30, Sexy::FONT_BRIANNETOD12, Color::White,
-				  DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 50;
-
-	mFullscreenCheckbox->Resize(40, aY - aScrollOffset + GetTop(), 46, 45);
-
-	mFullscreenCheckbox->mDisabled =
-		(mFullscreenCheckbox->mY + mY + mFullscreenCheckbox->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mFullscreenCheckbox->mY + mY) >
-			(mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
-	TodDrawString(g, "[SETTINGS_FULLSCREEN]", mFullscreenCheckbox->mX + 20, aY + 30, Sexy::FONT_BRIANNETOD12,
-				  Color::White, DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 50;
-
-	mHighQualityCheckbox->Resize(40, aY - aScrollOffset + GetTop(), 46, 45);
-
-	mHighQualityCheckbox->mDisabled =
-		(mHighQualityCheckbox->mY + mY + mHighQualityCheckbox->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mHighQualityCheckbox->mY + mY) >
-			(mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
-	TodDrawString(g, "[SETTINGS_HIGHQUALITY]", mHighQualityCheckbox->mX + 20, aY + 30, Sexy::FONT_BRIANNETOD12,
-				  Color::White, DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 85;
-
-	TodDrawString(g, "[SETTINGS_RENDERER_BACKEND]", 20, aY, Sexy::FONT_BRIANNETOD12, Color::White,
-				  DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 12;
-
-	mRendererList->Resize(40, aY - aScrollOffset + GetTop(), 130, 70);
-
-	mRendererList->mDisabled =
-		(mRendererList->mY + mY + mRendererList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mRendererList->mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
-	aY += mRendererList->mHeight + 30;
-
-	if (mApp->mRenderer->mCurrentBackend != mApp->mDesiredBackend)
-	{
-		TodDrawString(g, "[SETTINGS_RENDERER_RESTART_NOTIF]", 20, aY, Sexy::FONT_BRIANNETOD12, Color::White,
-					  DrawStringJustification::DS_ALIGN_LEFT);
-
-		aY += 20;
-	}
-	else
-		aY += 12;
-
-	TodDrawString(g, "[SETTINGS_WINDOW_SIZE]", 20, aY, Sexy::FONT_BRIANNETOD12, Color::White,
-				  DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 12;
-
-	mSizesList->Resize(40, aY - aScrollOffset + GetTop(), 130, 26 * (mValidSizes.size() + 1));
-
-	mSizesList->mDisabled =
-		(mSizesList->mY + mY + mSizesList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mSizesList->mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
-	aY += mSizesList->mHeight + 40;
-
-	TodDrawString(g, "[SETTINGS_MISC]", 20, aY, Sexy::FONT_BRIANNETOD12, Color::White,
-				  DrawStringJustification::DS_ALIGN_LEFT);
-
-	aY += 20;
-
-	mSaveFileButton->Resize(40, aY - aScrollOffset + GetTop(), 330, 46);
-
-	mSaveFileButton->mDisabled =
-		(mSaveFileButton->mY + mY + mSaveFileButton->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-		(mSaveFileButton->mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-
+    DrawList(g, 40 + aX, aY, aScroll, 2, *mRendererList, "[SETTINGS_RENDERER_BACKEND]");
+    aX += 140;
+    DrawList(g, 40 + aX, aY, aScroll, mValidSizes.size() + 1, *mSizesList, "[SETTINGS_WINDOW_SIZE]");
+    if (mShaderList) {
+        aX += 140;
+        DrawList(g, 40 + aX, aY, aScroll, static_cast<int>(piston::UpscaleMode::NumUpscalers), *mShaderList, "[SETTINGS_SHADER]");
+    }
 
 	SexyString aVersionString = "ResoddedFramework " + LawnApp::gResoddedVersion.toString();
 
@@ -248,6 +202,24 @@ void SettingsDialog::Draw(Graphics* g)
 	g->PopState();
 }
 
+void SettingsDialog::DrawCheckbox(Graphics* g, int theX, int theY, int theScroll, Sexy::Checkbox& checkbox, const SexyString& title) {
+	checkbox.Resize(theX, theY - theScroll, 46, 45);
+	checkbox.mDisabled =
+		(checkbox.mY + mY + checkbox.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
+		(checkbox.mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
+	TodDrawString(g, title, checkbox.mX + 10, theY + 33, Sexy::FONT_BRIANNETOD12, Color::White,
+				  DrawStringJustification::DS_ALIGN_LEFT);
+}
+
+void SettingsDialog::DrawList(Graphics* g, int theX, int theY, int theScroll, int listLen, Sexy::ListWidget& list, const SexyString& title) {
+	list.Resize(theX, theY - theScroll, 130, 26 * listLen);
+	list.mDisabled =
+		(list.mY + mY + list.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
+		(list.mY + mY) > (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
+	TodDrawString(g, title, list.mX - 30, theY, Sexy::FONT_BRIANNETOD12, Color::White,
+				  DrawStringJustification::DS_ALIGN_LEFT);
+}
+
 void SettingsDialog::AddedToManager(WidgetManager *theWidgetManager)
 {
 	LawnDialog::AddedToManager(theWidgetManager);
@@ -259,6 +231,9 @@ void SettingsDialog::AddedToManager(WidgetManager *theWidgetManager)
 	AddWidget(mHighQualityCheckbox);
 	AddWidget(mRendererList);
 	AddWidget(mSizesList);
+    if (mShaderList) {
+        AddWidget(mShaderList);
+    }
 }
 
 //0x45D8E0
@@ -273,6 +248,9 @@ void SettingsDialog::RemovedFromManager(WidgetManager *theWidgetManager)
 	RemoveWidget(mHighQualityCheckbox);
 	RemoveWidget(mRendererList);
 	RemoveWidget(mSizesList);
+    if (mShaderList) {
+        RemoveWidget(mShaderList);
+    }
 }
 
 void SettingsDialog::Resize(int theX, int theY, int theWidth, int theHeight)
@@ -281,6 +259,7 @@ void SettingsDialog::Resize(int theX, int theY, int theWidth, int theHeight)
 	mOptionsSlider->Resize(mWidth - 60, 110, 8, 200);
 	mOptionsSlider->mAllowedMouseZone = Rect(mX + 35, mY + 120, mWidth - 70, mHeight - 240);
 	mApplyButton->Resize(350, 331, 209, 46);
+	mSaveFileButton->Resize(35, 331, 330, 46);
 	SetWidgetClipping(Rect(35, 120, mWidth - 70, mHeight - 240));
 }
 
@@ -381,6 +360,16 @@ void SettingsDialog::ListClicked(int theId, int theIdx, int theClickCount)
 			SDL_PushEvent(&aSizeEvent);
 		}
 		mSizesList->SetSelect(theIdx);
+
+	}
+	else if (theId == SETTINGS_SHADER)
+	{
+
+		if (theIdx < static_cast<int>(piston::UpscaleMode::NumUpscalers))
+		{
+            mApp->SetUpscaleMode(static_cast<piston::UpscaleMode>(theIdx));
+            mShaderList->SetSelect(theIdx);
+		}
 
 	}
 

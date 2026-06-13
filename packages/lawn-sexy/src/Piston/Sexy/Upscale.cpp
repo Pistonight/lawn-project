@@ -114,6 +114,7 @@ void FsrUpscaler::Present(GLuint srcTex, int srcW, int srcH, int dstX, int dstY,
     glViewport(dstX, dstY, dstW, dstH);
     mRcasShader.Use();
     mRcasShader.SetUniform("uInputTexture", 0);
+    glUniform2i(glGetUniformLocation(mRcasShader.GetID(), "uViewportOffset"), dstX, dstY);
     glUniform4uiv(glGetUniformLocation(mRcasShader.GetID(), "con"), 1, mRcasCon);
     glBindTexture(GL_TEXTURE_2D, mEasuTexture);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -136,11 +137,13 @@ void Upscaler::Init(int srcW, int srcH, int dstW, int dstH) {
 }
 bool Upscaler::IsModeEnabled(UpscaleMode mode) {
     switch (mode) {
-        case UpscaleMode::Nearest:
-        case UpscaleMode::Bilinear:
-            return true;
-        case UpscaleMode::FSR:
-            return mFsr.IsInitialized();
+    case UpscaleMode::Nearest:
+    case UpscaleMode::Bilinear:
+        return true;
+    case UpscaleMode::FSR:
+        return mFsr.IsInitialized();
+    default:
+        return false;
     }
     return false;
 }
@@ -178,12 +181,10 @@ void Upscaler::Present(GLuint srcFBO, GLuint srcTex, int dstX, int dstY) {
     case UpscaleMode::FSR:
         mFsr.Present(srcTex, mSrcW, mSrcH, dstX, dstY, mDstW, mDstH);
         break;
+    default:
+        break;
     }
 }
-
-// ---------------------------------------------------------------------------
-// Present modes
-// ---------------------------------------------------------------------------
 
 void Upscaler::PresentNearest(GLuint srcFBO, int dstX, int dstY, int dstW, int dstH) {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, srcFBO);

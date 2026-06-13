@@ -112,6 +112,9 @@ class SDL3Renderer : public Renderer
 
 	virtual void BltRawTexture(void *theTexture, int theTexWidth, int theTexHeight, const Rect &theDestRect,
 							   const Rect &theSrcRect, const Rect &theClipRect, const Color &theColor, int theDrawMode);
+#ifdef PISTON_PATCH
+    virtual piston::Upscaler* GetUpscaler();
+#endif
 
 	static bool TestSDL3();
 

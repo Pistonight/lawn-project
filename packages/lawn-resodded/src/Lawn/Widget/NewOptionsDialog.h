@@ -37,7 +37,7 @@ class NewOptionsDialog : public Sexy::Dialog, public Sexy::SliderListener, publi
 	LawnStoneButton *mBackToMainButton;
 	LawnStoneButton *mRestartButton;
 	NewLawnButton *mBackToGameButton;
-	NewLawnButton *mSettingsButton;
+	LawnStoneButton *mSettingsButton;
 	bool mFromGameSelector;
 	#if SEXY_USE_CONTROLLER
 	bool mAwaitRelease;

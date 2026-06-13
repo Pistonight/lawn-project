@@ -1279,6 +1279,13 @@ void GameSelector::ClickedAdventure()
 	}
 
 	mApp->mMusic->StopAllMusic();
+
+#ifdef DEBUG // save time in debugging
+	mApp->KillGameSelector();
+	mApp->PreNewGame(GameMode::GAMEMODE_ADVENTURE, true);
+	return;
+#endif
+
 	mApp->PlaySample(Sexy::SOUND_LOSEMUSIC);
 	mStartingGame = true;
 	mAdventureButton->SetDisabled(true);

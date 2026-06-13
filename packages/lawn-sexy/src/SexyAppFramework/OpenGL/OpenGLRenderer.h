@@ -238,6 +238,10 @@ namespace Sexy
 							  const Color &theColor,
 							  int theDrawMode);
 
+#ifdef PISTON_PATCH
+        virtual piston::Upscaler* GetUpscaler();
+#endif
+
 		static bool TestOpenGL(SDL_Window* theWindow);
 
 		glm::vec2 TransformToPoint(float x, float y, const SexyMatrix3& m, float aTransX = 0, float aTransY = 0)

@@ -9,11 +9,7 @@
 
 namespace piston {
 
-enum class UpscaleMode {
-    Nearest,
-    Bilinear,
-    FSR,
-};
+enum class UpscaleMode { Nearest = 0, Bilinear = 1, FSR = 2, NumUpscalers };
 
 // using Init/Uninit instead of ctor/dtor to better align with what PVZ does
 
@@ -54,7 +50,7 @@ public:
 
     void Present(GLuint srcFBO, GLuint srcTex, int dstX, int dstY);
 
-    void SetMode(UpscaleMode mode) { 
+    void SetMode(UpscaleMode mode) {
         if (!IsModeEnabled(mode)) {
             return;
         }

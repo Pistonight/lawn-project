@@ -33,26 +33,25 @@ class SettingsDialog : public LawnDialog, public Sexy::CheckboxListener, public 
 		SETTINGS_VSYNC,
 		SETTINGS_FULLSCREEN,
 		SETTINGS_HIGHQUALITY,
-#ifdef PISTON_PATCH
-		SETTINGS_PISTON_ALLOW_BACKGROUND_PLAY,
-#endif
 		SETTINGS_OPEN_SAVE_FOLDER,
 		SETTINGS_RENDER_LIST,
 		SETTINGS_WINDOW_SIZES,
+        SETTINGS_SHADER,
 	};
 
   public:
 	LawnApp *mApp;				  //+0x16C
-	LawnStoneButton *mApplyButton;
-	LawnStoneButton *mSaveFileButton;
-	Sexy::Checkbox *mFullscreenCheckbox;
-	Sexy::Checkbox *mVSyncCheckbox;
-	Sexy::Checkbox *mHighQualityCheckbox;
-	Sexy::ListWidget *mRendererList;
-	Sexy::ListWidget *mSizesList;
-	LawnScrollbar *mOptionsSlider;
+	LawnStoneButton *mApplyButton {};
+	LawnStoneButton *mSaveFileButton {};
+	Sexy::Checkbox *mFullscreenCheckbox {};
+	Sexy::Checkbox *mVSyncCheckbox {};
+	Sexy::Checkbox *mHighQualityCheckbox {};
+	Sexy::ListWidget *mRendererList {};
+	Sexy::ListWidget *mSizesList {};
+	Sexy::ListWidget *mShaderList {};
+	LawnScrollbar *mOptionsSlider {};
 
-	std::vector<LawnWindowSizePreset> mValidSizes;
+	std::vector<LawnWindowSizePreset> mValidSizes {};
 
   public:
 	SettingsDialog(LawnApp *theApp);
@@ -68,4 +67,9 @@ class SettingsDialog : public LawnDialog, public Sexy::CheckboxListener, public 
 	bool IsCurrentWindowSizeInList();
 
 	void CheckboxChecked(int theId, bool checked);
+
+private:
+    void DrawCheckbox(Graphics* g, int theX, int theY, int theScroll, Sexy::Checkbox& checkbox, const SexyString& title);
+    void DrawList(Graphics* g, int theX, int theY, int theScroll, int listLen, Sexy::ListWidget& list, const SexyString& title);
+
 };

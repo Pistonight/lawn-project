@@ -6,6 +6,7 @@
 #include "GameConstants.h"
 #include "Lawn/Challenge.h"
 #include "Lawn/ZenGarden.h"
+#include "Piston/Sexy/Upscale.h"
 #include "Sexy.TodLib/Trail.h"
 #include "Lawn/System/Music.h"
 #include "Lawn/System/SaveGame.h"
@@ -57,12 +58,8 @@
 #include "Lawn/ResoddedFramework/UpdateChecker.h"
 #endif
 
-#ifdef PISTON_PATCH
 #include <paklib/PakInterface.h>
-#else
-#include <PakInterface.h>
-#include <filesystem>
-#endif
+#include <SexyAppFramework/Renderer.h>
 
 #include <ctime>
 
@@ -440,12 +437,18 @@ void LawnApp::WriteToRegistry()
 		mPlayerInfo->SaveDetails();
 	}
 
+    RegistryWriteInteger("Shader", mSavedShader);
+
 	SexyAppBase::WriteToRegistry();
 }
 
 //0x44F530
 void LawnApp::ReadFromRegistry()
 {
+    int aShader = 0;
+    if (RegistryReadInteger("Shader", &aShader)) {
+        mSavedShader = aShader;
+    }
 	SexyApp::ReadFromRegistry();
 }
 
@@ -1401,17 +1404,6 @@ void LawnApp::Init()
 	TodTraceAndLog("[LawnProject] - loading: 'system' %d ms", aDuration);
 #endif
 
-#ifndef PISTON_PATCH // PISTON_PATCH moved to TitleScreen
-    mTimer.Start();
-    ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
-    ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
-    ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
-
-#ifdef _DEBUG
-    aDuration = mTimer.GetDuration();
-    TodTraceAndLog("[LawnProject] - loading: 'loaderbar' %d ms", aDuration);
-#endif
-#endif
 	mTimer.Start();
 }
 
@@ -1426,6 +1418,9 @@ void LawnApp::Start()
 {
 	if (mLoadingFailed)
 		return;
+
+    // apply upscale mode to renderer
+    SetUpscaleMode(GetUpscaleMode());
 
 	SexyAppBase::Start();
 }
@@ -3491,6 +3486,14 @@ void LawnApp::SwitchScreenMode(bool wantWindowed, bool is3d, bool force)
 	{
 		aSettingsDialog->mFullscreenCheckbox->SetChecked(!mIsWindowed, false);
 	}
+}
+
+void LawnApp::SetUpscaleMode(piston::UpscaleMode mode) {
+    mSavedShader = static_cast<int>(mode);
+    auto* aUpscaler = mRenderer->GetUpscaler();
+    if (aUpscaler) {
+        aUpscaler->SetMode(mode);
+    }
 }
 
 /* #################################################################################################### */

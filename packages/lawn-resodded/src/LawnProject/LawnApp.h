@@ -3,6 +3,7 @@
 
 #include "ConstEnums.h"
 #include <SexyAppFramework/SexyApp.h>
+#include <Piston/Sexy/Upscale.h>
 
 class Achievements;
 class Board;
@@ -142,6 +143,7 @@ class LawnApp : public SexyApp
 	bool mDebugTrialLocked;				   //+0x8C4
 	bool mMuteSoundsForCutscene;		   //+0x8C5
 
+    int mSavedShader = 1;
 	static Version gResoddedVersion;
 
 
@@ -375,6 +377,12 @@ class LawnApp : public SexyApp
 	/*inline*/ bool CanDoDaisyMode();
 	virtual void SwitchScreenMode(bool wantWindowed, bool is3d, bool force = false);
 	static /*inline*/ void CenterDialog(Dialog *theDialog, int theWidth, int theHeight);
+
+    void SetUpscaleMode(piston::UpscaleMode mode);
+    piston::UpscaleMode GetUpscaleMode() const {
+        return mSavedShader >= static_cast<int>(piston::UpscaleMode::NumUpscalers)
+          ? piston::UpscaleMode::Nearest : static_cast<piston::UpscaleMode>(mSavedShader);
+    }
 };
 
 SexyString LawnGetCurrentLevelName();

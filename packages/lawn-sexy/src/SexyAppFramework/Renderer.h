@@ -2,6 +2,9 @@
 
 #include "Common.h"
 #include "GPUImage.h"
+#ifdef PISTON_PATCH
+#include "Piston/Sexy/Upscale.h"
+#endif
 #include "SexyMatrix.h"
 #include "CritSect.h"
 #include <unordered_map>
@@ -318,5 +321,9 @@ namespace Sexy
 							const Rect &theClipRect,
 							const Color &theColor,
 							int theDrawMode) = 0;
+
+#ifdef PISTON_PATCH
+        virtual piston::Upscaler* GetUpscaler();
+#endif
 	};
 };

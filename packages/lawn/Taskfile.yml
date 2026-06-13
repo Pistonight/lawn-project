@@ -46,5 +46,11 @@ tasks:
   run:
     - cd export && ./PlantsVzZombies.exe
 
+  build-run:
+    aliases: [br]
+    cmds:
+      - task: build
+      - task: run
+
   clean:
     - rm -rf {{.BUILD_ROOT}} export

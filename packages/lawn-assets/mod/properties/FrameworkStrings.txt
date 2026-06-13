@@ -5,7 +5,7 @@ Settings
 Back
 
 [SETTINGS_BUTTON]
-More
+Settings
 
 [SETTINGS_VIDEO]
 Video Settings

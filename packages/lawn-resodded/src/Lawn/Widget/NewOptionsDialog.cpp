@@ -30,8 +30,7 @@ NewOptionsDialog::NewOptionsDialog(LawnApp *theApp, bool theFromGameSelector)
 	mAlmanacButton = MakeButton(NewOptionsDialog::NewOptionsDialog_Almanac, this, "[VIEW_ALMANAC_BUTTON]");
 	mRestartButton = MakeButton(NewOptionsDialog::NewOptionsDialog_Restart, this, "[RESTART_LEVEL_BUTTON]");
 	mBackToMainButton = MakeButton(NewOptionsDialog::NewOptionsDialog_MainMenu, this, "[MAIN_MENU_BUTTON]");
-	mSettingsButton = MakeNewButton(NewOptionsDialog::NewOptionsDialog_Settings, this, "[SETTINGS_BUTTON]", Sexy::FONT_DWARVENTODCRAFT18GREENINSET, nullptr, nullptr, nullptr);
-	mSettingsButton->mHiliteFont = Sexy::FONT_DWARVENTODCRAFT18BRIGHTGREENINSET;
+	mSettingsButton = MakeButton(NewOptionsDialog::NewOptionsDialog_Settings, this, "[SETTINGS_BUTTON]");
 	mSettingsButton->mWidth = 70;
 	mSettingsButton->mHeight = 33;
 
@@ -95,7 +94,7 @@ NewOptionsDialog::NewOptionsDialog(LawnApp *theApp, bool theFromGameSelector)
 	}
 }
 
-//0x45C760��0x45C780
+//0x45C760 and 0x45C780
 NewOptionsDialog::~NewOptionsDialog()
 {
 	delete mMusicVolumeSlider;
@@ -145,7 +144,7 @@ void NewOptionsDialog::Resize(int theX, int theY, int theWidth, int theHeight)
 	Dialog::Resize(theX, theY, theWidth, theHeight);
 	mMusicVolumeSlider->Resize(199, 116, 135, 40);
 	mSfxVolumeSlider->Resize(199, 143, 135, 40);
-	mSettingsButton->Resize(107, 185, 209, 46);
+	mSettingsButton->Resize(107, 198, 209, 46);
 	mAlmanacButton->Resize(107, 241, 209, 46);
 	mRestartButton->Resize(mAlmanacButton->mX, mAlmanacButton->mY + 43, 209, 46);
 	mBackToMainButton->Resize(mRestartButton->mX, mRestartButton->mY + 43, 209, 46);
