@@ -214,6 +214,9 @@ void OpenGLRenderer::Cleanup()
 	//Delete the buffers that OpenGLImage has
 	glDeleteBuffers(1, &OpenGLImage::gOpenGLImageVBO);
 	glDeleteVertexArrays(1, &OpenGLImage::gOpenGLImageVAO);
+#ifdef PISTON_PATCH
+	mUpscaler.Uninit();
+#endif
 	SDL_GL_DestroyContext(mContext);
 	OpenGLImage::gOpenGLImageVBO = 0;
 	OpenGLImage::gOpenGLImageVAO = 0;
@@ -323,6 +326,10 @@ bool OpenGLRenderer::InitBuffers()
 
 	gGLTextureCount++;
 
+#ifdef PISTON_PATCH
+	mUpscaler.Init(mWidth, mHeight, mWidth, mHeight);
+#endif
+
 	GLenum possiblefilters[2] = {GL_NEAREST, GL_LINEAR};
 	for (int i = 0; i < 2; i++)
 	{
@@ -401,16 +408,19 @@ bool OpenGLRenderer::Redraw(Rect *theClipRect)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glDisable(GL_SCISSOR_TEST);
+	// Draw to screen here:
+#ifdef PISTON_PATCH
+	mUpscaler.Present(mFBO, mFBOTexture, mPresentationRect.mX, mPresentationRect.mY);
+#else
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	// Draw to screen here:
 	glBlitFramebuffer(0, 0, mWidth, mHeight,
 					  mPresentationRect.mX, mPresentationRect.mY,
 					  mPresentationRect.mX + mPresentationRect.mWidth,
 					  mPresentationRect.mY + mPresentationRect.mHeight,
 					  GL_COLOR_BUFFER_BIT,
 					  GL_LINEAR);
+#endif
 
 #if SEXY_USE_IMGUI
 	mApp->mImGuiManager->Flush();
@@ -481,6 +491,10 @@ void OpenGLRenderer::UpdateViewport()
 	}
 
 	mPresentationRect = Rect(vpX, vpY, vpW, vpH);
+
+#ifdef PISTON_PATCH
+	mUpscaler.OnResize(mWidth, mHeight, vpW, vpH);
+#endif
 
 	mProjection = glm::ortho(0.0f, (float)mWidth, (float)mHeight, 0.0f, -1.0f, 1.0f) * glm::mat4(1.0f);
 }

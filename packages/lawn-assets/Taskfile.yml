@@ -3,6 +3,7 @@ version: '3'
 tasks:
   build:
     sources:
+      - 'shaders/**/*'
       - 'mod/**/*'
       - ../pvz-assets/main.pak
       - ../pvz-assets/properties/**
@@ -11,9 +12,11 @@ tasks:
     generates:
       - main.pak
       - ../lawn/export/main.pak
+      - ../lawn/export/shaders/**
     cmds:
       - silent: true
         cmd: >
+          txtpp -rN shaders;
           echo '==> building pvz-pakc';
           cargo build --release --bin pvz-pakc;
           cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main.pak main;
@@ -30,5 +33,7 @@ tasks:
           mv main/resources.xml main/properties/resources.xml;
           python add-resources.py;
           cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
-          mkdir -p ../lawn/export;
+          mkdir -p ../lawn/export/shaders;
           cp main.pak ../lawn/export;
+          cp shaders/*.glsl ../lawn/export/shaders;
+          rm -f ../lawn/export/shaders/*.txtpp.glsl;

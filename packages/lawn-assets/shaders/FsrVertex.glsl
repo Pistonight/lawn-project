@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 out vec2 vTexCoord;
 void main() {
     vec2 uv = vec2(float((gl_VertexID == 1) ? 2 : 0),

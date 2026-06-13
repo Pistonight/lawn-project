@@ -19,6 +19,13 @@ GLShader::~GLShader()
 
 bool GLShader::LoadFromSource(const std::string &vertexSrc, const std::string &fragmentSrc)
 {
+#ifdef PISTON_PATCH // smart destruction - avoid using smart pointers on callsites
+	if (mProgramID) {
+		glDeleteProgram(mProgramID);
+        mProgramID = 0;
+    }
+    // a bunch of leaked resources if error happens, uhhhh
+#endif
 	GLuint vertex_shader = CompileShader(GL_VERTEX_SHADER, vertexSrc);
 	GLuint fragment_shader = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
 
@@ -34,6 +41,16 @@ bool GLShader::LoadFromSource(const std::string &vertexSrc, const std::string &f
 	glGetProgramiv(mProgramID, GL_LINK_STATUS, &success);
 	if (success != GL_TRUE)
 	{
+#ifdef PISTON_PATCH
+		GLint logLen = 0;
+		glGetProgramiv(mProgramID, GL_INFO_LOG_LENGTH, &logLen);
+		if (logLen > 0)
+		{
+			std::string log(logLen, '\0');
+			glGetProgramInfoLog(mProgramID, logLen, nullptr, log.data());
+			printf("[GLRenderer] shader link error: %s\n", log.c_str());
+		}
+#endif
 		return false;
 	}
 
@@ -56,6 +73,21 @@ GLuint GLShader::CompileShader(GLenum type, const std::string &source)
 
 	GLint success;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+#ifdef PISTON_PATCH
+	if (success != GL_TRUE)
+	{
+		GLint logLen = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLen);
+		if (logLen > 0)
+		{
+			std::string log(logLen, '\0');
+			glGetShaderInfoLog(shader, logLen, nullptr, log.data());
+			printf("[GLRenderer] shader compile error: %s\n", log.c_str());
+		}
+		glDeleteShader(shader);
+		return 0;
+	}
+#endif
 
 	return shader;
 }

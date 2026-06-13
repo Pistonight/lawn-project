@@ -1,2 +1,5 @@
 *.pak
+*_g.glsl
+*_g.cpp
+*_g.inc
 /main

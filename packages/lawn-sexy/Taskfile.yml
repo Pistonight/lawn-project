@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  ccpp:
+    taskfile: ../../mono-dev/task/ccpp.yaml
+    internal: true
+    optional: true
+
+tasks:
+  check:
+    - task: ccpp:fmt-check
+      vars:
+        SOURCE: src/Piston
+  fix:
+    - task: ccpp:fmt-fix
+      vars:
+        SOURCE: src/Piston
+

@@ -139,6 +139,8 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     SEXY_USE_IMGUI
     SEXY_USE_CONTROLLER
     SEXY_CRASH_HANDLER
+
+    A_CPU
 )
 
 # option(SEXY_USE_IMGUI "Enable ImGui" ON)
@@ -163,7 +165,7 @@ add_custom_target(build_info ALL
     COMMAND ${CMAKE_COMMAND}
         -DSRC=${BUILD_INFO_SRC}
         -DDST=${BUILD_INFO_DST}
-        -DSEXY_PROJECT_ROOT="${CMAKE_SOURCE_DIR}"
+        -DSEXY_PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
         -DVERSION_FILE="${CMAKE_SOURCE_DIR}/../../LawnVersion.txt"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildInfo.cmake
     COMMENT "Updating build info..."
@@ -172,31 +174,3 @@ add_custom_target(build_info ALL
 set_source_files_properties(${BUILD_INFO_DST} PROPERTIES GENERATED TRUE)
 target_sources(${PROJECT_NAME} PRIVATE ${BUILD_INFO_DST})
 add_dependencies(${PROJECT_NAME} build_info)
-
-
-
-# foreach(FILE_PATH IN LISTS SOURCES)
-#     get_filename_component(EXT "${FILE_PATH}" EXT)
-#     file(RELATIVE_PATH REL_PATH "${CMAKE_SOURCE_DIR}/src/SexyAppFramework" "${FILE_PATH}")
-#
-#     get_filename_component(FOLDER_PATH "${REL_PATH}" PATH)
-#     string(REPLACE "/" "\\" FOLDER_PATH "${FOLDER_PATH}")
-#
-#     if(EXT STREQUAL ".cpp" OR EXT STREQUAL ".c" OR EXT STREQUAL ".cc")
-#         set(BASE_GROUP "Source Files")
-#     elseif(EXT STREQUAL ".h" OR EXT STREQUAL ".hpp" OR EXT STREQUAL ".hh")
-#         set(BASE_GROUP "Header Files")
-#     elseif(EXT STREQUAL ".rc" OR EXT STREQUAL ".res")
-#         set(BASE_GROUP "Resource Files")
-#     else()
-#         set(BASE_GROUP "Other Files")
-#     endif()
-#
-#     if(FOLDER_PATH)
-#         set(GROUP_NAME "${BASE_GROUP}\\${FOLDER_PATH}")
-#     else()
-#         set(GROUP_NAME "${BASE_GROUP}")
-#     endif()
-#
-#     source_group("${GROUP_NAME}" FILES "${FILE_PATH}")
-# endforeach()

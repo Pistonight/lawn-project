@@ -2,6 +2,7 @@
 #if SEXY_USE_OPENGL
 #ifdef PISTON_PATCH
 #include <SexyAppFramework/Renderer.h>
+#include <Piston/Sexy/Upscale.h>
 #include "GLShader.h"
 #else
 #include "Renderer.h" 
@@ -100,6 +101,9 @@ namespace Sexy
 		GLShader *mDefaultShader;
 		glm::mat4 mProjection;
 		std::unordered_map<GLenum, WrappingSamplers> mSamplers;
+#ifdef PISTON_PATCH
+		piston::Upscaler mUpscaler;
+#endif
 
 		static int gGLTextureCount;
 		static uint64_t gGLUsedMemoryCount;

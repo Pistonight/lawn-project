@@ -20,6 +20,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/utf8/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/stb/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/bass/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/FidelityFX-FSR/include"
 )
 
 # Libraries
