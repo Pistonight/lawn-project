@@ -299,7 +299,6 @@ class SexyAppBase : public ButtonListener, public DialogListener
 	bool mCustomCursorsEnabled;
 	bool mCustomCursorDirty;
 	bool mLastShutdownWasGraceful;
-	bool mIsWideWindow;
 
 	int mNumLoadingThreadTasks;
 	int mCompletedLoadingThreadTasks;
@@ -339,6 +338,7 @@ class SexyAppBase : public ButtonListener, public DialogListener
 	uint32_t mVSyncBrokenTestStartTick;
 	uint32_t mVSyncBrokenTestUpdates;
 	bool mWaitForVSync;
+    bool mHighResolution;
 	bool mUserChanged3DSetting;
 	bool mAutoEnable3D;
 	bool mIs3D;
@@ -346,8 +346,6 @@ class SexyAppBase : public ButtonListener, public DialogListener
 	uint32_t mRecommendedVidMemory3D;
 
 	Rect mScreenBounds;
-	bool mEnableWindowAspect;
-	Ratio mWindowAspect;
 
 	StringStringMap mStringProperties;
 	StringBoolMap mBoolProperties;

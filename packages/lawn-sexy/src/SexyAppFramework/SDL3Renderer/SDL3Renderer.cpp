@@ -72,7 +72,9 @@ void SDL3Renderer::SetLinearBlend_SDL(SDL_Texture *theTexture, bool linearBlend)
 
 uint32_t *SDL3Renderer::CaptureFrameBuffer()
 {
+    SDL_SetRenderTarget(mBackendRenderer, mTargetTexture);
 	SDL_Surface *surface = SDL_RenderReadPixels(mBackendRenderer, nullptr);
+    SDL_SetRenderTarget(mBackendRenderer, nullptr);
 	if (!surface)
 		return nullptr;
 
@@ -481,6 +483,23 @@ SDL_BlendMode SDL3Renderer::Get_SDL_NativeBlendMode(BlendMode theBlendMode)
 #endif
 }
 
+SDL_Rect GetTransformedClipRect(Rect theClipRect, int aWidth, int aHeight, Rect aPresentationRect, bool isHighRes)
+{
+	if (isHighRes)
+	{
+		float scaleX = (float)aPresentationRect.mWidth / aWidth;
+		float scaleY = (float)aPresentationRect.mHeight / aHeight;
+
+		int sX = (int)(theClipRect.mX * scaleX);
+		int sY = (int)(theClipRect.mY * scaleY);
+		int sW = (int)(theClipRect.mWidth * scaleX);
+		int sH = (int)(theClipRect.mHeight * scaleY);
+		return SDL_Rect{sX, sY, sW, sH};
+	}
+	else
+		return SDL_Rect{theClipRect.mX, theClipRect.mY, theClipRect.mWidth, theClipRect.mHeight};
+}
+
 void SDL3Renderer::Blt(Image *theImage, float theX, float theY, const Rect &theSrcRect, const Color &theColor,
 						 int theDrawMode, bool linearFilter)
 {
@@ -745,6 +764,14 @@ void SDL3Renderer::DrawTrianglesTex(const TriVertex theVertices[][3], int theNum
 
 	int indices[] = {0, 1, 2};
 
+    float aScaleX = 1.0f;
+	float aScaleY = 1.0f;
+	if (mApp->mHighResolution)
+	{
+		aScaleX = (float)mPresentationRect.mWidth / mWidth;
+		aScaleY = (float)mPresentationRect.mHeight / mHeight;
+	}
+
 	for (int aTriangleIdx = 0; aTriangleIdx < theNumTriangles; aTriangleIdx++)
 	{
 		const float aConvertBackToCorectRange = 1.0f / 255.0f;
@@ -763,8 +790,8 @@ void SDL3Renderer::DrawTrianglesTex(const TriVertex theVertices[][3], int theNum
 			anExtractedColor[aVert].g = ((theCurrentVertex[aVert].color >> 8) & 0xFF) * aColor.g * aConvertBackToCorectRange;
 			anExtractedColor[aVert].b = (theCurrentVertex[aVert].color & 0xFF) * aColor.b * aConvertBackToCorectRange;
 			anExtractedColor[aVert].a = ((theCurrentVertex[aVert].color >> 24) & 0xFF) * aColor.a * aConvertBackToCorectRange;
-			vertices[aVert].position.x = theCurrentVertex[aVert].x + tx;
-			vertices[aVert].position.y = theCurrentVertex[aVert].y + ty;
+            vertices[aVert].position.x = (theCurrentVertex[aVert].x + tx) * aScaleX;
+			vertices[aVert].position.y = (theCurrentVertex[aVert].y + ty) * aScaleY;
 			vertices[aVert].tex_coord.x = theCurrentVertex[aVert].u;
 			vertices[aVert].tex_coord.y = theCurrentVertex[aVert].v;
 			vertices[aVert].color = anExtractedColor[aVert];
@@ -828,15 +855,21 @@ void SDL3Renderer::BltRawTexture(void *theTexture, int theTexWidth, int theTexHe
 	SDL_Texture *aTexture = (SDL_Texture *)theTexture;
 	SDL_FRect aSrcRect = {(float)theSrcRect.mX, (float)theSrcRect.mY, (float)theSrcRect.mWidth,
 						  (float)theSrcRect.mHeight};
-	SDL_FRect aDestRect = {(float)theDestRect.mX, (float)theDestRect.mY, (float)theDestRect.mWidth,
-						   (float)theDestRect.mHeight};
+    float aScaleX = 1.0f;
+	float aScaleY = 1.0f;
+	if (mApp->mHighResolution)
+	{
+		aScaleX = (float)mPresentationRect.mWidth / mWidth;
+		aScaleY = (float)mPresentationRect.mHeight / mHeight;
+	}
+	SDL_FRect aDestRect = {(float)theDestRect.mX * aScaleX, (float)theDestRect.mY * aScaleY, (float)theDestRect.mWidth * aScaleX, (float)theDestRect.mHeight * aScaleY};
 	SDL_SetRenderTarget(mBackendRenderer, mTargetTexture);
 
 	SetLinearBlend_SDL(aTexture, true);
 	SDL_SetTextureColorMod(aTexture, theColor.mRed, theColor.mGreen, theColor.mBlue);
 	SDL_SetTextureAlphaMod(aTexture, theColor.mAlpha);
 	SDL_SetTextureBlendMode(aTexture, Get_SDL_NativeBlendMode(ChooseBlendMode(theDrawMode)));
-	SDL_Rect aClipRect = {theClipRect.mX, theClipRect.mY, theClipRect.mWidth, theClipRect.mHeight};
+    SDL_Rect aClipRect = GetTransformedClipRect(theClipRect, mWidth, mHeight, mPresentationRect, mApp->mHighResolution);
 	SDL_SetRenderClipRect(mBackendRenderer, &aClipRect);
 	SDL_RenderTextureRotated(mBackendRenderer, aTexture, &aSrcRect, &aDestRect, 0, nullptr, SDL_FLIP_NONE);
 	SDL_SetRenderClipRect(mBackendRenderer, nullptr);

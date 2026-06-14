@@ -66,9 +66,14 @@
 #include "Lawn/ResoddedFramework/DebuggerWindow.h"
 #endif
 
+// Upstream:
+// a384cb733d3931f0b0e96e31f6ec4d0754aa18ab Fixed Screenshots
+
 //Do not edit this. - Electr0Gunner
-//2f09498c70d9fb205a812dd87c0bbd2bedd01738
-Version LawnApp::gResoddedVersion(1, 0, 0, 865);
+Version LawnApp::gResoddedVersion(1, 0, 0, 878);
+// 52b4773e4a1d062505076981c3f3729d2f315618 1.0.0.878
+// - High Resolution settings dropped from SettingsDialog
+//   (in favor of FSR which I already implemented)
 
 bool gIsPartnerBuild = false;
 bool gSlowMo = false;
