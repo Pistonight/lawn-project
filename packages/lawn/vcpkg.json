@@ -8,7 +8,6 @@
     "libvorbis",
     "openal-soft",
     "sdl3",
-    "zlib",
-    "ffmpeg"
+    "zlib"
   ]
 }

@@ -1,8 +1,8 @@
 # CMakeLists.txt
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
-# project(ResoddedFramework LANGUAGES C CXX)
+project(PlantsVzZombies LANGUAGES C CXX)
 
-project(PlantsVzZombies)
+include(cmake/UserConfig.cmake)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if(MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
@@ -11,8 +11,14 @@ if(MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
 endif()
 
 if (MSVC)
-    add_compile_options(/MP)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # a stupid fix
+    # Prevent PDB access conflicts when multiple CL.EXE instances compile in parallel.
+    add_compile_options(/FS)
+    add_compile_options(/MP)
+
+    # PISTON: patch
+    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_FORCE_SYNCHRONOUS_PDB_WRITES ON)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
 endif()
 
 option(GITHUB_ACTIONS "Building in GitHub Actions" OFF)
@@ -30,16 +36,12 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # woohooo now we can use folder filters
 set(CMAKE_USE_FOLDERS ON)
 
-# PISTON_PATCH library reorganization
-add_subdirectory(../lawn-resodded lawn-resodded)
-add_subdirectory(../lawn-tod lawn-tod)
-add_subdirectory(../lawn-sexy lawn-sexy)
-add_subdirectory(../lawn-imagelib lawn-imagelib)
-add_subdirectory(../lawn-paklib lawn-paklib)
-add_subdirectory(../lawn-libs lawn-libs)
+# PISTON: library reorganization
+add_subdirectory(../resod-framework resod-framework)
+add_subdirectory(../resod-lib resod-lib)
 
 # Target
-# PISTON_PATCH: WIN32 - don't show terminal
+# PISTON: WIN32 - don't show terminal
 add_executable(${PROJECT_NAME} WIN32)
 
 # Source Files
@@ -49,29 +51,37 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
-# Include Paths
-target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
-
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    LawnProject
+    ResoddedFramework
 )
 
 # Defines
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     WIN32
     $<$<CONFIG:Debug>:DEBUG>
+    $<$<CONFIG:Debug>:_DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
 )
 target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH)
 
-# PISTON_PATCH: Chinese characters causing compiler error
-if (MSVC)
-    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_FORCE_SYNCHRONOUS_PDB_WRITES ON)
-    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
-endif()
+# Generate BuildInfo.h
+set(BUILD_INFO_SRC ${CMAKE_SOURCE_DIR}../resod-framework/src/SexyAppFramework/BuildInfo.h.in)
+set(BUILD_INFO_DST ${CMAKE_SOURCE_DIR}../resod-framework/src/SexyAppFramework/BuildInfo.h)
+
+add_custom_target(build_info ALL
+    COMMAND ${CMAKE_COMMAND}
+        -DSRC=${BUILD_INFO_SRC}
+        -DDST=${BUILD_INFO_DST}
+        -DSEXY_PROJECT_ROOT="${CMAKE_SOURCE_DIR}"
+        -DVERSION_FILE="${CMAKE_SOURCE_DIR}/../../LawnVersion.txt"
+        -P ${CMAKE_SOURCE_DIR}/cmake/BuildInfo.cmake
+    COMMENT "Updating build info..."
+)
+
+set_source_files_properties(${BUILD_INFO_DST} PROPERTIES GENERATED TRUE)
+target_sources(${PROJECT_NAME} PRIVATE ${BUILD_INFO_DST})
+add_dependencies(${PROJECT_NAME} build_info)
 
 # Export
 set(EXPORT_DIR "${CMAKE_SOURCE_DIR}/export")

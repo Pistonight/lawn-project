@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include <SexyAppFramework/resource.h>
+#include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_MAIN_ICON               ICON                    "..\\..\\..\\lawn\\src\\main_icon.ico"
+IDI_MAIN_ICON               ICON                    "..\\main_icon.ico"
 
 #endif    // ??????? (??????) resources
 /////////////////////////////////////////////////////////////////////////////

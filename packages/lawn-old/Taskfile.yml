@@ -1,0 +1,56 @@
+version: '3'
+
+includes:
+  assets:
+    taskfile: ../lawn-assets
+    dir: ../lawn-assets
+    internal: true
+
+vars:
+  BUILD_ROOT: ../../build
+
+tasks:
+  configure:
+    cmds:
+      - mkdir -p {{.BUILD_ROOT}}
+      # Hack to use Ninja generator to generate compile_commands.json for clangd
+      - rm -f {{.BUILD_ROOT}}/CMakeCache.txt
+      - >
+        cmake --preset=windows-msvc-x64
+        -B {{.BUILD_ROOT}} -G Ninja
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -DCMAKE_BUILD_TYPE=Debug
+      - rm -f {{.BUILD_ROOT}}/CMakeCache.txt
+      # use MSVC to generate the actual configs
+      - >
+        cmake --preset=windows-msvc-x64
+        -B {{.BUILD_ROOT}} -G "Visual Studio 18 2026"
+
+  build:
+    - task: do-build
+      vars:
+        CONFIG: Debug
+  build-rel:
+    - task: do-build
+      vars:
+        CONFIG: Release
+
+  do-build:
+    internal: true
+    cmds:
+      # - txtpp -rN src/Piston
+      - python build.py {{.BUILD_ROOT}} {{.CONFIG}} --raw
+      - cp ../lawn-libs/bass/bin/bass.dll export
+      - task: assets:build
+
+  run:
+    - cd export && ./PlantsVzZombies.exe
+
+  build-run:
+    aliases: [br]
+    cmds:
+      - task: build
+      - task: run
+
+  clean:
+    - rm -rf {{.BUILD_ROOT}} export

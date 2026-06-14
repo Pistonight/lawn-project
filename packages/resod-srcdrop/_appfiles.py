@@ -1,0 +1,62 @@
+import os
+from pathlib import Path
+
+import _common
+import _transformer
+
+def copy_files():
+    print("==> copying framework files")
+    our_root_path = get_framework_project_root()
+    framework_path = _common.get_framework_root()
+    framework_src_path = framework_path / "src"
+    exclude = set([
+        # Main files are part of buildfiles
+        framework_src_path / "main.cpp",
+        framework_src_path / "main_icon.ico",
+        framework_src_path / "LawnProject.rc",
+        # git-ignored ones
+        framework_src_path / "SexyAppFramework" / "BuildInfo.h",
+    ])
+
+    transformers = [
+        _transformer.transform_includes,
+        _transformer.transform_resolve_framework_includes,
+        _transformer.transform_lib_includes,
+    ]
+
+    # these are part of resod-lib
+    exclude_dirs = set([
+        "ImageLib", "PakLib"
+    ])
+
+    target_src_dirpath = our_root_path / "src"
+    _common.rm_rf(target_src_dirpath)
+    for (dirpath, _, filenames) in os.walk(framework_src_path):
+        currdir_name = os.path.basename(dirpath)
+        if currdir_name in exclude_dirs:
+            continue
+        dirpath = Path(dirpath)
+        reldirpath = dirpath.relative_to(framework_src_path)
+
+        if dirpath == framework_src_path:
+            target_dirpath = target_src_dirpath / "LawnApp"
+        else:
+            target_dirpath = target_src_dirpath / reldirpath
+        target_dirpath.mkdir(parents = True, exist_ok=True)
+
+        for file in filenames:
+            if file.endswith("CMakeLists.txt"):
+                continue
+            if file.endswith(".gitignore"):
+                continue
+            filepath = dirpath / file
+            if filepath in exclude:
+                continue
+            _transformer.copy_transform(filepath, target_dirpath / file, transformers)
+
+    print("==> formatting framework files")
+    _common.run_fix(our_root_path)
+
+def get_framework_project_root():
+    return _common.get_packages_root() / "resod-framework"
+
