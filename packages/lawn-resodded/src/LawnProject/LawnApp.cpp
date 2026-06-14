@@ -67,7 +67,7 @@
 #endif
 
 // Upstream:
-// 03d777e7ca810b835ce3e3790b3ca620794bb322 Added screen filtering as an option
+// 089e984d97ea59393df6d66e8bde365ab61feccc
 
 //Do not edit this. - Electr0Gunner
 Version LawnApp::gResoddedVersion(1, 0, 0, 878);
@@ -77,6 +77,10 @@ Version LawnApp::gResoddedVersion(1, 0, 0, 878);
 // 03d777e7ca810b835ce3e3790b3ca620794bb322 ---------
 // - Filtering setting dropped (shadowed by upscaler setting)
 //   FUTURE: FSR may be implemented as an extension to this
+// 488a7b7bb1e272edf64f49553dc6fb93bdbbe845 ---------
+// - Dropped: just an icon change
+// 089e984d97ea59393df6d66e8bde365ab61feccc ---------
+// - Dropped: just documentation update (frankly, most of the docs are useless because the function name already says everything)
 
 bool gIsPartnerBuild = false;
 bool gSlowMo = false;

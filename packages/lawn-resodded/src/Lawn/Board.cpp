@@ -40,7 +40,8 @@
 
 bool gShownMoreSunTutorial = false;
 
-//0x407B50
+/// @brief Initiate the Board Widget
+/// @param theApp Pointer to the host application
 Board::Board(LawnApp *theApp)
 {
 	mApp = theApp;
@@ -236,7 +237,7 @@ Board::Board(LawnApp *theApp)
 #endif
 }
 
-//0x408670、0x408690
+// @brief Dispose of the Board Widget
 Board::~Board()
 {
 #if LAWN_DEBUG_TOOLS
@@ -274,12 +275,13 @@ Board::~Board()
 	delete mChallenge;
 }
 
+/// @brief Initiate flags for the player
 void BoardInitForPlayer()
 {
 	gShownMoreSunTutorial = false;
 }
 
-//0x408A70
+/// @brief Dispose of the Board objects manually
 void Board::DisposeBoard()
 {
 	if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ZEN_GARDEN)
@@ -293,7 +295,7 @@ void Board::DisposeBoard()
 	mApp->mEffectSystem->EffectSystemFreeAll();
 }
 
-//0x408B00
+/// @brief Check if there are any zombies currently on-screen (except Dying or MindControlled)
 bool Board::AreEnemyZombiesOnScreen()
 {
 	Zombie *aZombie = nullptr;
@@ -307,7 +309,7 @@ bool Board::AreEnemyZombiesOnScreen()
 	return false;
 }
 
-//0x408B60
+/// @brief Count every non-dying, non-mind-controlled zombie on the Board
 int Board::CountZombiesOnScreen()
 {
 	int aCount = 0;
@@ -322,7 +324,7 @@ int Board::CountZombiesOnScreen()
 	return aCount;
 }
 
-//0x408BF0
+// @brief Count every non-triggered lawnmower
 int Board::CountUntriggerLawnMowers()
 {
 	int aCount = 0;
@@ -338,7 +340,7 @@ int Board::CountUntriggerLawnMowers()
 	return aCount;
 }
 
-//0x408C30
+// @brief Try to save the current state to the profile's save folder
 void Board::TryToSaveGame()
 {
 	std::string aFileName = GetSavedGameName(mApp->mGameMode, mApp->mPlayerInfo->mId);
@@ -359,7 +361,7 @@ void Board::TryToSaveGame()
 	}
 }
 
-//0x408DA0
+// @brief Does the game need to be saved
 bool Board::NeedSaveGame()
 {
 	return mApp->mGameMode != GameMode::GAMEMODE_CHALLENGE_ICE && mApp->mGameMode != GameMode::GAMEMODE_UPSELL &&
@@ -367,11 +369,14 @@ bool Board::NeedSaveGame()
 		   mApp->mGameMode != GameMode::GAMEMODE_TREE_OF_WISDOM && mApp->mGameScene == GameScenes::SCENE_PLAYING;
 }
 
+/// @brief Save the game state manually to the file path
 void Board::SaveGame(const std::string &theFileName)
 {
 	LawnSaveGame(this, theFileName);
 }
 
+/// @brief Load the game state from the save file
+/// @return True if it loaded successfully
 void Board::ResetFPSStats()
 {
 	uint32_t aTickCount = GetTicks();
@@ -381,7 +386,8 @@ void Board::ResetFPSStats()
 	mIntervalDrawCountStart = 1;
 }
 
-//0x408DE0
+/// @brief Load the game state from the save file
+/// @return True if it loaded successfully
 bool Board::LoadGame(const std::string &theFileName)
 {
 	if (!LawnLoadGame(this, theFileName))
@@ -394,7 +400,11 @@ bool Board::LoadGame(const std::string &theFileName)
 	return true;
 }
 
-//0x408E40
+/// @brief Try to get a GridItem at a specific grid coordinate
+/// @param theGridItemType The desired GridItem's type
+/// @param theGridX The X grid coordinate
+/// @param theGridY The Y grid coordinate
+/// @return GridItem or nullptr if it doesn't exist.
 GridItem *Board::GetGridItemAt(GridItemType theGridItemType, int theGridX, int theGridY)
 {
 	GridItem *aGridItem = nullptr;
@@ -409,7 +419,8 @@ GridItem *Board::GetGridItemAt(GridItemType theGridItemType, int theGridX, int t
 	return nullptr;
 }
 
-//0x408E90
+/// @brief Try to get the first rake on the lawn
+/// @return The Rake or nullptr if it doesn't exist
 GridItem *Board::GetRake()
 {
 	GridItem *aGridItem = nullptr;
@@ -423,11 +434,19 @@ GridItem *Board::GetRake()
 	return nullptr;
 }
 
+/// @brief Try to get a Crater GridItem at a specific grid coordinate
+/// @param theGridX The X grid coordinate
+/// @param theGridY The Y grid coordinate
+/// @return GridItem or nullptr if it doesn't exist.
 GridItem *Board::GetCraterAt(int theGridX, int theGridY)
 {
 	return GetGridItemAt(GridItemType::GRIDITEM_CRATER, theGridX, theGridY);
 }
 
+/// @brief Try to get a GraveStone GridItem at a specific grid coordinate
+/// @param theGridX The X grid coordinate
+/// @param theGridY The Y grid coordinate
+/// @return GridItem or nullptr if it doesn't exist.
 GridItem *Board::GetGraveStoneAt(int theGridX, int theGridY)
 {
 	return GetGridItemAt(GridItemType::GRIDITEM_GRAVESTONE, theGridX, theGridY);

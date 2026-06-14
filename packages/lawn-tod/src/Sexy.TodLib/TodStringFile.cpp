@@ -214,6 +214,7 @@ void TodWriteStringSetFormat(const char* theFormat, TodStringListFormat& theCurr
                 theCurrentFormat.mNewColor = aFormat.mNewColor;
             theCurrentFormat.mLineSpacingOffset = aFormat.mLineSpacingOffset;
             theCurrentFormat.mFormatFlags = aFormat.mFormatFlags;
+            theCurrentFormat.mFormatName = aFormat.mFormatName;
             return;
         }
     }
@@ -232,7 +233,8 @@ int TodWriteString(Graphics* g, const SexyString& theString, int theX, int theY,
                    int theLength) {
     Font* aFont = *theCurrentFormat.mNewFont;
     if (drawString) {
-        int aSpareX = theWidth - TodWriteString(g, theString, theX, theY, theCurrentFormat,
+        TodStringListFormat aMeasureFormat = theCurrentFormat;
+        int aSpareX = theWidth - TodWriteString(g, theString, theX, theY, aMeasureFormat,
                                                 theWidth, DrawStringJustification::DS_ALIGN_LEFT,
                                                 false, theOffset, theLength);
         switch (theJustification) {
@@ -407,9 +409,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
                     }
                 }
 
-                aLineFeedPos = it - theText.begin();
             } else {
-                aCurPos = it - theText.begin();
 
                 aLineWidth = TodWriteWordWrappedHelper(
                     g, theText, theRect.mX, theRect.mY + aYOffset, aCurrentFormat, theRect.mWidth,
@@ -422,6 +422,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
             if (aLineWidth > aMaxWidth)
                 aMaxWidth = aLineWidth;
             aYOffset += aLineSpacing;
+            aLineFeedPos = aCurPos;
             aSpacePos = -1;
             aSpaceSize = 1;
             aCurWidth = 0;
