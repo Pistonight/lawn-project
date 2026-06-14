@@ -378,7 +378,7 @@ void Projectile::CheckForHighGround()
 //0x46D1F0
 bool Projectile::IsSplashDamage(Zombie *theZombie)
 {
-	if (mProjectileType && theZombie && theZombie->IsFireResistant())
+	if (mProjectileType == ProjectileType::PROJECTILE_FIREBALL && theZombie && theZombie->IsFireResistant())
 		return false;
 
 	return mProjectileType == ProjectileType::PROJECTILE_MELON ||

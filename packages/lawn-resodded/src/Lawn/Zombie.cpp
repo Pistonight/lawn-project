@@ -1716,8 +1716,7 @@ Plant *Zombie::FindCatapultTarget()
 		{
 			if (aTarget == nullptr || aPlant->mPlantCol < aTarget->mPlantCol)
 			{
-				aTarget =
-					mBoard->GetTopPlantAt(aPlant->mPlantCol, aPlant->mRow, PlantPriority::TOPPLANT_CATAPULT_ORDER);
+				aTarget = mBoard->GetTopPlantAt(aPlant->mPlantCol, aPlant->mRow, PlantPriority::TOPPLANT_CATAPULT_ORDER);
 			}
 		}
 	}
@@ -2269,10 +2268,8 @@ void Zombie::UpdateZombieGargantuar()
 			if (mMindControlled)
 			{
 				Zombie *aZombie = FindZombieTarget();
-				if (aZombie)
-				{
-					int aDamage = mZombieType == ZombieType::ZOMBIE_REDEYE_GARGANTUAR ? 1000 : 500;
-					aZombie->TakeDamage(aDamage, 0U);
+				if (aZombie) {
+                    aZombie->TakeDamage(1500, 0U);
 				}
 			}
 			else
@@ -2293,6 +2290,12 @@ void Zombie::UpdateZombieGargantuar()
 					{
 						SquishAllInSquare(aPlant->mPlantCol, aPlant->mRow, ZombieAttackType::ATTACKTYPE_CHEW);
 					}
+				}
+
+                Zombie *aZombie = FindZombieTarget();
+				if (aZombie)
+				{
+					aZombie->TakeDamage(1500, 0U);
 				}
 
 				if (mApp->IsScaryPotterLevel())
@@ -2426,10 +2429,7 @@ void Zombie::UpdateZombieGargantuar()
 		{
 			doSmash = true;
 		}
-	}
-
-	else if (mMindControlled)
-	{
+	} else {
 		doSmash = FindZombieTarget();
 	}
 
@@ -4747,7 +4747,7 @@ void Zombie::UpdatePlaying()
 			aPitch = RandRangeFloat(40.0f, 50.0f);
 		}
 
-		if (mZombieType == ZombieType::ZOMBIE_GARGANTUAR)
+		if (mZombieType == ZombieType::ZOMBIE_GARGANTUAR || mZombieType == ZombieType::ZOMBIE_REDEYE_GARGANTUAR)
 		{
 			mApp->PlayFoley(FoleyType::FOLEY_LOW_GROAN);
 		}
@@ -7780,7 +7780,7 @@ void Zombie::StopZombieSound()
 {
 	if (mZombieType == ZombieType::ZOMBIE_DANCER || mZombieType == ZombieType::ZOMBIE_BACKUP_DANCER)
 	{
-		bool aStopSound = false;
+		bool aStopSound = true;
 
 		if (mBoard)
 		{
@@ -7791,7 +7791,7 @@ void Zombie::StopZombieSound()
 					(aZombie->mZombieType == ZombieType::ZOMBIE_DANCER ||
 					 aZombie->mZombieType == ZombieType::ZOMBIE_BACKUP_DANCER))
 				{
-					aStopSound = true;
+					aStopSound = false;
 					break;
 				}
 			}

@@ -2917,7 +2917,7 @@ void Plant::UpdateReanim()
 	UpdateReanimColor();
 
 	float aOffsetX = mShakeOffsetX;
-	float aOffsetY = PlantDrawHeightOffset(mBoard, this, mSeedType, mPlantCol, mRow);
+    float aOffsetY = PlantDrawHeightOffset(mBoard, this, mSeedType, mPlantCol, mRow) + mShakeOffsetY;
 	float aScaleX = 1.0f, aScaleY = 1.0f;
 	if ((mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BIG_TIME) &&
 		(mSeedType == SeedType::SEED_WALLNUT || mSeedType == SeedType::SEED_SUNFLOWER ||
@@ -5209,8 +5209,9 @@ void Plant::Die()
 
 	if (!Plant::IsFlying(mSeedType) && IsOnBoard())
 	{
+        Plant* aPumpkin = mBoard->GetPumpkinAt(mPlantCol, mRow);
 		GridItem *aLadder = mBoard->GetLadderAt(mPlantCol, mRow);
-		if (aLadder)
+		if (aLadder && !aPumpkin)
 		{
 			aLadder->GridItemDie();
 		}

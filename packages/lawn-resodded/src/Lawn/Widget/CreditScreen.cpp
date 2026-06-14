@@ -843,8 +843,8 @@ void CreditScreen::Draw(Graphics *g)
 								   aTransformBackground2.mImage->mWidth - 1,
 								   aTransformBackground2.mImage->mHeight - 1);
 			aBackground2G.DrawImageF(IMAGE_BACKGROUND1,
-									 aTransformBackground2.mTransX - BOARD_WIDTH / 2,
-									 aTransformBackground2.mTransY - BOARD_HEIGHT / 2);
+									 aTransformBackground2.mTransX - BOARD_WIDTH / 2 + 320,
+									 aTransformBackground2.mTransY - BOARD_HEIGHT / 2 - 60);
 			aBackground2G.ClearClipRect();
 		}
 		if (aTransformBackground3.mFrame != -1.0f)

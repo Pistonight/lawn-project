@@ -3401,7 +3401,7 @@ void Board::UpdateToolTip()
 
 		SexyString aZombieName = StrFormat("[%s]", GetZombieDefinition(aZombie->mZombieType).mZombieName);
 		mToolTip->SetTitle(aZombieName);
-		if (mApp->CanShowAlmanac() && aZombie->mZombieType != ZombieType::ZOMBIE_GARGANTUAR)
+		if (mApp->CanShowAlmanac() && aZombie->mZombieType != ZombieType::ZOMBIE_REDEYE_GARGANTUAR)
 		{
 			mToolTip->SetLabel("[CLICK_TO_VIEW]");
 		}
@@ -3656,7 +3656,7 @@ void Board::UpdateToolTip()
 	}
 	else
 	{
-		mToolTip->SetLabel(StrFormat("[%s]", GetPlantDefinition(aUseSeedType).mPlantName));
+        mToolTip->SetLabel(StrFormat("%s", Plant::GetNameString(aSeedPacket->mPacketType, aUseSeedType).c_str()));
 	}
 
 	int aPlantCost = GetCurrentPlantCost(aSeedPacket->mPacketType, aSeedPacket->mImitaterType);
@@ -5567,8 +5567,7 @@ void Board::NextWaveComing()
 {
 	if (mCurrentWave + 1 == mNumWaves)
 	{
-		if (!IsSurvivalStageWithRepick() && mApp->mGameMode != GameMode::GAMEMODE_CHALLENGE_LAST_STAND &&
-			!mApp->IsContinuousChallenge())
+        if (!IsSurvivalStageWithRepick() && (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_LAST_STAND && IsLastStandFinalStage()) && !mApp->IsContinuousChallenge())
 		{
 			mApp->AddReanimation(
 				0, 30, MakeRenderOrder(RenderLayer::RENDER_LAYER_ABOVE_UI, 0, 0), ReanimationType::REANIM_FINAL_WAVE);
