@@ -67,13 +67,16 @@
 #endif
 
 // Upstream:
-// a384cb733d3931f0b0e96e31f6ec4d0754aa18ab Fixed Screenshots
+// 03d777e7ca810b835ce3e3790b3ca620794bb322 Added screen filtering as an option
 
 //Do not edit this. - Electr0Gunner
 Version LawnApp::gResoddedVersion(1, 0, 0, 878);
 // 52b4773e4a1d062505076981c3f3729d2f315618 1.0.0.878
 // - High Resolution settings dropped from SettingsDialog
 //   (in favor of FSR which I already implemented)
+// 03d777e7ca810b835ce3e3790b3ca620794bb322 ---------
+// - Filtering setting dropped (shadowed by upscaler setting)
+//   FUTURE: FSR may be implemented as an extension to this
 
 bool gIsPartnerBuild = false;
 bool gSlowMo = false;

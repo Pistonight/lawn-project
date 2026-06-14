@@ -154,6 +154,7 @@ bool SDL3Renderer::Redraw(Rect *theClipRect)
 	SDL_SetRenderDrawColor(mBackendRenderer, 0, 0, 0, 255);
 	SDL_SetTextureBlendMode(mTargetTexture, SDL_BLENDMODE_BLEND);
 	SDL_RenderClear(mBackendRenderer);
+    SDL_SetTextureScaleMode(mTargetTexture, mApp->mScreenFiltering == MODE_LINEAR ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST);
 
 	if (theClipRect)
 	{
