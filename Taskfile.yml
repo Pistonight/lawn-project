@@ -6,22 +6,11 @@ includes:
     optional: true
     flatten: true
 
-  pvz-pakc:    { taskfile: packages/pvz-pakc,     dir: packages/pvz-pakc,     internal: true }
-  pvz-reanimc: { taskfile: packages/pvz-reanimc,  dir: packages/pvz-reanimc,  internal: true }
-  pvz-utils:   { taskfile: packages/pvz-utils,    dir: packages/pvz-utils,    internal: true }
-
 tasks:
   install:
     - rm -rf mono-dev
     - git clone https://github.com/Pistonight/mono-dev --depth 1
 
-
-  install-cargo-extra-tools:
-    aliases: [icets]
-    cmds:
-      - task: cargo-binstall
-        vars:
-          PACKAGES: lisensor
 
   setup:
     - silent: true
@@ -34,15 +23,5 @@ tasks:
           echo 'please get main.pak from GOTY ZH version (1.2.0.1096) and put it in packages/pvz-assets as main-zh.pak';
           exit 2;
         fi;
-    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main-en.pak
-    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main-zh.pak
-
-
-  check:
-    - lisensor
-    - task: pvz-utils:check
-    - task: pvz-pakc:check
-    - task: pvz-reanimc:check
-
-  test:
-    - task: pvz-reanimc:test
+    - pvz-bintools pakc --unpack packages/pvz-assets/main-en.pak
+    - pvz-bintools pakc --unpack packages/pvz-assets/main-zh.pak

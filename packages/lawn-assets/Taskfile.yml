@@ -20,11 +20,9 @@ tasks:
       - silent: true
         cmd: >
           txtpp -rN shaders;
-          echo '==> building pvz-pakc';
-          cargo build --release --bin pvz-pakc;
           echo '==> processing original assets';
-          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main-en.pak main;
-          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main-zh.pak main-zh;
+          pvz-bintools pakc --unpack ../pvz-assets/main-en.pak main;
+          pvz-bintools pakc --unpack ../pvz-assets/main-zh.pak main-zh;
           mkdir -p main/properties;
           cp -R ../pvz-assets/properties main/properties;
           echo '==> copy mod assets';
@@ -36,7 +34,7 @@ tasks:
           python utf16-to-8.py main-zh/properties/LawnStrings.txt main/properties/LawnStrings_zh_utf8.txt;
           python utf16-to-8.py main-zh/properties/ZombatarTOS.txt main/properties/ZombatarTOS_zh_utf8.txt;
           echo '==> packing main.pak';
-          cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
+          pvz-bintools pakc --pack main.pak;
           echo '==> copy other files';
           mkdir -p ../lawn/export/shaders;
           mkdir -p ../lawn/export/fonts;
