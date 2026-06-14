@@ -5,6 +5,7 @@
 #include <Sexy.TodLib/TodConstants.h>
 #include <SexyAppFramework/SexyApp.h>
 #include <Piston/Sexy/Upscale.h>
+#include <Piston/TodLib/Language.h>
 
 class Achievements;
 class Board;
@@ -145,6 +146,7 @@ class LawnApp : public SexyApp
 	bool mMuteSoundsForCutscene;		   //+0x8C5
 
     int mSavedShader = 1;
+	Language mLanguage = LANGUAGE_CHINESE_SIMPLIFIED;
 	static Version gResoddedVersion;
 
 

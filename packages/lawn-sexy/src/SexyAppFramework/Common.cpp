@@ -1,4 +1,4 @@
-﻿#include "Common.h"
+#include "Common.h"
 #include "MTRand.h"
 #include "Debug.h"
 #include <filesystem>
@@ -94,7 +94,11 @@ std::string Sexy::StringToUpper(const std::string &theString)
 	std::string aString;
 
 	for (unsigned i = 0; i < theString.length(); i++)
+#ifdef PISTON_PATCH
+		aString += toupper((unsigned char)theString[i]);
+#else
 		aString += toupper(theString[i]);
+#endif
 
 	return aString;
 }
@@ -104,7 +108,11 @@ std::string Sexy::StringToLower(const std::string &theString)
 	std::string aString;
 
 	for (unsigned i = 0; i < theString.length(); i++)
+#ifdef PISTON_PATCH
+		aString += tolower((unsigned char)theString[i]);
+#else
 		aString += tolower(theString[i]);
+#endif
 
 	return aString;
 }
@@ -122,11 +130,19 @@ std::string Sexy::SexyStringToString(const SexyString &theString)
 std::string Sexy::Trim(const std::string &theString)
 {
 	int aStartPos = 0;
+#ifdef PISTON_PATCH
+	while (aStartPos < (int)theString.length() && isspace((unsigned char)theString[aStartPos]))
+#else
 	while (aStartPos < (int)theString.length() && isspace(theString[aStartPos]))
+#endif
 		aStartPos++;
 
 	int anEndPos = theString.length() - 1;
+#ifdef PISTON_PATCH
+	while (anEndPos >= 0 && isspace((unsigned char)theString[anEndPos]))
+#else
 	while (anEndPos >= 0 && isspace(theString[anEndPos]))
+#endif
 		anEndPos--;
 
 	return theString.substr(aStartPos, anEndPos - aStartPos + 1);

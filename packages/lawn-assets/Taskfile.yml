@@ -4,8 +4,10 @@ tasks:
   build:
     sources:
       - 'shaders/**/*'
+      - 'fonts/**/*'
       - 'mod/**/*'
-      - ../pvz-assets/main.pak
+      - ../pvz-assets/main-en.pak
+      - ../pvz-assets/main-zh.pak
       - ../pvz-assets/properties/**
       - '*.py'
       - Taskfile.yml
@@ -13,27 +15,32 @@ tasks:
       - main.pak
       - ../lawn/export/main.pak
       - ../lawn/export/shaders/**
+      - ../lawn/export/fonts/**
     cmds:
       - silent: true
         cmd: >
           txtpp -rN shaders;
           echo '==> building pvz-pakc';
           cargo build --release --bin pvz-pakc;
-          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main.pak main;
+          echo '==> processing original assets';
+          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main-en.pak main;
+          cargo run --quiet --release --bin pvz-pakc -- --unpack ../pvz-assets/main-zh.pak main-zh;
           mkdir -p main/properties;
           cp -R ../pvz-assets/properties main/properties;
           echo '==> copy mod assets';
-          mv main/properties/LawnStrings.txt main/LawnStrings.txt;
           mv main/properties/resources.xml main/resources.xml;
           cp -R mod main;
-          echo '==> patch LawnStrings';
-          mv main/LawnStrings.txt main/properties/LawnStrings.txt;
-          python change-strings.py;
-          echo '==> patch resources.xml';
+          echo '==> patch resources';
           mv main/resources.xml main/properties/resources.xml;
           python add-resources.py;
+          python utf16-to-8.py main-zh/properties/LawnStrings.txt main/properties/LawnStrings_zh_utf8.txt;
+          python utf16-to-8.py main-zh/properties/ZombatarTOS.txt main/properties/ZombatarTOS_zh_utf8.txt;
+          echo '==> packing main.pak';
           cargo run --quiet --release --bin pvz-pakc -- --pack main.pak;
+          echo '==> copy other files';
           mkdir -p ../lawn/export/shaders;
+          mkdir -p ../lawn/export/fonts;
           cp main.pak ../lawn/export;
           cp shaders/*.glsl ../lawn/export/shaders;
           rm -f ../lawn/export/shaders/*.txtpp.glsl;
+          cp fonts/*.ttf ../lawn/export/fonts;

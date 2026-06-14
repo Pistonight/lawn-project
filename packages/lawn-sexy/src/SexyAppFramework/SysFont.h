@@ -25,9 +25,14 @@ struct GlyphAtlas
 {
 	int mPadding = 1;
 	int mWidth = 4096;
-	int mHeight = 1024;
-	void *mAtlas = nullptr; // void* to put data for other renderers
-	std::unordered_map<uint32_t, GlpyhAtlasEntry> mGlyphs;
+	int mHeight = 2048;
+	void *mAtlas = nullptr;
+	std::unordered_map<uint32_t, GlpyhAtlasEntry> mGlyphs {};
+	std::vector<uint32_t> mPixels {};
+	bool mDirty = false;
+	int mCursorX = 1;
+    int mCursorY = 1;
+    int mRowHeight = 0;
 };
 
 
@@ -70,10 +75,12 @@ class SysFont : public Font
 
 	ImageFont *CreateImageFont();
 	virtual int StringWidth(const SexyString &theString);
+	virtual int CharWidth(SexyChar theChar);
 	virtual void DrawString(
 		Graphics *g, int theX, int theY, const SexyString &theString, const Color &theColor, const Rect &theClipRect);
 
 	virtual Font *Duplicate();
+	virtual bool DrawStringMatrix(Graphics *g, const SexyMatrix3 &theMatrix, const SexyString &theString, const Color &theColor);
 
 };
 
@@ -93,6 +100,8 @@ struct TrueTypeData
 	~TrueTypeData();
 
 	void Init();
+	void EnsureGlyph(uint32_t c);
+	void FlushAtlas();
 };
 
 } // namespace Sexy

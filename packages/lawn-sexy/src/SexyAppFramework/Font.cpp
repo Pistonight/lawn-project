@@ -71,3 +71,9 @@ void Font::DrawString(
 	Graphics *g, int theX, int theY, const SexyString &theString, const Color &theColor, const Rect &theClipRect)
 {
 }
+
+void Font::Prepare() {}
+
+#ifdef PISTON_PATCH
+bool Font::DrawStringMatrix(Graphics *, const SexyMatrix3 &, const SexyString &, const Color &) { return false; }
+#endif

@@ -9,6 +9,9 @@ namespace Sexy
 {
 
 class Graphics;
+#ifdef PISTON_PATCH
+class SexyMatrix3;
+#endif
 
 class Font
 {
@@ -37,6 +40,11 @@ class Font
 		Graphics *g, int theX, int theY, const SexyString &theString, const Color &theColor, const Rect &theClipRect);
 
 	virtual Font *Duplicate() = 0;
+
+#ifdef PISTON_PATCH
+	virtual void Prepare();
+	virtual bool DrawStringMatrix(Graphics *g, const SexyMatrix3 &theMatrix, const SexyString &theString, const Color &theColor);
+#endif
 };
 
 } // namespace Sexy

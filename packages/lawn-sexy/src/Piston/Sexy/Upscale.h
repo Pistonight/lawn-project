@@ -52,6 +52,7 @@ public:
 
     void SetMode(UpscaleMode mode) {
         if (!IsModeEnabled(mode)) {
+            mode = UpscaleMode::Nearest;
             return;
         }
         mMode = mode;

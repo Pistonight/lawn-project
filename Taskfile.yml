@@ -26,11 +26,16 @@ tasks:
   setup:
     - silent: true
       cmd: >
-        if ! [ -e packages/pvz-assets/main.pak ]; then
-          echo 'please get main.pak from GOTY EN version (1.2.0.1096) and put it in packages/pvz-assets';
+        if ! [ -e packages/pvz-assets/main-en.pak ]; then
+          echo 'please get main.pak from GOTY EN version (1.2.0.1096) and put it in packages/pvz-assets as main-en.pak';
           exit 2;
         fi;
-    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main.pak
+        if ! [ -e packages/pvz-assets/main-zh.pak ]; then
+          echo 'please get main.pak from GOTY ZH version (1.2.0.1096) and put it in packages/pvz-assets as main-zh.pak';
+          exit 2;
+        fi;
+    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main-en.pak
+    - cargo run --release --bin pvz-pakc -- --unpack packages/pvz-assets/main-zh.pak
 
 
   check:

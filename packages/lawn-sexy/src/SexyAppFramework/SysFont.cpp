@@ -6,7 +6,7 @@
 #include "MemoryImage.h"
 #include "Renderer.h"
 #include "WidgetManager.h"
-#include <stdlib.h>
+#include "SexyMatrix.h"
 #include <algorithm>
 #include <cctype>
 #include <filesystem>
@@ -73,6 +73,51 @@ static std::string ResolveFontFile(const std::string &theFace)
 	return "";
 }
 
+
+// The OpenGL renderer's BltRawTexture ignores theClipRect, so the atlas font
+// must clip glyph quads itself. The atlas blit is 1:1 (dest size == src size),
+// so each clipped destination edge shifts the source rect by the same amount.
+// Coordinates are in the destination image space (same space as Graphics
+// mClipRect, which is already intersected against theX + mTransX). Returns
+// false when the glyph is fully outside the clip rect and should be skipped.
+static bool ClipGlyphRects(const Rect &theClipRect, Rect &theDestRect, Rect &theSrcRect)
+{
+	int aClipLeft = theClipRect.mX;
+	int aClipTop = theClipRect.mY;
+	int aClipRight = theClipRect.mX + theClipRect.mWidth;
+	int aClipBottom = theClipRect.mY + theClipRect.mHeight;
+
+	if (theDestRect.mX < aClipLeft)
+	{
+		int aDelta = aClipLeft - theDestRect.mX;
+		theDestRect.mX += aDelta;
+		theDestRect.mWidth -= aDelta;
+		theSrcRect.mX += aDelta;
+		theSrcRect.mWidth -= aDelta;
+	}
+	if (theDestRect.mY < aClipTop)
+	{
+		int aDelta = aClipTop - theDestRect.mY;
+		theDestRect.mY += aDelta;
+		theDestRect.mHeight -= aDelta;
+		theSrcRect.mY += aDelta;
+		theSrcRect.mHeight -= aDelta;
+	}
+	if (theDestRect.mX + theDestRect.mWidth > aClipRight)
+	{
+		int aDelta = theDestRect.mX + theDestRect.mWidth - aClipRight;
+		theDestRect.mWidth -= aDelta;
+		theSrcRect.mWidth -= aDelta;
+	}
+	if (theDestRect.mY + theDestRect.mHeight > aClipBottom)
+	{
+		int aDelta = theDestRect.mY + theDestRect.mHeight - aClipBottom;
+		theDestRect.mHeight -= aDelta;
+		theSrcRect.mHeight -= aDelta;
+	}
+
+	return theDestRect.mWidth > 0 && theDestRect.mHeight > 0;
+}
 
 SysFont::SysFont(const std::string &theFace, int thePointSize, bool bold, bool italics, bool underline)
 {
@@ -184,15 +229,21 @@ void SysFont::Reinit()
 
 SysFont::SysFont(const SysFont &theSysFont)
 {
-	mApp = theSysFont.mApp;
-	mHeight = theSysFont.mHeight;
-	mAscent = theSysFont.mAscent;
-	mFontData = theSysFont.mFontData;
-	mFontData->mFont = this;
-	mBold = theSysFont.mBold;
-	mItalic = theSysFont.mItalic;
-
 	mDrawShadow = false;
+	if (theSysFont.mFontData == nullptr)
+	{
+		mApp = theSysFont.mApp;
+		mHeight = theSysFont.mHeight;
+		mAscent = theSysFont.mAscent;
+		mFontData = nullptr;
+		mBold = theSysFont.mBold;
+		mItalic = theSysFont.mItalic;
+		mUnderlined = theSysFont.mUnderlined;
+		mFontName = theSysFont.mFontName;
+		return;
+	}
+	Init(theSysFont.mApp, theSysFont.mFontName, theSysFont.mFontData->mSize,
+		 theSysFont.mBold, theSysFont.mItalic, theSysFont.mUnderlined, true);
 }
 
 SysFont::~SysFont()
@@ -207,16 +258,28 @@ ImageFont *SysFont::CreateImageFont()
 	//todo: uuhhh implement?
 	return nullptr;
 }
+int SysFont::CharWidth(SexyChar theChar) {
+    if (mFontData == nullptr) return 0;
+    uint32_t c = (uint32_t)(unsigned char)theChar;
+    mFontData->EnsureGlyph(c);
+    auto it = mFontData->mAtlas.mGlyphs.find(c);
+    return it != mFontData->mAtlas.mGlyphs.end() ? it->second.mAdvance : 0;
+}
 
 int SysFont::StringWidth(const SexyString &theString)
-{ 
-    int aWidth = 0;
+{
+	if (mFontData == nullptr)
+	{
+		return 0;
+	}
+
+	int aWidth = 0;
 	auto it = theString.begin();
 	auto end = theString.end();
 	while (it != end)
 	{
 		uint32_t c = utf8::next(it, end);
-
+		mFontData->EnsureGlyph(c);
 		aWidth += mFontData->mAtlas.mGlyphs[c].mAdvance;
 	}
 	return aWidth;
@@ -224,174 +287,209 @@ int SysFont::StringWidth(const SexyString &theString)
 
 void SysFont::DrawString(
 	Graphics *g, int theX, int theY, const SexyString &theString, const Color &theColor, const Rect &theClipRect)
-{ 
+{
 	if (mFontData == nullptr)
+	{
 		return;
-	int posX = theX;
-	int posY = theY;
-	int underlineY = posY - ((mFontData->mFace->underline_position * mFontData->mFace->size->metrics.y_scale) >> 16 >> 6);
-	
-	auto it = theString.begin();
-	auto end = theString.end();
-	while (it != end)
-	{
-		uint32_t c = utf8::next(it, end);
-		GlpyhAtlasEntry aGlyph = mFontData->mAtlas.mGlyphs[c];
-		int aDrawX = posX + aGlyph.mBearingX;
-		int aDrawY = posY - aGlyph.mBearingY;
+	}
 
-		if (g->mDestImage != &Graphics::mStaticImage)
+	// Pass 1: ensure all glyphs are in the CPU buffer
+	{
+		auto it = theString.begin();
+		auto end = theString.end();
+		while (it != end)
 		{
-			if (mDrawShadow)
+			mFontData->EnsureGlyph(utf8::next(it, end));
+		}
+	}
+	mFontData->FlushAtlas();
+
+	// The mStaticImage sentinel has no real backing surface (its Blt* are
+	// no-ops), so route those straight to the renderer; everything else goes
+	// through mDestImage, which forwards screen images to the renderer itself.
+	// Either way the renderer ignores theClipRect, so clip the quads here.
+	bool aToStatic = (g->mDestImage == &Graphics::mStaticImage);
+
+	// Pass 2: draw one full run of glyphs with a uniform pixel offset and color.
+	// theOfs is 0 for the main text, 1 for the offset drop shadow.
+	auto aDrawRun = [&](int theOfs, const Color &theGlyphColor)
+	{
+		int posX = theX;
+		int posY = theY;
+		auto it = theString.begin();
+		auto end = theString.end();
+		while (it != end)
+		{
+			uint32_t c = utf8::next(it, end);
+			auto glyphIt = mFontData->mAtlas.mGlyphs.find(c);
+			if (glyphIt == mFontData->mAtlas.mGlyphs.end()) { posX += mHeight / 2; continue; }
+			const GlpyhAtlasEntry &aGlyph = glyphIt->second;
+
+			// aDrawX/Y = top-left of glyph bitmap. posY is the baseline; bearingY
+			// is pixels above the baseline → subtract to get the top. Graphics
+			// carries mTransX/mTransY (the widget's accumulated screen offset);
+			// just like Graphics::DrawImage, we add it before blitting so the
+			// destination receives absolute coordinates -- whether mDestImage is
+			// the real screen GPUImage or an offscreen image.
+			int aDrawX = posX + aGlyph.mBearingX + g->mTransX + theOfs;
+			int aDrawY = posY - aGlyph.mBearingY + g->mTransY + theOfs;
+
+			Rect aDestRect(aDrawX, aDrawY, aGlyph.mWidth, aGlyph.mHeight);
+			Rect aSrcRect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight);
+			if (ClipGlyphRects(theClipRect, aDestRect, aSrcRect))
 			{
-				Color aShadowColor = Color(0, 0, 0, 0);
-				g->mDestImage->BltRawTexture(
-					mFontData->mAtlas.mAtlas,
-					aGlyph.mWidth,
-					aGlyph.mHeight,
-					Rect(aDrawX + g->mTransX + 1, aDrawY - mAscent + 1 + g->mTransY, aGlyph.mWidth, aGlyph.mHeight),
-					Rect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight),
-					theClipRect,
-					aShadowColor,
-					0);
+				if (aToStatic)
+					mApp->mRenderer->BltRawTexture(
+						mFontData->mAtlas.mAtlas, mFontData->mAtlas.mWidth, mFontData->mAtlas.mHeight,
+						aDestRect, aSrcRect, theClipRect, theGlyphColor, 0);
+				else
+					g->mDestImage->BltRawTexture(
+						mFontData->mAtlas.mAtlas, mFontData->mAtlas.mWidth, mFontData->mAtlas.mHeight,
+						aDestRect, aSrcRect, theClipRect, theGlyphColor, 0);
 			}
 
-			g->mDestImage->BltRawTexture(
-										mFontData->mAtlas.mAtlas,
-										mFontData->mAtlas.mWidth,
-										mFontData->mAtlas.mHeight,
-										Rect(aDrawX, aDrawY, aGlyph.mWidth, aGlyph.mHeight),
-										Rect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight),
-										theClipRect,
-										theColor,
-										0);
-
+			posX += aGlyph.mAdvance;
 		}
-		else
-		{
-			if (mDrawShadow)
-			{
-				Color aShadowColor = Color(0, 0, 0, 0);
-				mApp->mRenderer->BltRawTexture(
-					mFontData->mAtlas.mAtlas,
-					mFontData->mAtlas.mWidth,
-					mFontData->mAtlas.mHeight,
-					Rect(aDrawX + g->mTransX + 1, aDrawY - mAscent + 1 + g->mTransY, aGlyph.mWidth, aGlyph.mHeight),
-					Rect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight),
-					theClipRect,
-					aShadowColor,
-					0);
+	};
 
-			}
-
-			mApp->mRenderer->BltRawTexture(
-						mFontData->mAtlas.mAtlas,
-						mFontData->mAtlas.mWidth,
-						mFontData->mAtlas.mHeight,
-						Rect(aDrawX + g->mTransX + 1, aDrawY - mAscent + 1 + g->mTransY, aGlyph.mWidth, aGlyph.mHeight),
-						Rect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight),
-						theClipRect,
-						theColor,
-						0);
-		}
-
-		posX += aGlyph.mAdvance;
-	}
-	if (g->mDestImage != &Graphics::mStaticImage)
-	{
-		if (mUnderlined)
-			g->mDestImage->DrawLine(theX, underlineY, StringWidth(theString), underlineY, theColor, 0);
-	}
-	else
-	{
-		if (mUnderlined)
-			mApp->mRenderer->DrawLine(
-				theX + g->mTransX + 1, underlineY, StringWidth(theString), underlineY, theColor, 0);
-
-	}
+	// Draw the entire shadow run first so no later glyph's shadow lands on top
+	// of an earlier glyph's body (matches the engine's order-based ImageFont
+	// rendering), then draw the main text over it.
+	if (mDrawShadow)
+		aDrawRun(1, Color(0, 0, 0, 200));
+	aDrawRun(0, theColor);
 }
 
 Font *SysFont::Duplicate()
 {
 	return new SysFont(*this);
 }
+
+bool SysFont::DrawStringMatrix(Graphics *g, const SexyMatrix3 &theMatrix, const SexyString &theString, const Color &theColor)
+{
+	if (mFontData == nullptr)
+		return true;
+	// Extract translation from the 3x3 matrix (m02 = tx, m12 = ty).
+	// Rotation/scale are not currently supported for atlas-based fonts.
+	//
+	// m12 is the text baseline -- matching the ImageFont matrix path, where
+	// glyphs render at mOffset.mY - mAscent relative to this origin -- and
+	// DrawString already treats posY as the baseline, so pass it through
+	// (do NOT add mAscent, which would double-count and push text down).
+	//
+	// The matrix carries absolute coordinates: TodBltMatrix blits the
+	// ImageFont matrix path WITHOUT adding g->mTransX/mTransY. DrawString,
+	// however, DOES add g->mTransX/mTransY (the Font::DrawString contract,
+	// same as ImageFont::DrawString -> g->DrawImage). Subtract them here so
+	// DrawString re-adds them and the net position stays absolute.
+	int posX = (int)theMatrix.m02 - g->mTransX;
+	int posY = (int)theMatrix.m12 - g->mTransY;
+	DrawString(g, posX, posY, theString, theColor, g->mClipRect);
+	return true;
+}
 void TrueTypeData::Init()
 {
 	if (mFace == nullptr)
 	{
-		// Handle error: mFace is not initialized
 		return;
 	}
+
 	FT_Set_Pixel_Sizes(mFace, 0, mSize);
+
 	if (mAtlas.mAtlas != nullptr)
 	{
 		mFont->mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
 	}
+	mAtlas.mAtlas     = nullptr;
+	mAtlas.mDirty     = false;
+	mAtlas.mCursorX   = mAtlas.mPadding;
+	mAtlas.mCursorY   = mAtlas.mPadding;
+	mAtlas.mRowHeight = 0;
 	mAtlas.mGlyphs.clear();
+	mAtlas.mPixels.assign(mAtlas.mWidth * mAtlas.mHeight, 0);
 
-	int aLastX = mAtlas.mPadding;
-	int aLastY = mAtlas.mPadding;
-	int aRowHeight = 0;
-	uint32_t *anAtlasPixels = new uint32_t[mAtlas.mWidth * mAtlas.mHeight]; //TODO: RESIZE TO FIT ALL CHARACTERS PROPERLY
-	std::vector<uint32_t> aWantedChar;
+	// for (uint32_t c = ' '; c <= '~'; c++)
+	// {
+	// 	EnsureGlyph(c);
+	// }
+	// for (uint32_t c = 0x00A0; c < 0x024F; c++)
+	// {
+	// 	EnsureGlyph(c);
+	// }
 
-	for (char c = ' '; c <= '~'; c++)
-		aWantedChar.push_back(c);
-	for (uint32_t c = 0x00A0; c < 0x024F; c++)
-		aWantedChar.push_back(c);
-	for (uint32_t aSetupChar : aWantedChar)
+	// CJK glyphs loaded on demand in DrawString; FlushAtlas deferred to render thread
+}
+
+void TrueTypeData::EnsureGlyph(uint32_t c)
+{
+	if (mAtlas.mGlyphs.find(c) != mAtlas.mGlyphs.end())
 	{
-		GlpyhAtlasEntry aGlyph;
-		FT_Load_Char(mFace, aSetupChar, FT_LOAD_RENDER);
-		
-		if (mFont->mBold)
-		{
-			FT_GlyphSlot_Embolden(mFace->glyph);
-		}
-
-		FT_Bitmap &aBitmap = mFace->glyph->bitmap;
-
-		aGlyph.mX = aLastX;
-		aGlyph.mY = aLastY;
-		aGlyph.mWidth = aBitmap.width;
-		aGlyph.mHeight = aBitmap.rows;
-		aGlyph.mBearingX = mFace->glyph->bitmap_left;
-		aGlyph.mBearingY = mFace->glyph->bitmap_top;
-		aGlyph.mAdvance = mFace->glyph->advance.x >> 6;
-		if (aLastX + aGlyph.mWidth + mAtlas.mPadding > mAtlas.mWidth)
-		{
-			aLastX = mAtlas.mPadding;
-			aLastY += aRowHeight + mAtlas.mPadding;
-			aRowHeight = 0;
-		}
-		aRowHeight = std::max(aRowHeight, aGlyph.mHeight);
-		aLastX += aGlyph.mWidth + mAtlas.mPadding;
-		uint32_t *aConvertedPixels = new uint32_t[aGlyph.mWidth * aGlyph.mHeight];
-		int i = 0;
-		for (int y = 0; y < aGlyph.mHeight; y++)
-		{
-			for (int x = 0; x < aGlyph.mWidth; x++)
-			{
-				uint8_t anAlpha = aBitmap.buffer[y * aBitmap.pitch + x];
-				aConvertedPixels[i++] = (anAlpha << 24) | 0x00FFFFFF;
-			}
-		}
-
-		for (int y = 0; y < aGlyph.mHeight; ++y)
-		{
-			uint32_t *aDest = anAtlasPixels + (aGlyph.mY + y) * mAtlas.mWidth + aGlyph.mX;
-			uint32_t *aSrc = aConvertedPixels + y * aGlyph.mWidth;
-
-			memcpy(aDest, aSrc, aGlyph.mWidth * sizeof(uint32_t));
-		}
-
-		delete[] aConvertedPixels;
-
-		mAtlas.mGlyphs[aSetupChar] = aGlyph;
+		return;
 	}
-	mAtlas.mAtlas = mFont->mApp->mRenderer->CreateTexture(anAtlasPixels, mAtlas.mWidth, mAtlas.mHeight, RawPixelFormat::RAW_FORMAT_RGBA, 1);
 
-	delete[] anAtlasPixels;
+	FT_Load_Char(mFace, c, FT_LOAD_RENDER);
+	if (mFont->mBold)
+	{
+		FT_GlyphSlot_Embolden(mFace->glyph);
+	}
+
+	FT_Bitmap &aBitmap = mFace->glyph->bitmap;
+
+	GlpyhAtlasEntry aEntry;
+	aEntry.mWidth    = aBitmap.width;
+	aEntry.mHeight   = aBitmap.rows;
+	aEntry.mBearingX = mFace->glyph->bitmap_left;
+	aEntry.mBearingY = mFace->glyph->bitmap_top;
+	aEntry.mAdvance  = mFace->glyph->advance.x >> 6;
+
+	if (mAtlas.mCursorX + aEntry.mWidth + mAtlas.mPadding > mAtlas.mWidth)
+	{
+		mAtlas.mCursorX   = mAtlas.mPadding;
+		mAtlas.mCursorY  += mAtlas.mRowHeight + mAtlas.mPadding;
+		mAtlas.mRowHeight  = 0;
+	}
+
+	if (mAtlas.mCursorY + aEntry.mHeight + mAtlas.mPadding > mAtlas.mHeight)
+	{
+		aEntry.mX = 0;
+		aEntry.mY = 0;
+		mAtlas.mGlyphs[c] = aEntry;
+		return;
+	}
+
+	aEntry.mX = mAtlas.mCursorX;
+	aEntry.mY = mAtlas.mCursorY;
+
+	for (int y = 0; y < aEntry.mHeight; y++)
+	{
+		for (int x = 0; x < aEntry.mWidth; x++)
+		{
+			uint8_t anAlpha = aBitmap.buffer[y * aBitmap.pitch + x];
+			mAtlas.mPixels[(aEntry.mY + y) * mAtlas.mWidth + (aEntry.mX + x)] = (anAlpha << 24) | 0x00FFFFFF;
+		}
+	}
+
+	mAtlas.mCursorX  += aEntry.mWidth + mAtlas.mPadding;
+	mAtlas.mRowHeight  = std::max(mAtlas.mRowHeight, aEntry.mHeight);
+	mAtlas.mDirty      = true;
+	mAtlas.mGlyphs[c]  = aEntry;
+}
+
+void TrueTypeData::FlushAtlas()
+{
+	if (!mAtlas.mDirty)
+	{
+		return;
+	}
+
+	if (mAtlas.mAtlas != nullptr)
+	{
+		mFont->mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
+	}
+
+	mAtlas.mAtlas = mFont->mApp->mRenderer->CreateTexture(
+		mAtlas.mPixels.data(), mAtlas.mWidth, mAtlas.mHeight, RawPixelFormat::RAW_FORMAT_RGBA, 1);
+	mAtlas.mDirty = false;
 }
 
 TrueTypeData::~TrueTypeData()

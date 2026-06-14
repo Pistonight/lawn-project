@@ -415,12 +415,6 @@ void LawnApp::GotFocus()
 //0x44F460
 void LawnApp::LostFocus()
 {
-// #ifdef PISTON_PATCH
-//     // keep game playing
-//     if (mPistonSettings.mAllowBackgroundPlay) {
-//         return;
-//     }
-// #endif
 	if (!mTodCheatKeys && CanPauseNow())
 	{
 		DoPauseDialog();
@@ -436,7 +430,8 @@ void LawnApp::WriteToRegistry()
 		mPlayerInfo->SaveDetails();
 	}
 
-    RegistryWriteInteger("Shader", mSavedShader);
+	RegistryWriteInteger("Shader", mSavedShader);
+	RegistryWriteInteger("Language", static_cast<int>(mLanguage));
 
 	SexyAppBase::WriteToRegistry();
 }
@@ -444,10 +439,19 @@ void LawnApp::WriteToRegistry()
 //0x44F530
 void LawnApp::ReadFromRegistry()
 {
-    int aShader = 0;
-    if (RegistryReadInteger("Shader", &aShader)) {
-        mSavedShader = aShader;
-    }
+	int aShader = 0;
+	if (RegistryReadInteger("Shader", &aShader))
+	{
+		mSavedShader = aShader;
+	}
+
+	int aLanguage = 0;
+	if (RegistryReadInteger("Language", &aLanguage))
+	{
+		mLanguage = static_cast<Language>(aLanguage);
+	}
+	gCurrentLanguage = mLanguage;
+
 	SexyApp::ReadFromRegistry();
 }
 
@@ -1821,22 +1825,27 @@ void LawnApp::LoadingThreadProc()
 	if (!TodLoadResources("LoaderBar"))
 		return;
 
-	TodStringListLoad("properties/LawnStrings.txt");
-	TodStringListLoad("properties/ZombatarTOS.txt");
-	TodStringListLoad("properties/FrameworkStrings.txt");
+    if (mLanguage == LANGUAGE_CHINESE_SIMPLIFIED) {
+        TodStringListLoad("properties/LawnStrings_zh_utf8.txt");
+        TodStringListLoad("properties/ZombatarTOS_zh_utf8.txt");
+    } else {
+        TodStringListLoad("properties/LawnStrings.txt");
+        TodStringListLoad("properties/ZombatarTOS.txt");
+    }
 
-#ifdef PISTON_PATCH // PISTON_PATCH load extra strings and perf
+	TodStringListLoad("properties/FrameworkStrings.txt");
 	TodStringListLoad("properties/ModStrings.txt");
 	TodStringListLoad("properties/ExtraLawnStrings.txt");
+
     ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
 	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
 	ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
-#endif
 
 	if (mTitleScreen)
 	{
 		mTitleScreen->mLoaderScreenIsLoaded = true;
 	}
+
 
 	const char *groups[] = {"LoadingFonts", "LoadingImages", "LoadingSounds"};
 	int group_ave_ms_to_load[] = {54, 9, 54};
@@ -1857,10 +1866,7 @@ void LawnApp::LoadingThreadProc()
 
 	LoadGroup("LoadingImages", 9);
 	LoadGroup("LoadingFonts", 54);
-	if (mLoadingFailed || mShutdown || mCloseRequest)
-		return;
 
-	aHesitationResources.EndBracket();
 	TodTraceAndLog("[LawnProject] - loading '%s' %d ms", "resources", (int)aTimer.GetDuration());
 
 	mMusic->MusicInit();

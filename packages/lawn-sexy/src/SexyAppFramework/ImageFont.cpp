@@ -3,7 +3,11 @@
 #include "Image.h"
 #include "SexyAppBase.h"
 #include "MemoryImage.h"
+#ifdef PISTON_PATCH
+#include "AutoCrit.h"
+#else
 #include "..\SexyAppFramework\AutoCrit.h"
+#endif
 
 using namespace Sexy;
 
