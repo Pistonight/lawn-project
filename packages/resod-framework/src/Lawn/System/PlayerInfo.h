@@ -6,6 +6,9 @@
 #define PURCHASE_COUNT_OFFSET 1000
 
 #include <LawnApp/ConstEnums.h>
+#ifdef PISTON_PATCH_UPSTREAM
+#include <SexyAppFramework/Common.h>
+#endif
 #include <json.hpp>
 
 class PottedPlant {

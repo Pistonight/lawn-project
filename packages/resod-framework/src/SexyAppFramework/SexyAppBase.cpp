@@ -9,7 +9,9 @@
 #include <SexyAppFramework/SexyAppBase.h>
 #include <SexyAppFramework/Widget.h>
 #include <SexyAppFramework/WidgetManager.h>
+#ifdef PISTON_PATCH_UPSTREAMABLE
 #include <SexyAppFramework/resource.h>
+#endif
 #if SEXY_USE_OPENGL
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
 #endif
@@ -19,8 +21,8 @@
 #if SEXY_USE_IMGUI
 #include <SexyAppFramework/ImGui/ImGuiManager.h>
 #endif
-#include "BuildInfo.h"
 #include <ImageLib/ImageLib.h>
+#include <SexyAppFramework/BuildInfo.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/GPUImage.h>
 #include <SexyAppFramework/HTTPTransfer.h>

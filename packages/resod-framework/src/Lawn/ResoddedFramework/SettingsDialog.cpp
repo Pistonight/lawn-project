@@ -1,8 +1,8 @@
-#include "../../SexyAppFramework/BuildInfo.h"
 #include <Lawn/ResoddedFramework/SettingsDialog.h>
 #include <LawnApp/LawnApp.h>
 #include <LawnApp/Resources.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <SexyAppFramework/BuildInfo.h>
 #include <SexyAppFramework/Checkbox.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/ListWidget.h>

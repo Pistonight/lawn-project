@@ -14,6 +14,7 @@ def copy_files():
         framework_src_path / "main.cpp",
         framework_src_path / "main_icon.ico",
         framework_src_path / "LawnProject.rc",
+        framework_src_path / "SexyAppFramework" / "resource.h",
         # git-ignored ones
         framework_src_path / "SexyAppFramework" / "BuildInfo.h",
     ])

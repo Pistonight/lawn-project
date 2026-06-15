@@ -53,7 +53,9 @@
 #include <SexyAppFramework/Checkbox.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/SEHCatcher.h>
+#ifndef PISTON_PATCH_UPSTREAM
 #include <SexyAppFramework/resource.h>
+#endif
 
 #include <PakLib/PakInterface.h>
 

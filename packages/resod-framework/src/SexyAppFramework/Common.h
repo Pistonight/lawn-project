@@ -14,9 +14,12 @@
 // Platform Headers Start
 
 #ifdef _WIN32
+#include <windows.h>
+#ifdef PISTON_PATCH_UPSTREAM
+// ensure <windows.h> is included before <mmsystem.h>
+#endif
 #include <mmsystem.h>
 #include <shellapi.h>
-#include <windows.h>
 
 #undef _WIN32_WINNT
 #undef WIN32_LEAN_AND_MEAN

@@ -1,10 +1,15 @@
 # CMakeLists.txt
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
-project(PlantsVzZombies LANGUAGES C CXX)
+project(PlantsVzZombies)
+if (MSVC)
+    # Debugging library mismatch issue
+    # need to be before add_executable
+    # putting it on top
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # a stupid fix
+endif()
 
 # Target
-# PISTON: WIN32 - don't show terminal
-add_executable(${PROJECT_NAME} WIN32)
+add_executable(${PROJECT_NAME})
 
 include(cmake/UserConfig.cmake)
 
@@ -15,14 +20,7 @@ if(MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
 endif()
 
 if (MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # a stupid fix
-    # Prevent PDB access conflicts when multiple CL.EXE instances compile in parallel.
-    add_compile_options(/FS)
     add_compile_options(/MP)
-
-    # PISTON: patch
-    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_FORCE_SYNCHRONOUS_PDB_WRITES ON)
-    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
 endif()
 
 option(GITHUB_ACTIONS "Building in GitHub Actions" OFF)
@@ -51,6 +49,11 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
+# Include Paths
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+
 # Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ResoddedFramework
@@ -63,7 +66,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:_DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
 )
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH_UPSTREAM)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_MIXIN)
+
+if (MSVC)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_FORCE_SYNCHRONOUS_PDB_WRITES ON)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+endif()
 
 # Generate BuildInfo.h
 set(BUILD_INFO_SRC ${CMAKE_SOURCE_DIR}/../resod-framework/src/SexyAppFramework/BuildInfo.h.in)
@@ -74,7 +83,6 @@ add_custom_target(build_info ALL
         -DSRC=${BUILD_INFO_SRC}
         -DDST=${BUILD_INFO_DST}
         -DSEXY_PROJECT_ROOT="${CMAKE_SOURCE_DIR}"
-        -DVERSION_FILE="${CMAKE_SOURCE_DIR}/../../LawnVersion.txt"
         -P ${CMAKE_SOURCE_DIR}/cmake/BuildInfo.cmake
     COMMENT "Updating build info..."
 )

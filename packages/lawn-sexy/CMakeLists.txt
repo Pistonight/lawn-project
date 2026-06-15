@@ -158,19 +158,19 @@ endif()
 
 
 
-set(BUILD_INFO_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/SexyAppFramework/BuildInfo.h.in)
-set(BUILD_INFO_DST ${CMAKE_CURRENT_SOURCE_DIR}/src/SexyAppFramework/BuildInfo.h)
-
-add_custom_target(build_info ALL
-    COMMAND ${CMAKE_COMMAND}
-        -DSRC=${BUILD_INFO_SRC}
-        -DDST=${BUILD_INFO_DST}
-        -DSEXY_PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
-        -DVERSION_FILE="${CMAKE_SOURCE_DIR}/../../LawnVersion.txt"
-        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildInfo.cmake
-    COMMENT "Updating build info..."
-)
-
-set_source_files_properties(${BUILD_INFO_DST} PROPERTIES GENERATED TRUE)
-target_sources(${PROJECT_NAME} PRIVATE ${BUILD_INFO_DST})
-add_dependencies(${PROJECT_NAME} build_info)
+# set(BUILD_INFO_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/SexyAppFramework/BuildInfo.h.in)
+# set(BUILD_INFO_DST ${CMAKE_CURRENT_SOURCE_DIR}/src/SexyAppFramework/BuildInfo.h)
+#
+# add_custom_target(build_info ALL
+#     COMMAND ${CMAKE_COMMAND}
+#         -DSRC=${BUILD_INFO_SRC}
+#         -DDST=${BUILD_INFO_DST}
+#         -DSEXY_PROJECT_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
+#         -DVERSION_FILE="${CMAKE_SOURCE_DIR}/../../LawnVersion.txt"
+#         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildInfo.cmake
+#     COMMENT "Updating build info..."
+# )
+#
+# set_source_files_properties(${BUILD_INFO_DST} PROPERTIES GENERATED TRUE)
+# target_sources(${PROJECT_NAME} PRIVATE ${BUILD_INFO_DST})
+# add_dependencies(${PROJECT_NAME} build_info)

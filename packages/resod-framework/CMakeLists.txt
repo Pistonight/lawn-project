@@ -5,7 +5,6 @@ add_library(${PROJECT_NAME} STATIC)
 
 # Source Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 # cpp as include files
@@ -56,7 +55,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Freetype::Freetype
     Vorbis::vorbisfile
     Vorbis::vorbis
-    cpptrace::cpptrace
     $<$<BOOL:${SEXY_CRASH_HANDLER}>:cpptrace::cpptrace>
     CURL::libcurl
 
@@ -123,7 +121,9 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH_UPSTREAM)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_MIXIN)
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:Debug>:DEBUG>
     $<$<CONFIG:Debug>:_DEBUG>

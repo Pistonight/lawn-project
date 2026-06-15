@@ -44,7 +44,7 @@ def main():
             f"-DCMAKE_BUILD_TYPE={cmake_config_type}"
         ])
 
-    build_dir = Path("build-x64/release" if is_release else "build-x64/debug").resolve()
+    build_dir = Path("build-x64/release" if is_release else "build-x64/debug")
     if is_clean:
         if build_dir.exists():
             print("==> cleaning build dir")
@@ -55,7 +55,7 @@ def main():
         subprocess.check_call([
             "cmake", "--preset=windows-msvc-x64", "-B", build_dir,
             "-G", "Visual Studio 18 2026",
-            "-A", "x64" # 64-bit , use Win32 for x86
+            # "-A", "x64" # 64-bit , use Win32 for x86
         ])
 
     exit(drive_cmake(build_dir, cmake_config_type, is_raw))

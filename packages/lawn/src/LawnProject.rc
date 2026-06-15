@@ -25,18 +25,18 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -62,7 +62,11 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+#ifdef PISTON_MIXIN // pulled resource.h from SexyAppFramework/
+IDI_MAIN_ICON               ICON                    "main_icon.ico"
+#else
 IDI_MAIN_ICON               ICON                    "..\\main_icon.ico"
+#endif
 
 #endif    // ??????? (??????) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -78,4 +82,3 @@ IDI_MAIN_ICON               ICON                    "..\\main_icon.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

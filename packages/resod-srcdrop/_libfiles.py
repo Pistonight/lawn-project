@@ -8,9 +8,7 @@ def copy_files():
     print("==> copying lib files")
     root_path = _get_target_project_root()
     target_src_path = root_path / "thirdparty" / "src"
-    target_include_path = root_path / "thirdparty" / "include"
     _common.rm_rf(target_src_path)
-    _common.rm_rf(target_include_path)
     _common.rm_rf(root_path / "src")
 
     framework_path = _common.get_framework_root()
@@ -29,22 +27,14 @@ def copy_files():
         dirpath = Path(dirpath)
         reldirpath = dirpath.relative_to(thirdparty_src_path)
 
-        target_include_dirpath = target_include_path / reldirpath
         target_src_dirpath = target_src_path / reldirpath
-
-        target_include_dirpath.mkdir(parents = True, exist_ok=True)
-        if any(_common.is_src_file(x) for x in filenames):
-            # ^ doesn't consider exclude but good enough
-            target_src_dirpath.mkdir(parents = True, exist_ok=True)
+        target_src_dirpath.mkdir(parents = True, exist_ok=True)
 
         for file in filenames:
             filepath = dirpath / file
             if filepath in exclude:
                 continue
-            if _common.is_src_file(file):
-                filepath.copy_into(target_src_dirpath)
-            else:
-                filepath.copy_into(target_include_dirpath)
+            filepath.copy_into(target_src_dirpath)
 
     transformers = _get_transformers()
 

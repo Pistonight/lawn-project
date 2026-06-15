@@ -1,4 +1,4 @@
-#include "BuildInfo.h"
+#include <SexyAppFramework/BuildInfo.h>
 #include <SexyAppFramework/SexyApp.h>
 
 // #include "..\Crypt\RegKey.h"

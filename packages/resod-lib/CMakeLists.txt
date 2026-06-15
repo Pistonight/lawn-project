@@ -13,13 +13,9 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 # Include Paths
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/src"
     "${CMAKE_CURRENT_SOURCE_DIR}/bass/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/FidelityFX-FSR/include"
-)
-target_include_directories(${PROJECT_NAME} PRIVATE
-    # needed by imgui files
-    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/include/imgui"
 )
 
 # Libraries
