@@ -1,13 +1,13 @@
 #if SEXY_USE_SDL3_RENDERER
 
-#include "AutoCrit.h"
-#include "Debug.h"
-#include "Graphics.h"
-#include "PerfTimer.h"
-#include "Rect.h"
-#include "SexyAppBase.h"
+#include <SexyAppFramework/AutoCrit.h>
+#include <SexyAppFramework/Debug.h>
+#include <SexyAppFramework/Graphics.h>
+#include <SexyAppFramework/PerfTimer.h>
+#include <SexyAppFramework/Rect.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Image.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Renderer.h>
+#include <SexyAppFramework/SexyAppBase.h>
 
 using namespace Sexy;
 

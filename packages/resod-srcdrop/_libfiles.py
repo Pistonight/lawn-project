@@ -6,7 +6,7 @@ import _transformer
 
 def copy_files():
     print("==> copying lib files")
-    root_path = get_lib_project_root()
+    root_path = _get_target_project_root()
     target_src_path = root_path / "thirdparty" / "src"
     target_include_path = root_path / "thirdparty" / "include"
     _common.rm_rf(target_src_path)
@@ -46,10 +46,7 @@ def copy_files():
             else:
                 filepath.copy_into(target_include_dirpath)
 
-    lib_transformers = [
-        _transformer.transform_includes,
-        _transformer.transform_lib_includes,
-    ]
+    transformers = _get_transformers()
 
     imagelib_src_path = framework_path / "src" / "ImageLib"
     imagelib_target_path = root_path / "src" / "ImageLib"
@@ -62,7 +59,7 @@ def copy_files():
             if file.endswith("CMakeLists.txt"):
                 continue
             filepath = dirpath / file
-            _transformer.copy_transform(filepath, target_src_dirpath / file, lib_transformers)
+            _transformer.copy_transform(filepath, target_src_dirpath / file, transformers)
 
 
     paklib_src_path = framework_path / "src" / "PakLib"
@@ -76,11 +73,35 @@ def copy_files():
             if file.endswith("CMakeLists.txt"):
                 continue
             filepath = dirpath / file
-            _transformer.copy_transform(filepath, target_src_dirpath / file, lib_transformers)
+            _transformer.copy_transform(filepath, target_src_dirpath / file, transformers)
 
+    run_fix()
+
+
+def transform():
+    print("==> transforming lib files")
+    our_root_path = _get_target_project_root()
+    transformers = _get_transformers()
+    for (dirpath, _, filenames) in os.walk(our_root_path / "src"):
+        for file in filenames:
+            if _common.is_src_file(file) or _common.is_header_file(file):
+                _transformer.transform(Path(dirpath) / file, transformers)
+
+    run_fix()
+
+
+def run_fix():
     print("==> formatting lib files")
-    _common.run_fix(root_path)
+    _common.run_fix(_get_target_project_root())
 
-def get_lib_project_root():
+
+def _get_transformers():
+    return [
+        _transformer.transform_includes,
+        _transformer.transform_lib_includes,
+    ]
+
+
+def _get_target_project_root():
     return _common.get_packages_root() / "resod-lib"
 

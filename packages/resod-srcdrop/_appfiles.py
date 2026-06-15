@@ -6,7 +6,7 @@ import _transformer
 
 def copy_files():
     print("==> copying framework files")
-    our_root_path = get_framework_project_root()
+    our_root_path = _get_target_project_root()
     framework_path = _common.get_framework_root()
     framework_src_path = framework_path / "src"
     exclude = set([
@@ -18,12 +18,7 @@ def copy_files():
         framework_src_path / "SexyAppFramework" / "BuildInfo.h",
     ])
 
-    transformers = [
-        _transformer.transform_includes,
-        _transformer.transform_resolve_framework_includes,
-        _transformer.transform_lib_includes,
-    ]
-
+    transformers = _get_transformers()
     # these are part of resod-lib
     exclude_dirs = set([
         "ImageLib", "PakLib"
@@ -54,9 +49,33 @@ def copy_files():
                 continue
             _transformer.copy_transform(filepath, target_dirpath / file, transformers)
 
-    print("==> formatting framework files")
-    _common.run_fix(our_root_path)
+    run_fix()
 
-def get_framework_project_root():
+
+def transform():
+    print("==> transforming framework files")
+    our_root_path = _get_target_project_root()
+    transformers = _get_transformers()
+    for (dirpath, _, filenames) in os.walk(our_root_path / "src"):
+        for file in filenames:
+            if _common.is_src_file(file) or _common.is_header_file(file):
+                _transformer.transform(Path(dirpath) / file, transformers)
+    run_fix()
+
+
+def run_fix():
+    print("==> formatting framework files")
+    _common.run_fix(_get_target_project_root())
+
+
+def _get_transformers():
+    return [
+        _transformer.transform_includes,
+        _transformer.transform_lib_includes,
+        _transformer.transform_resolve_framework_includes,
+    ]
+
+
+def _get_target_project_root():
     return _common.get_packages_root() / "resod-framework"
 

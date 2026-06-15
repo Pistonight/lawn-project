@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "GPUImage.h"
+#include <SexyAppFramework/GPUImage.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 

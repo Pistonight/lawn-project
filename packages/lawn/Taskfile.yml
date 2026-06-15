@@ -19,3 +19,9 @@ tasks:
   fix-srcdrop:
     - task: fix
 
+  clean:
+    - rm -rf ../../build
+    - rm -rf build
+
+  build:
+    - python build.py -- {{.CLI_ARGS}}

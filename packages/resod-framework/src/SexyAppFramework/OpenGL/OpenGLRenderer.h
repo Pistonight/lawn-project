@@ -1,9 +1,9 @@
 #pragma once
 #if SEXY_USE_OPENGL
-#include "OpenGL/GLShader.h"
-#include "Renderer.h"
 #include <SDL3/SDL_video.h>
+#include <SexyAppFramework/OpenGL/GLShader.h>
 #include <SexyAppFramework/OpenGL/OpenGLImage.h>
+#include <SexyAppFramework/Renderer.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 

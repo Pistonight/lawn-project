@@ -1,6 +1,6 @@
 # .gitignore
 build/
-build-msvc/
+/build-*
 out/
 *.exe
 *.pdb

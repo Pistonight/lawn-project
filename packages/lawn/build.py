@@ -1,6 +1,8 @@
 import os
 import sys
 import subprocess
+import shutil
+from pathlib import Path
 from threading import Thread
 from typing import IO
 
@@ -9,15 +11,61 @@ RED = "\033[31m"
 YELLOW = "\033[33m"
 RESET = "\033[0m"
 
-def nproc():
-    return os.cpu_count()
+def main():
+    # build 
+    #   : configure if needed, build debug
+    # build -- clean
+    #   : configure if needed, clean and build debug
+    # build -- clean configure
+    #   : re-configure ninja, clean and build debug
+    # build -- configure
+    #   : re-configure ninja, build debug
+    # build -- configure release
+    #   : re-configure ninja as release, build release
+    is_release = "release" in sys.argv or "--release" in sys.argv
+    is_raw = "--raw" in sys.argv
+    is_clean = "clean" in sys.argv or "--clean" in sys.argv
+    is_configure = "configure" in sys.argv or "--configure" in sys.argv
+
+    cmake_config_type = "Release" if is_release else "Debug"
+
+    configure_dir = Path("../../build").resolve()
+    if is_clean and is_configure:
+        if configure_dir.exists():
+            print("==> cleaning configure dir")
+            shutil.rmtree(configure_dir)
+
+    if is_configure or not configure_dir.exists():
+        print("==> configuring ninja for: " + cmake_config_type.lower())
+        subprocess.check_call([
+            "cmake", "--preset=windows-msvc-x64", "-B", configure_dir,
+            "-G", "Ninja",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            f"-DCMAKE_BUILD_TYPE={cmake_config_type}"
+        ])
+
+    build_dir = Path("build-x64/release" if is_release else "build-x64/debug").resolve()
+    if is_clean:
+        if build_dir.exists():
+            print("==> cleaning build dir")
+            shutil.rmtree(build_dir)
+    if is_configure or not build_dir.exists():
+        print("==> configuring msvc for: " + cmake_config_type.lower())
+        build_dir.mkdir(parents=True, exist_ok=True)
+        subprocess.check_call([
+            "cmake", "--preset=windows-msvc-x64", "-B", build_dir,
+            "-G", "Visual Studio 18 2026",
+            "-A", "x64" # 64-bit , use Win32 for x86
+        ])
+
+    exit(drive_cmake(build_dir, cmake_config_type, is_raw))
 
 def drive_cmake(build_dir, config_name, is_raw):
     command = [
         "cmake", "--build", build_dir,
         "--config", config_name,
         "--",
-        f"/m:{nproc()}"
+        f"/m:{os.cpu_count()}"
     ]
     proc = subprocess.Popen(
         command,
@@ -112,8 +160,4 @@ def try_parse_compiler_error(line: str):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("error: usage: build.py BUILD_DIR CONFIG")
-        exit(64)
-    raw = len(sys.argv) > 3 and sys.argv[3] == "--raw"
-    exit(drive_cmake(sys.argv[1], sys.argv[2], raw))
+    main()

@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "GPUImage.h"
 #include <SDL3/SDL_render.h>
+#include <SexyAppFramework/GPUImage.h>
 
 namespace Sexy {
 

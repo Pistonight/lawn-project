@@ -2,6 +2,10 @@
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
 project(PlantsVzZombies LANGUAGES C CXX)
 
+# Target
+# PISTON: WIN32 - don't show terminal
+add_executable(${PROJECT_NAME} WIN32)
+
 include(cmake/UserConfig.cmake)
 
 # Enable Hot Reload for MSVC compilers if supported.
@@ -40,10 +44,6 @@ set(CMAKE_USE_FOLDERS ON)
 add_subdirectory(../resod-framework resod-framework)
 add_subdirectory(../resod-lib resod-lib)
 
-# Target
-# PISTON: WIN32 - don't show terminal
-add_executable(${PROJECT_NAME} WIN32)
-
 # Source Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
@@ -66,8 +66,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH)
 
 # Generate BuildInfo.h
-set(BUILD_INFO_SRC ${CMAKE_SOURCE_DIR}../resod-framework/src/SexyAppFramework/BuildInfo.h.in)
-set(BUILD_INFO_DST ${CMAKE_SOURCE_DIR}../resod-framework/src/SexyAppFramework/BuildInfo.h)
+set(BUILD_INFO_SRC ${CMAKE_SOURCE_DIR}/../resod-framework/src/SexyAppFramework/BuildInfo.h.in)
+set(BUILD_INFO_DST ${CMAKE_SOURCE_DIR}/../resod-framework/src/SexyAppFramework/BuildInfo.h)
 
 add_custom_target(build_info ALL
     COMMAND ${CMAKE_COMMAND}

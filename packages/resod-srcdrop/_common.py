@@ -21,6 +21,12 @@ def rm_rf(d: Path | str):
 def is_src_file(s: str) -> bool:
     return s.endswith(".c") or s.endswith(".cpp")
 
+def is_header_file(s: str) -> bool:
+    return (s.endswith(".h")
+        or s.endswith(".hpp")
+        or s.endswith(".h.in")
+        or s.endswith(".inc"))
+
 def run_fix(dir: Path | str):
     subprocess.check_output([ "task", "fix-srcdrop" ], cwd=dir, text=True, stderr=subprocess.DEVNULL)
 

@@ -1,14 +1,14 @@
 #if SEXY_USE_SDL3_RENDERER
 
-#include "AutoCrit.h"
-#include "SexyAppBase.h"
-#include "SexyMatrix.h"
-#include "SysFont.h"
-#include "TriVertex.h"
-#include "Window.h"
+#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Renderer.h>
+#include <SexyAppFramework/SexyAppBase.h>
+#include <SexyAppFramework/SexyMatrix.h>
+#include <SexyAppFramework/SysFont.h>
+#include <SexyAppFramework/TriVertex.h>
+#include <SexyAppFramework/Window.h>
 #if SEXY_USE_IMGUI
-#include "ImGui/ImGuiManager.h"
+#include <SexyAppFramework/ImGui/ImGuiManager.h>
 #endif
 #include <SDL3/SDL_messagebox.h>
 

@@ -21,9 +21,12 @@ def main():
     after_resolve_update(root)
 
 def merge_update(root: Path):
-    fix_files()
     if not _common.is_repo_clean(root):
         print(">>> repo contains changes, must be clean to take src drop")
+        exit(1)
+    run_transform()
+    if not _common.is_repo_clean(root):
+        print(">>> repo contains formatting changes, code must be formatted to take src drop")
         exit(1)
     good_commit = _common.git_head_hash(root);
 
@@ -81,6 +84,7 @@ def after_resolve_update(root: Path):
 
     commit_file = _common.get_srcdrop_root() / "CURRENT_COMMIT"
     commit_file.write_text(_upstream.UPSTREAM_COMMIT.strip() + "\n")
+
     _common.git_commit_all(root, "framework: upgrade ResoddedFramework with our patches");
     subprocess.call(["git", "branch", "-D", "srcdrop_/done"])
     subprocess.check_call(["git", "checkout", "-b", "srcdrop_/done"])
@@ -99,10 +103,14 @@ def copy_files():
     _buildfiles.copy_files()
     
 def fix_files():
-    print("==> formatting files")
-    _common.run_fix(_libfiles.get_lib_project_root())
-    _common.run_fix(_appfiles.get_framework_project_root())
-    _common.run_fix(_buildfiles.get_lawn_project_root())
+    _libfiles.run_fix()
+    _appfiles.run_fix()
+    _buildfiles.run_fix()
+
+def run_transform():
+    _libfiles.transform()
+    _appfiles.transform()
+    _buildfiles.transform()
 
 if __name__ == "__main__":
     main()

@@ -1,8 +1,8 @@
 #if SEXY_USE_SDL3_RENDERER
 
 #pragma once
-#include "Renderer.h"
 #include <SDL3/SDL_render.h>
+#include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Image.h>
 
 #include <unordered_map>

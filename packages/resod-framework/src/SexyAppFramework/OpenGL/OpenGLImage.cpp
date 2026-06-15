@@ -1,13 +1,13 @@
 #if SEXY_USE_OPENGL
 
-#include "AutoCrit.h"
-#include "Debug.h"
-#include "Graphics.h"
-#include "PerfTimer.h"
-#include "Rect.h"
-#include "SexyAppBase.h"
+#include <SexyAppFramework/AutoCrit.h>
+#include <SexyAppFramework/Debug.h>
+#include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/OpenGL/OpenGLImage.h>
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
+#include <SexyAppFramework/PerfTimer.h>
+#include <SexyAppFramework/Rect.h>
+#include <SexyAppFramework/SexyAppBase.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #pragma warning(disable : 4005) // macro redefinition

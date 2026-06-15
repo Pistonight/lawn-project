@@ -1,14 +1,14 @@
 #if SEXY_USE_IMGUI
 
-#include "SexyAppBase.h"
-#include "Window.h"
 #include <SexyAppFramework/ImGui/ImGuiManager.h>
 #include <SexyAppFramework/ImGui/ImGuiWindow.h>
+#include <SexyAppFramework/SexyAppBase.h>
+#include <SexyAppFramework/Window.h>
 #if SEXY_USE_OPENGL
-#include "OpenGL/OpenGLRenderer.h"
+#include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
 #endif
 #if SEXY_USE_SDL3_RENDERER
-#include "SDL3Renderer/SDL3Renderer.h"
+#include <SexyAppFramework/SDL3Renderer/SDL3Renderer.h>
 #endif
 
 using namespace Sexy;

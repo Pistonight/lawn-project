@@ -1,15 +1,15 @@
 #if SEXY_USE_OPENGL
-#include "AutoCrit.h"
-#include "SexyAppBase.h"
-#include "SexyMatrix.h"
-#include "SysFont.h"
-#include "TriVertex.h"
-#include "Window.h"
 #include <SDL3/SDL.h>
+#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
+#include <SexyAppFramework/SexyAppBase.h>
+#include <SexyAppFramework/SexyMatrix.h>
+#include <SexyAppFramework/SysFont.h>
+#include <SexyAppFramework/TriVertex.h>
+#include <SexyAppFramework/Window.h>
 #include <glm/gtc/matrix_transform.hpp>
 #if SEXY_USE_IMGUI
-#include "ImGui/ImGuiManager.h"
+#include <SexyAppFramework/ImGui/ImGuiManager.h>
 #endif
 
 using namespace Sexy;
