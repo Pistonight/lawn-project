@@ -99,7 +99,7 @@ void GridItem::DrawGridItem(Graphics* g) {
         DrawIZombieBrain(g);
         break;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 

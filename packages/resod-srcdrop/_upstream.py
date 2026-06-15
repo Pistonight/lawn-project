@@ -5,8 +5,7 @@ import _common
 # using our fork which contains patches before they are merged upstream
 UPSTREAM_REPO = "https://github.com/Pistonight/ResoddedFramework"
 # This is the commit we want to upgrade to
-UPSTREAM_COMMIT = "6e082da7ec407f31a583353fa48f57d615c8a01a"
-# UPSTREAM_COMMIT = "aadf5266f9c22ce70426cd6a1d2a78c8a654b006"
+UPSTREAM_COMMIT = "df0a546b8593bdf45ae0a84328cdacd2d838f4e1"
 
 UPSTREAM_LIBS = [
     # -lib
@@ -34,6 +33,7 @@ def ensure_repo(commit: str):
 
         if not clean_clone:
             try:
+                subprocess.check_call(["git", "-C", repo_path, "fetch"])
                 subprocess.check_call(["git", "-C", repo_path, "reset", "--hard", commit])
             except:
                 clean_clone = True

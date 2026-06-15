@@ -920,7 +920,7 @@ void Plant::StarFruitFire() {
             aProjectile->mVelY = -aShootAngleY;
             break;
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
     }
@@ -1792,6 +1792,7 @@ bool Plant::DrawMagnetItemsOnTop() {
 
         return false;
     }
+    return false;
 }
 
 void Plant::UpdateMagnetShroom() {
@@ -1950,7 +1951,7 @@ Coin* Plant::FindGoldMagnetTarget() {
 
 void Plant::GoldMagnetFindTargets() {
     if (GetFreeMagnetItem() == nullptr) {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         return;
     }
 
@@ -1979,7 +1980,7 @@ void Plant::GoldMagnetFindTargets() {
             aMagnetItem->mItemType = MagnetItemType::MAGNET_ITEM_DIAMOND;
             break;
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             return;
         }
 
@@ -2025,7 +2026,7 @@ void Plant::UpdateGoldMagnetShroom() {
                     aCoinType = CoinType::COIN_DIAMOND;
                     break;
                 default:
-                    TOD_ASSERT();
+                    TOD_ASSERT(false);
                     return;
                 }
 
@@ -3278,7 +3279,7 @@ void Plant::DrawMagnetItems(Graphics* g) {
                 aScale = 1.0f;
                 aImage = IMAGE_REANIM_DIAMOND;
             } else {
-                TOD_ASSERT();
+                TOD_ASSERT(false);
             }
 
             if (aScale == 1.0f) {
@@ -3907,7 +3908,7 @@ void Plant::Fire(Zombie* theTargetZombie, int theRow, PlantWeapon thePlantWeapon
         aProjectileType = ProjectileType::PROJECTILE_COBBIG;
         break;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
     if (mSeedType == SeedType::SEED_KERNELPULT && thePlantWeapon == PlantWeapon::WEAPON_SECONDARY) {

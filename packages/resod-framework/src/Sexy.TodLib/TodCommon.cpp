@@ -189,7 +189,7 @@ TodWeightedArray* TodPickArrayItemFromWeightedArray(const TodWeightedArray* theA
         }
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
     return nullptr;
 }
 
@@ -217,7 +217,7 @@ TodWeightedGridArray* TodPickFromWeightedGridArray(const TodWeightedGridArray* t
         }
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
     return nullptr;
 }
 
@@ -400,7 +400,7 @@ float TodCurveEvaluate(float theTime, float thePositionStart, float thePositionE
         aWarpedTime = sinf(2 * PI * TodCurveS(theTime));
         break;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
     return (thePositionEnd - thePositionStart) * aWarpedTime + thePositionStart;
@@ -1028,7 +1028,7 @@ bool TodResourceManager::TodLoadResources(const std::string& theGroup) {
         return false;
     }
 
-    if (ExtractResourcesByName && !ExtractResourcesByName(this, theGroup.c_str())) {
+    if (!ExtractResourcesByName(this, theGroup.c_str())) {
         gSexyAppBase->ShowResourceError(true);
         return false;
     }

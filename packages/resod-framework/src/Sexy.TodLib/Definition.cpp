@@ -744,7 +744,7 @@ bool DefinitionReadVector2Field(XMLParser* theXmlParser, SexyVector2* theValue) 
     if (!DefinitionReadXMLString(theXmlParser, aStringValue))
         return false;
 
-    if (sexysscanf(aStringValue.c_str(), "%f %f", theValue) == 1)
+    if (sexysscanf(aStringValue.c_str(), "%f %f", &theValue->x, &theValue->y) == 1)
         return true;
 
     DefinitionXmlError(theXmlParser, "Can't parse vector2 value '%s'", aStringValue.c_str());
@@ -974,11 +974,12 @@ bool DefinitionReadFlagField(XMLParser* theXmlParser, const SexyString& theEleme
     if (!DefinitionReadXMLString(theXmlParser, aStringValue))
         return false;
 
-    int aFlag;
-    if (sexysscanf(aStringValue.c_str(), "%f %f", &aFlag) != 1) {
+    float aFlagFloat;
+    if (sexysscanf(aStringValue.c_str(), "%f", &aFlagFloat) != 1) {
         DefinitionXmlError(theXmlParser, "Can't parse int value '%s'", aStringValue.c_str());
         return false;
     }
+    auto aFlag = static_cast<int>(aFlagFloat);
 
     if (aFlag) {
         *theResultValue |= 1 << aValue;
@@ -999,6 +1000,7 @@ bool DefinitionReadImageField(XMLParser* theXmlParser, Image** theImage) {
     std::string aMessgae = StrFormat("Failed to find image '%s' in %s", aStringValue.c_str(),
                                      theXmlParser->GetFileName().c_str());
     TodErrorMessageBox(aMessgae.c_str(), "Missing image");
+    return false;
 }
 
 bool DefinitionReadFontField(XMLParser* theXmlParser, Font** theFont) {
@@ -1012,6 +1014,7 @@ bool DefinitionReadFontField(XMLParser* theXmlParser, Font** theFont) {
     std::string aMessgae = StrFormat("Failed to find font '%s' in %s", aStringValue.c_str(),
                                      theXmlParser->GetFileName().c_str());
     TodErrorMessageBox(aMessgae.c_str(), "Missing font");
+    return false;
 }
 
 bool DefinitionReadField(XMLParser* theXmlParser, DefMap* theDefMap, void* theDefinition,

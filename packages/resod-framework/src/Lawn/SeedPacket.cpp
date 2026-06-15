@@ -689,7 +689,7 @@ void SeedPacket::MouseDown(int x, int y, int theClickCount) {
                                       MessageStyle::MESSAGE_STYLE_HINT_LONG,
                                       AdviceType::ADVICE_PLANT_NEEDS_LILYPAD);
             } else {
-                TOD_ASSERT();
+                TOD_ASSERT(false);
             }
 
             return;

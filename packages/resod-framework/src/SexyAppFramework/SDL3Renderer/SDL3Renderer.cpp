@@ -462,6 +462,7 @@ SDL_BlendMode SDL3Renderer::Get_SDL_NativeBlendMode(BlendMode theBlendMode) {
         return SDL_BLENDMODE_MUL;
     }
     }
+    return SDL_BLENDMODE_NONE;
 }
 
 SDL_Rect GetTransformedClipRect(Rect theClipRect, int aWidth, int aHeight, Rect aPresentationRect,

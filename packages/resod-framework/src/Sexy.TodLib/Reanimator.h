@@ -59,7 +59,7 @@ class ReanimationParams {
 public:
     ReanimationType mReanimationType;
     const char* mReanimFileName;
-    int mReanimParamFlags;
+    unsigned int mReanimParamFlags;
 };
 extern int gReanimationParamArraySize;
 extern ReanimationParams* gReanimationParamArray;

@@ -192,6 +192,7 @@ int SeedChooserScreen::PickFromWeightedArrayUsingSpecialRandSeed(TodWeightedArra
             return theArray[j].mItem;
     }
     DBG_ASSERT(false);
+    return 0;
 }
 
 void SeedChooserScreen::CrazyDavePickSeeds() {

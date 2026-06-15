@@ -741,7 +741,7 @@ void Board::LoadBackgroundImages() {
         break;
 
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 }
@@ -869,7 +869,7 @@ void Board::PickBackground() {
         break;
 
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
     LoadBackgroundImages();
@@ -923,7 +923,7 @@ void Board::PickBackground() {
         mPlantRow[4] = PlantRowType::PLANTROW_NORMAL;
         mPlantRow[5] = PlantRowType::PLANTROW_DIRT;
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 
     for (int x = 0; x < MAX_GRID_SIZE_X; x++) {
@@ -981,7 +981,7 @@ void Board::PickBackground() {
                 AddGraveStones(7, 3, aLevelRNG);
                 AddGraveStones(8, 3, aLevelRNG);
             } else {
-                TOD_ASSERT();
+                TOD_ASSERT(false);
             }
         }
     }
@@ -1943,7 +1943,8 @@ Plant* Board::GetTopPlantAt(int theGridX, int theGridY, PlantPriority thePriorit
     case PlantPriority::TOPPLANT_ONLY_UNDER_PLANT:
         return aPlantOnLawn.mUnderPlant;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
+        return nullptr;
     }
 }
 
@@ -3275,7 +3276,7 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount) {
 
         mSeedBank->mSeedPackets[mCursorObject->mSeedBankIndex].WasPlanted();
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 
     if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN) {
@@ -3696,7 +3697,7 @@ void Board::PickUpTool(GameObjectType theObjectType) {
         break;
 
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 
@@ -5493,7 +5494,7 @@ void Board::DrawBackdrop(Graphics* g) {
         aBgImage = nullptr;
         break;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 
@@ -6179,7 +6180,7 @@ void Board::DrawGameObjects(Graphics* g) {
             break;
 
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
     }
@@ -6752,7 +6753,7 @@ void Board::DrawDebugText(Graphics* g) {
         break;
 #endif
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 
@@ -8157,7 +8158,8 @@ int Board::LeftFogColumn() {
         return 5;
     if (mLevel >= 37 && mLevel <= 40)
         return 4;
-    TOD_ASSERT();
+    TOD_ASSERT(false);
+    return 5;
 }
 
 int Board::GetSeedPacketPositionX(int theIndex) {
@@ -8869,7 +8871,8 @@ int Board::GetNumWavesPerSurvivalStage() {
         return 20;
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
+    return 10;
 }
 
 void Board::RemoveParticleByType(ParticleEffect theEffectType) {
@@ -8935,7 +8938,8 @@ bool Board::CanUseGameObject(GameObjectType theGameObject) {
         return false;
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
+    return false;
 }
 
 void Board::ShakeBoard(int theShakeAmountX, int theShakeAmountY) {
@@ -8986,7 +8990,7 @@ int Board::NumberZombiesInWave(int theWaveIndex) {
         }
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
     return 0;
 }
 

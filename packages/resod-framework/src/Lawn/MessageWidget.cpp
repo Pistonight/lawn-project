@@ -123,7 +123,7 @@ void MessageWidget::SetLabel(const SexyString& theNewLabel, MessageStyle theMess
             break;
 
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
 
@@ -287,7 +287,8 @@ Font* MessageWidget::GetFont() {
         return Sexy::FONT_HOUSEOFTERROR16;
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
+    return Sexy::FONT_HOUSEOFTERROR16;
 }
 
 void MessageWidget::Draw(Graphics* g) {
@@ -376,7 +377,7 @@ void MessageWidget::Draw(Graphics* g) {
         break;
 
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 

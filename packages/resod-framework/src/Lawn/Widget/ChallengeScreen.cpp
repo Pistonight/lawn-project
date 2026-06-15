@@ -355,12 +355,13 @@ int ChallengeScreen::MoreTrophiesNeeded(int theChallengeIndex) {
             if (aDef.mPage == CHALLENGE_PAGE_SURVIVAL || aDef.mPage == CHALLENGE_PAGE_CHALLENGE) {
                 aNumTrophies += 3;
             } else {
-                TOD_ASSERT();
+                TOD_ASSERT(false);
             }
 
             return aIdxInPage >= aNumTrophies ? aIdxInPage - aNumTrophies + 1 : 0;
         }
     }
+    return 0;
 }
 
 bool ChallengeScreen::ShowPageButtons() {

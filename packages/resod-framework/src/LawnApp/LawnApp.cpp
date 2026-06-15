@@ -1158,7 +1158,7 @@ bool LawnApp::DebugKeyDown(int theKey) {
             mDebugWindow->mEnabled = !mDebugWindow->mEnabled;
         mDebuggerEnabled = mDebugWindow->mEnabled;
 #endif
-
+        return true;
     } else
         return SexyAppBase::DebugKeyDown(theKey);
 }

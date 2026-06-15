@@ -80,7 +80,7 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
                                                             ParticleEffect::PARTICLE_SNOWPEA_TRAIL);
         AttachParticle(mAttachmentID, aParticle, 8.0f, 13.0f);
     } else if (mProjectileType == ProjectileType::PROJECTILE_FIREBALL) {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     } else if (mProjectileType == ProjectileType::PROJECTILE_COBBIG) {
         mWidth = IMAGE_REANIM_COBCANNON_COB->GetWidth();
         mHeight = IMAGE_REANIM_COBCANNON_COB->GetHeight();
@@ -812,7 +812,7 @@ void Projectile::Draw(Graphics* g) {
         aImage = IMAGE_REANIM_WINTERMELON_PROJECTILE;
         aScale = 1.0f;
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 
     bool aMirror = false;

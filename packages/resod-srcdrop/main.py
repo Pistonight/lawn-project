@@ -1,5 +1,6 @@
 import sys
 import subprocess
+import traceback
 from pathlib import Path
 
 import _upstream
@@ -59,7 +60,9 @@ def merge_update(root: Path):
         _upstream.ensure_repo_next()
         copy_files()
         _common.git_commit_all(root, "framework: upgrade ResoddedFramework");
-    except:
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
         print(">>> operation failed, reverting changes")
         _common.git_reset_repo(root)
         subprocess.check_call(["git", "-C", root, "reset", "--hard", good_commit])

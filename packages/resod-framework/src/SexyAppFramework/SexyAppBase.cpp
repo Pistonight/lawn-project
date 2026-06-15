@@ -2,6 +2,8 @@
 // #define SEXY_PERF_ENABLED
 // #define SEXY_MEMTRACE
 
+#include <sstream>
+
 #include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/KeyCodes.h>
 #include <SexyAppFramework/Renderer.h>
@@ -1946,21 +1948,15 @@ std::string SexyAppBase::GetGameSEHInfo() {
     sprintf(aTimeStr, "%02d:%02d:%02d", (aSecLoaded / 60 / 60), (aSecLoaded / 60) % 60,
             aSecLoaded % 60);
 
-    char aThreadIdStr[16];
-    sprintf(aThreadIdStr, "%X", mPrimaryThreadId);
+    // c++20: replace with std::format
+    std::ostringstream aInfoStream;
+    aInfoStream << "Product: " << mProdName << "\r\n"
+                << "Version: " << mProductVersion << "\r\n"
+                << "Time Loaded" << aTimeStr << "\r\n"
+                << "Fullscreen: " << (mIsWindowed ? "No" : "Yes") << "\r\n"
+                << "Primary ThreadId:" << mPrimaryThreadId << "\r\n";
 
-    std::string anInfoString =
-        "Product: " + mProdName + "\r\n" + "Version: " + mProductVersion + "\r\n";
-
-    anInfoString += "Time Loaded: " + std::string(aTimeStr) +
-                    "\r\n"
-                    "Fullscreen: " +
-                    (mIsWindowed ? std::string("No") : std::string("Yes")) +
-                    "\r\n"
-                    "Primary ThreadId: " +
-                    aThreadIdStr + "\r\n";
-
-    return anInfoString;
+    return aInfoStream.str();
 }
 
 void SexyAppBase::GetSEHWebParams(DefinesMap* theDefinesMap) {}
@@ -3287,7 +3283,6 @@ bool SexyAppBase::ProcessDeferredMessages(bool singleMessage) {
             aConvertedEvent.motion.x = x;
             aConvertedEvent.motion.y = y;
             ImGui_ImplSDL3_ProcessEvent(&aConvertedEvent);
-
         } else
 #endif
             ImGui_ImplSDL3_ProcessEvent(&anEvent);
@@ -4472,9 +4467,9 @@ bool SexyAppBase::UpdateApp() {
 int SexyAppBase::InitRenderer() {
     PreRendererInitHook();
     DeleteNativeImageData();
-    int aResult = mRenderer->Init();
+    bool aResult = mRenderer->Init();
     DemoSyncRefreshRate();
-    if (true == aResult) {
+    if (aResult) {
         mScreenBounds.mX = (mWidth - mRenderer->mWidth) / 2;
         mScreenBounds.mY = (mHeight - mRenderer->mHeight) / 2;
         mScreenBounds.mWidth = mRenderer->mWidth;

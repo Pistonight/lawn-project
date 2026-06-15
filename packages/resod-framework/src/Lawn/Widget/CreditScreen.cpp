@@ -554,7 +554,7 @@ Reanimation* CreditScreen::PlayReanim(int aIndex) {
         aCreditsReanim->AssignRenderGroupToPrefix("SpotFront", 3);
         aCreditsReanim->AssignRenderGroupToPrefix("attacher__undead", 2);
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         return nullptr;
     }
 

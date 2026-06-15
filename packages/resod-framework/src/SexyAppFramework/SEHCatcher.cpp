@@ -1,3 +1,6 @@
+#include <iomanip>
+#include <sstream>
+
 #if SEXY_CRASH_HANDLER
 #include <SDL3/SDL.h>
 #include <SexyAppFramework/SEHCatcher.h>
@@ -150,11 +153,9 @@ void SEHCatcher::DoHandleDebugEvent(LPEXCEPTION_POINTERS lpEP) {
     std::string anErrorTitle;
     std::string aDebugDump;
 
-    char aBuffer[2048];
-
     ///////////////////////////
     // first name the exception
-    char* szName = NULL;
+    char* szName = nullptr;
     for (int i = 0; gMsgTable[i].dwExceptionCode != 0xFFFFFFFF; i++) {
         if (gMsgTable[i].dwExceptionCode == lpEP->ExceptionRecord->ExceptionCode) {
             szName = gMsgTable[i].szMessage;
@@ -162,17 +163,24 @@ void SEHCatcher::DoHandleDebugEvent(LPEXCEPTION_POINTERS lpEP) {
         }
     }
 
-    if (szName != NULL) {
-        sprintf(aBuffer, "Exception: %s (code 0x%x) at address %08X in thread %X\r\n", szName,
-                lpEP->ExceptionRecord->ExceptionCode, lpEP->ExceptionRecord->ExceptionAddress,
-                GetCurrentThreadId());
-    } else {
-        sprintf(aBuffer, "Unknown exception: (code 0x%x) at address %08X in thread %X\r\n",
-                lpEP->ExceptionRecord->ExceptionCode, lpEP->ExceptionRecord->ExceptionAddress,
-                GetCurrentThreadId());
-    }
+    std::ostringstream aExceptionInfo;
 
-    aDebugDump += aBuffer;
+    if (szName) {
+        aExceptionInfo << "Exception: " << szName;
+    } else {
+        aExceptionInfo << "Unknown exception: ";
+    }
+    aExceptionInfo << std::hex;
+    aExceptionInfo << "(code 0x" << lpEP->ExceptionRecord->ExceptionCode << ") ";
+#ifdef SEXY_IS_X64
+    aExceptionInfo << "at address 0x" << std::setw(16) << lpEP->ExceptionRecord->ExceptionAddress;
+#endif
+#ifdef SEXY_IS_X86
+    aExceptionInfo << "at address 0x" << std::setw(8) << lpEP->ExceptionRecord->ExceptionAddress;
+#endif
+    aExceptionInfo << " in thread 0x" << GetCurrentThreadId() << "\r\n";
+
+    aDebugDump += aExceptionInfo.str();
 
     aDebugDump += "\n";
 #ifdef DEBUG
@@ -181,7 +189,7 @@ void SEHCatcher::DoHandleDebugEvent(LPEXCEPTION_POINTERS lpEP) {
 #endif
     aDebugDump += GetSysInfo();
 
-    if (mApp != NULL) {
+    if (mApp) {
         std::string aGameSEHInfo = mApp->GetGameSEHInfo();
         if (aGameSEHInfo.length() > 0) {
             aDebugDump += "\n";
@@ -193,7 +201,7 @@ void SEHCatcher::DoHandleDebugEvent(LPEXCEPTION_POINTERS lpEP) {
 
     WriteToFile(aDebugDump);
 
-    if (mApp != NULL) {
+    if (mApp) {
         if (mApp->mRecordingDemoBuffer) {
             // Make sure we have enough update block things in there to
             //  get to the final crashing update

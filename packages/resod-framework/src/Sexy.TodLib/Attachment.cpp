@@ -66,7 +66,7 @@ void Attachment::Update() {
         }
 
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
 
@@ -702,6 +702,7 @@ Reanimation* FindReanimAttachment(AttachmentID& theAttachmentID) {
             }
         }
     }
+    return nullptr;
 }
 
 AttachEffect* FindFirstAttachment(AttachmentID& theAttachmentID) {

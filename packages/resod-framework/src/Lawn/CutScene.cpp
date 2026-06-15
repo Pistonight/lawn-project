@@ -714,7 +714,7 @@ void CutScene::StartLevelIntro() {
                        mBoard->mBackground == BackgroundType::BACKGROUND_6_BOSS) {
                 aHouseMessage = TodStringTranslate("[PLAYERS_ROOF]");
             } else {
-                TOD_ASSERT();
+                TOD_ASSERT(false);
             }
         } else {
             aHouseMessage = mApp->GetCurrentChallengeDef().mChallengeName;

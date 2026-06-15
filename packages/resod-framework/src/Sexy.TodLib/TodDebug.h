@@ -38,10 +38,10 @@ void TodAssertInitForApp();
 
 extern void (*gBetaSubmitFunc)();
 
-#ifndef WIN32
-#define SexyDebuggerCheck() false // The best i can do till i see linux support
-#else
+#ifdef WIN32
 #define SexyDebuggerCheck() IsDebuggerPresent()
+#else
+#define SexyDebuggerCheck() false // The best i can do till i see linux support
 #endif
 
 #ifdef _DEBUG

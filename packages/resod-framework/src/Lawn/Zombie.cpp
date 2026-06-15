@@ -2234,7 +2234,6 @@ void Zombie::UpdateZombieGatlingHead() {
                                                             ProjectileType::PROJECTILE_ZOMBIE_PEA);
             aProjectile->mMotionType = ProjectileMotion::MOTION_BACKWARDS;
         }
-
     } else if (mPhaseCounter == 0) {
         Reanimation* aHeadReanim = mApp->ReanimationGet(mSpecialHeadReanimID);
         aHeadReanim->PlayReanim("anim_head_idle", ReanimLoopType::REANIM_PLAY_ONCE_AND_HOLD, 20,
@@ -2582,7 +2581,7 @@ void Zombie::SummonBackupDancers() {
                 aPosX = mPosX + 100;
                 break;
             default:
-                TOD_ASSERT();
+                TOD_ASSERT(false);
                 break;
             }
 
@@ -4150,7 +4149,7 @@ void Zombie::UpdateYuckyFace() {
         } else if (aCanGoDown && aCanGoUp) {
             SetRow((Rand(2) == 0) ? (mRow + 1) : (mRow - 1));
         } else {
-            TOD_ASSERT();
+            TOD_ASSERT(false);
         }
     }
 }
@@ -4351,11 +4350,11 @@ void Zombie::DrawZombie(Graphics* g, const ZombieDrawPosition& theDrawPos) {
         // case ZombieType::ZOMBIE_GARGANTUAR:
         // case ZombieType::ZOMBIE_IMP:
         // case ZombieType::ZOMBIE_BOSS:
-        //     TOD_ASSERT();
+        //     TOD_ASSERT(false);
         //     break;
 
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 }
@@ -7550,7 +7549,7 @@ void Zombie::AttachShield() {
         ReanimShowPrefix("Zombie_outerarm", RENDER_GROUP_OVER_SHIELD);
         aTrackName = "Zombie_ladder_1";
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 
     aBodyReanim->AssignRenderGroupToTrack(aTrackName, RENDER_GROUP_SHIELD);
@@ -7575,7 +7574,7 @@ void Zombie::DetachShield() {
                 StartWalkAnim(0);
             }
         } else {
-            TOD_ASSERT();
+            TOD_ASSERT(false);
         }
     }
 
@@ -8180,7 +8179,8 @@ int Zombie::GetBobsledPosition() {
         }
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
+    return -1;
 }
 
 bool Zombie::IsBobsledTeamWithSled() {
@@ -8429,7 +8429,7 @@ void Zombie::BossStompAttack() {
         aTrackName = "anim_stomp_4";
         break;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
     PlayZombieReanim(aTrackName, ReanimLoopType::REANIM_PLAY_ONCE_AND_HOLD, 20, 12.0f);
@@ -8913,7 +8913,7 @@ void Zombie::UpdateBoss() {
             BossPlayIdle();
         }
     } else {
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 }
 
@@ -9117,7 +9117,7 @@ void Zombie::EnableFuture(bool theEnableFuture) {
             aImage = IMAGE_REANIM_ZOMBIE_HEAD_SUNGLASSES4;
             break;
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
         aBodyReanim->SetImageOverride("anim_head1", aImage);

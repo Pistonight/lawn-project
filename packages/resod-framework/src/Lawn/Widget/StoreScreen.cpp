@@ -144,7 +144,7 @@ StoreItem StoreScreen::GetStoreItemType(int theSpotIndex) {
         return gStoreItemSpots[mPage][theSpotIndex];
     }
 
-    TOD_ASSERT();
+    TOD_ASSERT(false);
     return STORE_ITEM_INVALID;
 }
 
@@ -562,7 +562,7 @@ void StoreScreen::UpdateMouse() {
                     aMessageIndex = 2034;
                     break;
                 default:
-                    TOD_ASSERT();
+                    TOD_ASSERT(false);
                     break;
                 }
                 if (mApp->mCrazyDaveMessageIndex != aMessageIndex)
@@ -866,7 +866,7 @@ int StoreScreen::GetItemCost(StoreItem theStoreItem) {
     case STORE_ITEM_FIRSTAID:
         return 200;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         return 0;
     }
 }

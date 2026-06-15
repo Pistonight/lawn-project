@@ -820,7 +820,7 @@ SeedType Challenge::BeghouledPickSeed(int theGridX, int theGridY,
             aSeedType = SeedType::SEED_PEASHOOTER;
             break;
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
 
@@ -1555,7 +1555,7 @@ void Challenge::UpdateConveyorBelt() {
         aSeedPickArray[5].mItem = SEED_ICESHROOM;
         aSeedPickArray[5].mWeight = 10;
     } else
-        TOD_ASSERT();
+        TOD_ASSERT(false);
 
     for (int i = 0; i < aSeedPickCount; i++) {
         TodWeightedArray& aSeedPick = aSeedPickArray[i];
@@ -2432,14 +2432,16 @@ void Challenge::WhackAZombieSpawning() {
 bool Challenge::UpdateZombieSpawning() {
     if (mApp->IsWhackAZombieLevel()) {
         WhackAZombieSpawning();
-    } else
-        return mApp->IsFinalBossLevel() || mApp->mGameMode == GAMEMODE_CHALLENGE_ICE ||
-               mApp->mGameMode == GAMEMODE_CHALLENGE_ZEN_GARDEN ||
-               mApp->mGameMode == GAMEMODE_TREE_OF_WISDOM ||
-               mApp->mGameMode == GAMEMODE_CHALLENGE_ZOMBIQUARIUM || mApp->IsIZombieLevel() ||
-               mApp->IsSquirrelLevel() || mApp->IsScaryPotterLevel() ||
-               (mApp->mGameMode == GAMEMODE_CHALLENGE_LAST_STAND &&
-                mChallengeState != STATECHALLENGE_LAST_STAND_ONSLAUGHT);
+        return true;
+    }
+
+    return mApp->IsFinalBossLevel() || mApp->mGameMode == GAMEMODE_CHALLENGE_ICE ||
+           mApp->mGameMode == GAMEMODE_CHALLENGE_ZEN_GARDEN ||
+           mApp->mGameMode == GAMEMODE_TREE_OF_WISDOM ||
+           mApp->mGameMode == GAMEMODE_CHALLENGE_ZOMBIQUARIUM || mApp->IsIZombieLevel() ||
+           mApp->IsSquirrelLevel() || mApp->IsScaryPotterLevel() ||
+           (mApp->mGameMode == GAMEMODE_CHALLENGE_LAST_STAND &&
+            mChallengeState != STATECHALLENGE_LAST_STAND_ONSLAUGHT);
 }
 
 void Challenge::GraveDangerSpawnGraveAt(int theGridX, int theGridY) {
@@ -3543,7 +3545,7 @@ void Challenge::ScaryPotterPopulate() {
             break;
         }
         default:
-            TOD_ASSERT();
+            TOD_ASSERT(false);
             break;
         }
     }
@@ -3667,7 +3669,7 @@ void Challenge::ScaryPotterOpenPot(GridItem* theScaryPot) {
         break;
     }
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
         break;
     }
 
@@ -3795,7 +3797,8 @@ ZombieType Challenge::IZombieSeedTypeToZombieType(SeedType theSeedType) {
     case SEED_ZOMBIE_IMP:
         return ZOMBIE_IMP;
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
+        return ZOMBIE_NORMAL;
     }
 }
 
@@ -4132,7 +4135,7 @@ void Challenge::IZombieInitLevel() {
         break;
     }
     default:
-        TOD_ASSERT();
+        TOD_ASSERT(false);
     }
 
     mBoard->mBonusLawnMowersRemaining = 0;
