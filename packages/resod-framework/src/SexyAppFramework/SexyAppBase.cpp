@@ -9,7 +9,7 @@
 #include <SexyAppFramework/SexyAppBase.h>
 #include <SexyAppFramework/Widget.h>
 #include <SexyAppFramework/WidgetManager.h>
-#ifdef PISTON_PATCH_UPSTREAMABLE
+#ifndef PISTON_PATCH_UPSTREAM
 #include <SexyAppFramework/resource.h>
 #endif
 #if SEXY_USE_OPENGL
