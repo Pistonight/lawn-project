@@ -37,3 +37,7 @@ tasks:
 
   upgrade:
     - python update.py {{.CLI_ARGS}}
+
+  merge-upgrade:
+    - git checkout {{.CLI_ARGS}}
+    - git merge srcdrop_/done --ff-only

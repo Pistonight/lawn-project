@@ -31,15 +31,19 @@ def _cherry_pick_update(root: Path):
 
     config = _common.get_upstream_config()
     current_commit = config["current"]
-    update_commit = config["current"]
+    update_commit = config["update"]
     if current_commit == update_commit:
         print(">>> update commit is the same as current commit, please update config.json")
         exit(2)
 
     good_commit = _common.git_head_hash(root);
 
+    # mark the starting point
     subprocess.call(["git", "branch", "-D", "srcdrop_/start"])
     subprocess.check_call(["git", "checkout", "-b", "srcdrop_/start"])
+    # work on a temp branch from starting point
+    subprocess.call(["git", "branch", "-D", "srcdrop_/temp"])
+    subprocess.check_call(["git", "checkout", "-b", "srcdrop_/temp"])
 
     _upstream.ensure_repo(current_commit)
     try:
