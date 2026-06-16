@@ -19,7 +19,6 @@ def copy_files():
     (upstream_root_path / "vcpkg.json").copy_into(our_root_path)
     (upstream_root_path / "vcpkg-configuration.json").copy_into(our_root_path)
     (upstream_root_path / "cmake" / "UserConfig.cmake").copy_into(our_cmake_path)
-    (upstream_root_path / "cmake" / "BuildInfo.cmake").copy_into(our_cmake_path)
 
     (upstream_root_path / "src" / "main_icon.ico").copy_into(our_src_path)
     (upstream_root_path / "src" / "SexyAppFramework" / "resource.h").copy_into(our_src_path)

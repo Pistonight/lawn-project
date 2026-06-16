@@ -6,10 +6,28 @@ includes:
     optional: true
     flatten: true
 
+  lawn:      { taskfile: packages/lawn,            dir: packages/lawn,            internal: true }
+  framework: { taskfile: packages/resod-framework, dir: packages/resod-framework, internal: true }
+  lib:       { taskfile: packages/resod-lib,       dir: packages/resod-lib,       internal: true }
+
 tasks:
   install:
     - rm -rf mono-dev
     - git clone https://github.com/Pistonight/mono-dev --depth 1
+
+  build:
+    - task: lawn:build
+    - task: lib:build
+
+  check:
+    - task: lib:check
+    - task: framework:check
+    - task: lawn:check
+
+  fix:
+    - task: lib:fix
+    - task: framework:fix
+    - task: lawn:fix
 
 
   setup:

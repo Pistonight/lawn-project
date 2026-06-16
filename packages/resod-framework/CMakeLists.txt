@@ -6,6 +6,7 @@ add_library(${PROJECT_NAME} STATIC)
 # Source Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src-mixin/*.cpp"
 )
 # cpp as include files
 set(EXCLUDE_FILES
@@ -32,6 +33,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 # Include Paths
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src-mixin"
 )
 
 # Libraries

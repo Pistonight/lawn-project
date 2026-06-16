@@ -17,6 +17,8 @@ def copy_files():
         framework_src_path / "SexyAppFramework" / "resource.h",
         # git-ignored ones
         framework_src_path / "SexyAppFramework" / "BuildInfo.h",
+        # mixed-ins (see resod-framework/src-mixin)
+        framework_src_path / "SexyAppFramework" / "BuildInfo.h.in",
     ])
 
     transformers = _get_transformers()

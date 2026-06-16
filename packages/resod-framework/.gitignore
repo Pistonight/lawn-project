@@ -19,3 +19,4 @@ assets/base
 /logs
 
 /src/SexyAppFramework/BuildInfo.h
+/src-mixin/SexyAppFramework/BuildInfo.inc

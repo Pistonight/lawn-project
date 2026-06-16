@@ -62,7 +62,7 @@
 
 #include <json.hpp>
 
-    using namespace Sexy;
+using namespace Sexy;
 
 const int DEMO_FILE_ID = 0x42BEEF78;
 const int DEMO_VERSION = 2;
