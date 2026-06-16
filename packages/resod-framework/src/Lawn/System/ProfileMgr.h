@@ -3,7 +3,6 @@
 
 #include <SexyAppFramework/Common.h>
 #include <map>
-#include <string>
 
 class ProfileSyncer;
 class PlayerInfo;

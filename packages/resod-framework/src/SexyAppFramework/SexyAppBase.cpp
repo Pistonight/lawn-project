@@ -2,6 +2,7 @@
 // #define SEXY_PERF_ENABLED
 // #define SEXY_MEMTRACE
 
+#include <curl/curl.h>
 #include <sstream>
 
 #include <SexyAppFramework/Debug.h>
@@ -11,9 +12,6 @@
 #include <SexyAppFramework/SexyAppBase.h>
 #include <SexyAppFramework/Widget.h>
 #include <SexyAppFramework/WidgetManager.h>
-#ifndef PISTON_PATCH_UPSTREAM
-#include <SexyAppFramework/resource.h>
-#endif
 #if SEXY_USE_OPENGL
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
 #endif
@@ -27,7 +25,6 @@
 #include <SexyAppFramework/BuildInfo.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/GPUImage.h>
-#include <SexyAppFramework/HTTPTransfer.h>
 #include <SexyAppFramework/MTRand.h>
 #include <SexyAppFramework/MemoryImage.h>
 #include <SexyAppFramework/OpenALSoundInstance.h>
@@ -65,7 +62,7 @@
 
 #include <json.hpp>
 
-using namespace Sexy;
+    using namespace Sexy;
 
 const int DEMO_FILE_ID = 0x42BEEF78;
 const int DEMO_VERSION = 2;

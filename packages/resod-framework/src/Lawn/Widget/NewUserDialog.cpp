@@ -1,3 +1,4 @@
+#include <Lawn/LawnCommon.h>
 #include <Lawn/Widget/NewUserDialog.h>
 #include <LawnApp/LawnApp.h>
 #include <LawnApp/Resources.h>

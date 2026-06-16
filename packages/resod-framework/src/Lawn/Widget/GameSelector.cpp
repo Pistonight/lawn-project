@@ -1,4 +1,5 @@
 #include <Lawn/Board.h>
+#include <Lawn/LawnCommon.h>
 #include <Lawn/ResoddedFramework/UpdateChecker.h>
 #include <Lawn/System/Achievements.h>
 #include <Lawn/System/Music.h>

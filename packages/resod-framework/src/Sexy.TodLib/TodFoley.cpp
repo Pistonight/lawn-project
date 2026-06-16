@@ -1,3 +1,4 @@
+#include <LawnApp/Resources.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodDebug.h>
 #include <Sexy.TodLib/TodFoley.h>

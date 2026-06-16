@@ -1,3 +1,4 @@
+#include <Lawn/LawnCommon.h>
 #include <Lawn/ResoddedFramework/SettingsDialog.h>
 #include <LawnApp/LawnApp.h>
 #include <LawnApp/Resources.h>
@@ -8,11 +9,6 @@
 #include <SexyAppFramework/ListWidget.h>
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/Window.h>
-#ifdef _WIN32
-#include <ShlObj_core.h>
-#include <codecvt>
-#include <locale>
-#endif
 
 static int gUserListWidgetColors[][3] = {
     {23, 24, 35}, {0, 0, 0}, {235, 225, 180}, {255, 255, 255}, {20, 180, 15}};

@@ -1,5 +1,4 @@
 #include <Lawn/LawnCommon.h>
-#include <Lawn/System/DataSync.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <Lawn/Widget/ChallengeScreen.h>
 #include <Sexy.TodLib/TodCommon.h>

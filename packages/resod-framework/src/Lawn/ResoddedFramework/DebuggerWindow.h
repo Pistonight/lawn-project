@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include <Lawn/BoardInclude.h>
+#include <Lawn/Plant.h>
 #include <SexyAppFramework/ImGui/ImGuiWindow.h>
-#include <deque>
-#include <string>
 
 using namespace Sexy;
 

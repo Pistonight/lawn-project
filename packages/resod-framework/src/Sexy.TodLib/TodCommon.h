@@ -1,9 +1,8 @@
 #pragma once
-#include <Lawn/LawnCommon.h>
+#include <LawnApp/ConstEnums.h>
 #include <Sexy.TodLib/TodDebug.h>
 #include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/ResourceManager.h>
-#include <stdlib.h>
 
 struct TodAllocator;
 namespace Sexy {

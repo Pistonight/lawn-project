@@ -3,7 +3,6 @@
 #include <Lawn/CursorObject.h>
 #include <Lawn/Cutscene.h>
 #include <Lawn/MessageWidget.h>
-#include <Lawn/ResourceInclude.h>
 #include <Lawn/SeedPacket.h>
 #include <LawnApp/LawnApp.h>
 #include <LawnApp/Resources.h>

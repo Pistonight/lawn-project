@@ -2,6 +2,7 @@
 #define __DATASYNC_H__
 
 #include <SexyAppFramework/Common.h>
+#include <vector>
 
 class DataReader {
 protected:
@@ -47,7 +48,7 @@ public:
     bool OpenFile(const std::string& theFileName);
     void OpenMemory(unsigned long theReserveAmount = 0x20);
     void Close();
-    inline bool WriteToFile(const std::string& theFileName) { /* δ�ҵ� */ }
+    inline bool WriteToFile(const std::string& theFileName) { return false; }
     void WriteBytes(const void* theData, unsigned long theDataLen);
     void WriteLong(unsigned long theLong);
     void WriteShort(unsigned short theShort);
@@ -56,10 +57,10 @@ public:
     void WriteFloat(float theFloat);
     void WriteDouble(double theDouble);
     void WriteString(const SexyString& theStr);
-    inline unsigned long GetPos() { /* δ�ҵ� */ }
-    inline void SetLong(unsigned long, unsigned long) { /* δ�ҵ� */ }
-    inline void SetShort(unsigned int, unsigned long) { /* δ�ҵ� */ }
-    inline void SetByte(unsigned int, unsigned long) { /* δ�ҵ� */ }
+    inline unsigned long GetPos() { return 0; }
+    inline void SetLong(unsigned long, unsigned long) {}
+    inline void SetShort(unsigned int, unsigned long) {}
+    inline void SetByte(unsigned int, unsigned long) {}
     inline void* GetDataPtr() { return mData; }
     inline int GetDataLen() { return mDataLen; }
 };

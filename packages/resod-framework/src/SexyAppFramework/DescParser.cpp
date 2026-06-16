@@ -1,4 +1,5 @@
 #include <PakLib/PakInterface.h>
+#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/DescParser.h>
 
 using namespace Sexy;

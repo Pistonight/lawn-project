@@ -15,4 +15,8 @@
 #define _APS_NEXT_SYMED_VALUE 101
 #endif
 #endif
-// test
+
+// FOR REVIEWER:
+// if you see this file changed, make sure this file has a newline
+// at the end in whatever UI you are seeing it in. Otherwise,
+// the RC compiler will complain

@@ -1,10 +1,8 @@
 #ifndef __TRectANGLE_H__
 #define __TRectANGLE_H__
 
-#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/Point.h>
-
-#include <list>
+#include <algorithm>
 
 namespace Sexy {
 

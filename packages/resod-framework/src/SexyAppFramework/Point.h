@@ -1,8 +1,6 @@
 #ifndef __POINT_H__
 #define __POINT_H__
 
-#include <SexyAppFramework/Common.h>
-
 namespace Sexy {
 
 template <class _T> class TPoint {

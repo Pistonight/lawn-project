@@ -1,5 +1,6 @@
 #include <Lawn/Board.h>
 #include <Lawn/Coin.h>
+#include <Lawn/LawnCommon.h>
 #include <Lawn/Plant.h>
 #include <Lawn/SeedPacket.h>
 #include <Lawn/System/Achievements.h>
@@ -17,7 +18,6 @@
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodStringFile.h>
-#include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/ImageFont.h>
 #include <SexyAppFramework/WidgetManager.h>
 

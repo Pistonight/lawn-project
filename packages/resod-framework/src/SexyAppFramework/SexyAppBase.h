@@ -1,6 +1,7 @@
 #ifndef __SEXYAPPBASE_H__
 #define __SEXYAPPBASE_H__
 
+#include "Platform.h" // for Windows API - do not remove
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_mouse.h>
 #include <SexyAppFramework/Buffer.h>
@@ -10,11 +11,12 @@
 #include <SexyAppFramework/CritSect.h>
 #include <SexyAppFramework/DialogListener.h>
 #include <SexyAppFramework/Gamepad.h>
-#include <SexyAppFramework/Ratio.h>
 #include <SexyAppFramework/Rect.h>
 #include <SexyAppFramework/SharedImage.h>
 #include <SexyAppFramework/Version.h>
 #include <ft2build.h>
+#include <list>
+#include <set>
 #include FT_FREETYPE_H
 
 namespace ImageLib {

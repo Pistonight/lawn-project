@@ -1,16 +1,8 @@
 ﻿#include "Common.h"
-#include <SexyAppFramework/Debug.h>
+#include "Platform.h" // for Windows API - do not remove
 #include <SexyAppFramework/MTRand.h>
 #include <chrono>
 #include <filesystem>
-#ifdef _WIN32
-#include <aclapi.h>
-#include <direct.h>
-#include <errno.h>
-#include <io.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#endif
 
 #include <SexyAppFramework/PerfTimer.h>
 

@@ -1,8 +1,6 @@
 #ifndef __EFFECTSYSTEM_H__
 #define __EFFECTSYSTEM_H__
 
-#include <LawnApp/ConstEnums.h>
-#include <Sexy.TodLib/DataArray.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/SWTri.h>
 using namespace Sexy;

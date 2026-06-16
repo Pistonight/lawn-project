@@ -10,6 +10,7 @@
 #include <Lawn/Widget/StoreScreen.h>
 #include <Lawn/ZenGarden.h>
 #include <LawnApp/LawnApp.h>
+#include <LawnApp/Resources.h>
 #include <Sexy.TodLib/Attachment.h>
 #include <Sexy.TodLib/EffectSystem.h>
 #include <Sexy.TodLib/Reanimator.h>

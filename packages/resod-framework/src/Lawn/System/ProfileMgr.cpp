@@ -1,8 +1,6 @@
-#include <Lawn/System/DataSync.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <Lawn/System/ProfileMgr.h>
 #include <Sexy.TodLib/TodDebug.h>
-#include <SexyAppFramework/SexyAppBase.h>
 #include <fstream>
 #ifndef _WIN32
 #include <strings.h> // strcasecmp

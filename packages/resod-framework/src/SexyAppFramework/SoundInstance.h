@@ -1,8 +1,6 @@
 #ifndef __SOUNDINSTANCE_H__
 #define __SOUNDINSTANCE_H__
 
-#include <SexyAppFramework/Common.h>
-
 namespace Sexy {
 
 class SoundInstance {

@@ -4,6 +4,7 @@
 #include <Lawn/CursorObject.h>
 #include <Lawn/Cutscene.h>
 #include <Lawn/GridItem.h>
+#include <Lawn/LawnCommon.h>
 #include <Lawn/LawnMower.h>
 #include <Lawn/MessageWidget.h>
 #include <Lawn/Plant.h>
@@ -26,7 +27,6 @@
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodParticle.h>
 #include <Sexy.TodLib/TodStringFile.h>
-#include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/MTRand.h>
 #include <SexyAppFramework/WidgetManager.h>

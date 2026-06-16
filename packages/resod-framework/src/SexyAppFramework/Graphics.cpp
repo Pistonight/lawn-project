@@ -3,7 +3,6 @@
 #include <SexyAppFramework/GPUImage.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/Image.h>
-#include <SexyAppFramework/MemoryImage.h>
 #include <SexyAppFramework/Rect.h>
 #include <SexyAppFramework/SexyMatrix.h>
 #include <math.h>

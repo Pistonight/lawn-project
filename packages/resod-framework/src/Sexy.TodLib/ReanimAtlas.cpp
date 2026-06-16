@@ -2,6 +2,7 @@
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodDebug.h>
+#include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/MemoryImage.h>
 #include <SexyAppFramework/PerfTimer.h>
 

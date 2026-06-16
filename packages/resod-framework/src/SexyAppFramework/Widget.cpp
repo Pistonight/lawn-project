@@ -1,4 +1,3 @@
-#include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/Image.h>

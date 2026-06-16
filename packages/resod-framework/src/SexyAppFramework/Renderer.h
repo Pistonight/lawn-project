@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/CritSect.h>
 #include <SexyAppFramework/GPUImage.h>
 #include <SexyAppFramework/SexyMatrix.h>
+#include <set>
 #include <unordered_map>
 
 #define MAX_VERTICES 16384

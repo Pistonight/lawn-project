@@ -6,7 +6,6 @@
 #include <Lawn/GridItem.h>
 #include <Lawn/Plant.h>
 #include <Lawn/Projectile.h>
-#include <Lawn/SeedPacket.h>
 #include <Lawn/System/Achievements.h>
 #include <Lawn/System/PlayerInfo.h>
 #include <Lawn/System/ReanimationLawn.h>
@@ -14,6 +13,7 @@
 #include <Lawn/Zombie.h>
 #include <LawnApp/GameConstants.h>
 #include <LawnApp/LawnApp.h>
+#include <LawnApp/Resources.h>
 #include <Sexy.TodLib/Attachment.h>
 #include <Sexy.TodLib/EffectSystem.h>
 #include <Sexy.TodLib/Reanimator.h>

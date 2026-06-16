@@ -2,9 +2,10 @@
 #define __IMAGE_H__
 
 #include <SexyAppFramework/Color.h>
-#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/Point.h>
 #include <SexyAppFramework/Rect.h>
+#include <string>
+#include <vector>
 
 namespace Sexy {
 

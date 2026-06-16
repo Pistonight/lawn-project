@@ -1,6 +1,5 @@
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/HyperlinkWidget.h>
-#include <SexyAppFramework/ImageFont.h>
 #include <SexyAppFramework/SysFont.h>
 #include <SexyAppFramework/WidgetManager.h>
 

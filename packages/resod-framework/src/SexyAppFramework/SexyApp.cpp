@@ -1,13 +1,10 @@
 #include <SexyAppFramework/BuildInfo.h>
 #include <SexyAppFramework/SexyApp.h>
 
-// #include "..\Crypt\RegKey.h"
 #include <SexyAppFramework/SEHCatcher.h>
-// #include "InternetManager.h"
 
 #include <direct.h>
 #include <fstream>
-// #include "BetaSupport.h"
 
 using namespace Sexy;
 

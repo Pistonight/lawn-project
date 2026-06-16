@@ -1,11 +1,7 @@
 #pragma once
 
+#include "Platform.h" // for Windows, do not remove
 #include <SDL3/SDL.h>
-#include <SexyAppFramework/Common.h>
-
-#ifdef _WIN32
-#include <windef.h>
-#endif
 
 namespace Sexy {
 class SexyAppBase;

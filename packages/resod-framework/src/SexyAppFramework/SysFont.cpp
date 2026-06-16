@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cctype>
 #include <filesystem>
-#include <stdlib.h>
 #include FT_OUTLINE_H
 #include FT_SYNTHESIS_H
 #if SEXY_USE_OPENGL

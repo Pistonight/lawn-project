@@ -1,5 +1,7 @@
 #include <Sexy.TodLib/Definition.h>
 #include <Sexy.TodLib/Trail.h>
+#include <SexyAppFramework/Graphics.h>
+#include <SexyAppFramework/TriVertex.h>
 
 int gTrailDefCount;
 TrailDefinition* gTrailDefArray;

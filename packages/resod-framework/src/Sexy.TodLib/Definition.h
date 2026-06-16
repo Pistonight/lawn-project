@@ -5,7 +5,6 @@
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodList.h>
 #include <Sexy.TodLib/TodParticle.h>
-#include <string>
 
 enum class DefFieldType : int {
     DT_INVALID,

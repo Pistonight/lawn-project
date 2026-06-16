@@ -1,4 +1,5 @@
 #include <Lawn/Board.h>
+#include <Lawn/LawnCommon.h>
 #include <Lawn/Widget/ContinueDialog.h>
 #include <Lawn/Widget/GameButton.h>
 #include <Lawn/Zombie.h>

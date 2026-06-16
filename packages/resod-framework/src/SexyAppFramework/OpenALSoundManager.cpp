@@ -1,5 +1,6 @@
 #include <PakLib/PakInterface.h>
 #include <SDL3/SDL.h>
+#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/OpenALSoundInstance.h>
 #include <SexyAppFramework/OpenALSoundManager.h>
 

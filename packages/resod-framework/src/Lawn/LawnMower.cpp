@@ -3,6 +3,7 @@
 #include <Lawn/LawnMower.h>
 #include <Lawn/System/ReanimationLawn.h>
 #include <LawnApp/LawnApp.h>
+#include <LawnApp/Resources.h>
 #include <Sexy.TodLib/Reanimator.h>
 #include <Sexy.TodLib/TodFoley.h>
 

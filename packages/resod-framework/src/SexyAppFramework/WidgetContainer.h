@@ -1,9 +1,9 @@
 #ifndef __WIDGETCONTAINER_H__
 #define __WIDGETCONTAINER_H__
 
-#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/Flags.h>
 #include <SexyAppFramework/Rect.h>
+#include <list>
 
 namespace Sexy {
 

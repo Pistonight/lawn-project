@@ -3,7 +3,6 @@
 #include <Sexy.TodLib/TodDebug.h>
 #include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/SEHCatcher.h>
-#include <SexyAppFramework/SexyAppBase.h>
 #include <chrono>
 #include <iomanip>
 #include <sstream>

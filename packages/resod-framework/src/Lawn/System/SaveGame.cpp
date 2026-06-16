@@ -1,8 +1,11 @@
 #include <Lawn/CursorObject.h>
+#include <Lawn/MessageWidget.h>
+#include <Lawn/SeedPacket.h>
 #include <Lawn/System/Music.h>
 #include <Lawn/System/SaveGame.h>
 #include <LawnApp/LawnApp.h>
 #include <LawnApp/Resources.h>
+#include <Sexy.TodLib/Attachment.h>
 #include <Sexy.TodLib/EffectSystem.h>
 
 static constexpr uint32_t SAVE_VERSION = 1;

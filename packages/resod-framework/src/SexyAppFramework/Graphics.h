@@ -6,6 +6,7 @@
 #include <SexyAppFramework/Image.h>
 #include <SexyAppFramework/Rect.h>
 #include <SexyAppFramework/TriVertex.h>
+#include <list>
 
 namespace Sexy {
 

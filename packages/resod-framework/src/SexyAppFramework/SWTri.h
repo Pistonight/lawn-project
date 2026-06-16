@@ -3,7 +3,6 @@
 #include <SexyAppFramework/Color.h>
 #include <SexyAppFramework/MemoryImage.h>
 #include <SexyAppFramework/Rect.h>
-#include <SexyAppFramework/SexyMatrix.h>
 
 namespace Sexy {
 

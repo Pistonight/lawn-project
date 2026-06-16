@@ -17,7 +17,6 @@
 #include <Sexy.TodLib/TodStringFile.h>
 #include <Sexy.TodLib/Trail.h>
 #include <SexyAppFramework/MTRand.h>
-#include <SexyAppFramework/WidgetManager.h>
 
 using namespace Sexy;
 

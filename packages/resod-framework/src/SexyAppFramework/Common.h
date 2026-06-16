@@ -11,55 +11,13 @@
 
 // Libray Headers End
 
-// Platform Headers Start
-
-#ifdef _WIN32
-#include <windows.h>
-#ifdef PISTON_PATCH_UPSTREAM
-// ensure <windows.h> is included before <mmsystem.h>
-#endif
-#include <mmsystem.h>
-#include <shellapi.h>
-
-#undef _WIN32_WINNT
-#undef WIN32_LEAN_AND_MEAN
-
-#define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0500
-#undef _UNICODE
-#undef UNICODE
-
-#ifdef LoadImage
-#undef LoadImage // Windows, i fucking hate you -Electr0Gunner
-#endif
-
-#endif
-
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
-#ifdef max
-#undef max
-#endif
-
-#ifdef min
-#undef min
-#endif
-
-// Platform Headers End
-
 // STL Headers Start
 
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
-#include <list>
 #include <map>
-#include <set>
 #include <string>
-#include <thread>
-#include <vector>
 
 // STL Headers End
 

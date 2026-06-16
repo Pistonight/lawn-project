@@ -1,5 +1,6 @@
 #include <PakLib/PakInterface.h>
 #include <SexyAppFramework/BassMusicInterface.h>
+#include <SexyAppFramework/Common.h>
 #include <bass.h>
 
 using namespace Sexy;

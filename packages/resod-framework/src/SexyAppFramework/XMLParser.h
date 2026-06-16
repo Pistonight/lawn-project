@@ -4,6 +4,8 @@
 #include <SexyAppFramework/Common.h>
 
 #include <SexyAppFramework/PerfTimer.h>
+#include <list>
+#include <vector>
 
 struct PFILE;
 

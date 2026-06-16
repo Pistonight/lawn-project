@@ -1,5 +1,6 @@
 #include <SexyAppFramework/HTTPTransfer.h>
 #include <SexyAppFramework/SexyAppBase.h>
+#include <curl/curl.h>
 
 using namespace Sexy;
 

@@ -1,6 +1,5 @@
 #if SEXY_USE_CONTROLLER
 #include <SDL3/SDL_log.h>
-#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/Gamepad.h>
 
 using namespace Sexy;

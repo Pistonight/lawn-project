@@ -43,7 +43,8 @@
 #include <SexyAppFramework/Graphics.h>
 
 #include <Lawn/ResoddedFramework/SettingsDialog.h>
-#include <Lawn/ResourceInclude.h>
+#include <LawnApp/FrameworkResources.h>
+#include <LawnApp/Resources.h>
 
 #include <SexyAppFramework/ResourceManager.h>
 #include <SexyAppFramework/WidgetManager.h>
@@ -53,14 +54,10 @@
 #include <SexyAppFramework/Checkbox.h>
 #include <SexyAppFramework/Dialog.h>
 #include <SexyAppFramework/SEHCatcher.h>
-#ifndef PISTON_PATCH_UPSTREAM
-#include <SexyAppFramework/resource.h>
-#endif
 
 #include <PakLib/PakInterface.h>
 
 #include <ctime>
-#include <filesystem>
 
 #if LAWN_DEBUG_TOOLS
 #include <Lawn/ResoddedFramework/DebuggerWindow.h>

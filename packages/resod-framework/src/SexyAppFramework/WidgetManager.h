@@ -4,6 +4,7 @@
 #include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/KeyCodes.h>
 #include <SexyAppFramework/WidgetContainer.h>
+#include <vector>
 
 namespace Sexy {
 

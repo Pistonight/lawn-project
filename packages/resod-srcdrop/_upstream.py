@@ -5,7 +5,7 @@ import _common
 # using our fork which contains patches before they are merged upstream
 UPSTREAM_REPO = "https://github.com/Pistonight/ResoddedFramework"
 # This is the commit we want to upgrade to
-UPSTREAM_COMMIT = "df0a546b8593bdf45ae0a84328cdacd2d838f4e1"
+UPSTREAM_COMMIT = "8a4fb81a7e55dd8cec6ec27ef61036fae37d67be"
 
 UPSTREAM_LIBS = [
     # -lib

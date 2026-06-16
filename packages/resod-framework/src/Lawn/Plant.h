@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Lawn/GameObject.h>
-#include <string>
 
 #define MAX_MAGNET_ITEMS 5
 

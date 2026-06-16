@@ -1,4 +1,5 @@
 #include <Lawn/Board.h>
+#include <Lawn/LawnCommon.h>
 #include <Lawn/Plant.h>
 #include <Lawn/SeedPacket.h>
 #include <Lawn/System/Music.h>

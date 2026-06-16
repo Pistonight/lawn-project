@@ -3,6 +3,7 @@
 
 #include <Lawn/Widget/LawnDialog.h>
 #include <SexyAppFramework/EditListener.h>
+#include <SexyAppFramework/EditWidget.h>
 
 class NewUserDialog : public LawnDialog, public EditListener {
 public:
