@@ -1,24 +1,9 @@
 import subprocess
 
-import _common
-
-# using our fork which contains patches before they are merged upstream
-UPSTREAM_REPO = "https://github.com/Pistonight/ResoddedFramework"
-# This is the commit we want to upgrade to
-UPSTREAM_COMMIT = "8a4fb81a7e55dd8cec6ec27ef61036fae37d67be"
-
-UPSTREAM_LIBS = [
-    # -lib
-    "ImageLib", "PakLib",
-    # -framework
-    "Lawn", "Sexy.TodLib", "SexyAppFramework",
-]
-
-def ensure_repo_next():
-    ensure_repo(UPSTREAM_COMMIT)
+from . import _common
 
 def ensure_repo(commit: str):
-    repo_path = _common.get_framework_root();
+    repo_path = _common.get_upstream_root();
     clean_clone = True
     print("==> checking out ResoddedFramework")
     if repo_path.exists():
@@ -41,9 +26,11 @@ def ensure_repo(commit: str):
     if not clean_clone:
         return
     print(">>> failed to access local repo, will clean clone")
+    config = _common.get_upstream_config()
+    repo = config["remote"]
     _common.rm_rf(repo_path)
-    root_path = _common.get_srcdrop_root()
-    subprocess.check_call([ "git", "-C", root_path, "clone", UPSTREAM_REPO, repo_path ])
+    root_path = _common.get_upstreampkg_root()
+    subprocess.check_call([ "git", "-C", root_path, "clone", repo, repo_path ])
     subprocess.check_call([ "git", "-C", repo_path, "config", "advice.detachedHead", "false" ])
     subprocess.check_call([ "git", "-C", repo_path, "checkout", commit ])
 

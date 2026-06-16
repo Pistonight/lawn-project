@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
-import _common
-import _transformer
+from .. import _common
+from . import _transformer
 
 def copy_files():
     print("==> copying framework files")
     our_root_path = _get_target_project_root()
-    framework_path = _common.get_framework_root()
+    framework_path = _common.get_upstream_root()
     framework_src_path = framework_path / "src"
     exclude = set([
         # Main files are part of buildfiles
@@ -68,7 +68,7 @@ def transform():
 
 def run_fix():
     print("==> formatting framework files")
-    _common.run_fix(_get_target_project_root())
+    _transformer.run_fix(_get_target_project_root())
 
 
 def _get_transformers():

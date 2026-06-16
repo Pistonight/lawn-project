@@ -11,6 +11,8 @@ from typing import IO
 CLEAR_LINE = "\r\033[2K"
 RED = "\033[31m"
 YELLOW = "\033[33m"
+CYAN = "\033[36m"
+PINK = "\033[95m"
 RESET = "\033[0m"
 
 @dataclass
@@ -63,13 +65,15 @@ def cmake_configure_ninja(project_dir, preset, build_dir, is_release, is_raw) ->
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
         f"-DCMAKE_BUILD_TYPE={build_type}"
     ]
-    print(f"==> configuring ninja ({build_type.lower()})")
+    print(f"{CYAN}==> configuring ninja ({build_type.lower()}){RESET}")
     return _drive_cmake_configure(command, project_dir, is_raw)
 
-def cmake_configure_msvc(project_dir, preset, build_dir, is_x86, is_raw) -> int:
+def cmake_configure_msvc(project_dir, preset, build_dir, is_x86, is_release, is_raw) -> int:
+    arch = "x86" if is_x86 else "x64"
+    build_type = "Release" if is_release else "Debug"
     if not is_dir_configured(build_dir):
         if Path(build_dir).exists():
-            print("==> cleaning msvc configure dir")
+            print(f"==> cleaning msvc build ({arch},{build_type})")
             shutil.rmtree(build_dir)
     command = [
         "cmake", f"--preset={preset}", "-B", build_dir,
@@ -79,8 +83,7 @@ def cmake_configure_msvc(project_dir, preset, build_dir, is_x86, is_raw) -> int:
         command += ["-A", "Win32"]
     else:
         command += ["-A", "x64"]
-    arch = "x86" if is_x86 else "x64"
-    print(f"==> configuring msvc ({arch})")
+    print(f"{CYAN}==> configuring msvc ({arch},{build_type}){RESET}")
     return _drive_cmake_configure(command, project_dir, is_raw)
 
 def _drive_cmake_configure(command, project_dir, is_raw) -> int:
@@ -89,7 +92,7 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
             subprocess.check_call(command, cwd=project_dir)
             return 0
         except:
-            print(f"==> {RED}cmake configure failed{RESET}")
+            print(f"{RED}==> cmake configure failed{RESET}")
             return 1
 
     # make an 8-line window that prints the last 8 lines of the output
@@ -198,12 +201,11 @@ def _drive_stdout(stream: IO[str]):
         line_lstrip = line.lstrip()
         if line_lstrip.startswith("CMake is re-running"):
             is_in_cmake_configure = True
-            print(f"==> rerunning cmake config...{YELLOW}")
+            print(f"{CYAN}==> rerunning cmake config...{RESET}{YELLOW}")
             continue
-        if line_lstrip.startswith("MSBuild"):
+        if "Build files have been written to" in line_lstrip:
             if is_in_cmake_configure:
                 print(f"{CLEAR_LINE}{RESET}==> cmake reconfigure finished :)")
-            print(line_lstrip.rstrip())
             is_in_cmake_configure = False
             continue
         if is_in_cmake_configure:
@@ -235,7 +237,12 @@ def _drive_stdout(stream: IO[str]):
             if is_cc_progress:
                 print(f"{CLEAR_LINE}  Compile: {line}\r", end="", flush=True)
                 continue
-            print(f"{CLEAR_LINE}[cmake] {line}")
+            if ".vcxproj -> " in line:
+                _, artifact = line.split(".vcxproj -> ")
+                print(f"{CLEAR_LINE}Exported: {artifact}")
+                continue
+
+            print(f"{CLEAR_LINE}. {line}")
 
 def _try_parse_compiler_error(line: str):
     if "): error C" not in line:

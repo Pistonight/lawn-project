@@ -21,3 +21,6 @@ tasks:
 
   build:
     - python build.py {{.CLI_ARGS}}
+
+  clean:
+    - python build.py clean all

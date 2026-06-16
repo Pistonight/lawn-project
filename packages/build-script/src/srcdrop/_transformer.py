@@ -1,8 +1,20 @@
+import subprocess
+
 from pathlib import Path
 from typing import Callable
 
-import _upstream
-import _common
+from .. import _common
+
+SUBDIRS = [
+    "ImageLib",
+    "PakLib",
+    "Lawn",
+    "Sexy.TodLib",
+    "SexyAppFramework"
+]
+
+def run_fix(dir: Path | str):
+    subprocess.check_output([ "task", "fix-srcdrop" ], cwd=dir, text=True, stderr=subprocess.DEVNULL)
 
 def copy_transform(
         from_path: Path, 
@@ -93,7 +105,7 @@ def _resolve_include(from_path: Path, include: str) -> str | None:
     if not resolved:
         # because SexyAppFramework is also leaked into the project's
         # include path, we try that (probably worth fixing upstream?)
-        resolve_base = _common.get_framework_root() / "src" / "SexyAppFramework"
+        resolve_base = _common.get_upstream_root() / "src" / "SexyAppFramework"
         try:
             resolved = (resolve_base / include).resolve()
         except:
@@ -116,7 +128,7 @@ def _resolve_include(from_path: Path, include: str) -> str | None:
             return f"<LawnApp/{resolved.name}>"
 
         resolved_rel_to_base = str(resolved_rel_to_base)
-        for k in _upstream.UPSTREAM_LIBS:
+        for k in SUBDIRS:
             if resolved_rel_to_base.startswith(k):
                 proper = f"<{resolved_rel_to_base.replace('\\', '/')}>"
                 return proper

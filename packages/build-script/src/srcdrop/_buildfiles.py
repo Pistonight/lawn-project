@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-import _common
-import _transformer
+from .. import _common
+from . import _transformer
 
 def copy_files():
     print("==> copying build files")
@@ -15,7 +15,7 @@ def copy_files():
     our_cmake_path.mkdir(parents=True, exist_ok=True)
     our_src_path.mkdir(parents=True, exist_ok=True)
 
-    upstream_root_path = _common.get_framework_root()
+    upstream_root_path = _common.get_upstream_root()
     (upstream_root_path / "vcpkg.json").copy_into(our_root_path)
     (upstream_root_path / "vcpkg-configuration.json").copy_into(our_root_path)
     (upstream_root_path / "cmake" / "UserConfig.cmake").copy_into(our_cmake_path)
@@ -52,9 +52,7 @@ def transform():
 
 def run_fix():
     print("==> formatting build files")
-    _common.run_fix(_get_target_project_root())
-
-
+    _transformer.run_fix(_get_target_project_root())
 
 def _get_transformers():
     return [

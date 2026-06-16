@@ -1,0 +1,39 @@
+version: '3'
+
+tasks:
+  setup-piston:
+    - rm -rf ResoddedFramework
+    - git clone git@github.com:Pistonight/ResoddedFramework
+    - git -C ResoddedFramework remote add upstream https://github.com/LawnProject/ResoddedFramework
+    - git -C ResoddedFramework fetch upstream
+
+  setup:
+    - rm -rf ResoddedFramework
+    - git clone https://github.com/Pistonight/ResoddedFramework
+
+  sync-upstream:
+    - git -C ResoddedFramework fetch upstream
+    - git -C ResoddedFramework checkout main
+    - git -C ResoddedFramework merge upstream/main --ff-only
+    - git -C ResoddedFramework push
+
+  open-fork:
+    - cmd /c start "" "https://github.com/Pistonight/ResoddedFramework"
+  open-upstream:
+    - cmd /c start "" "https://github.com/LawnProject/ResoddedFramework"
+
+  build:
+    - python build.py {{.CLI_ARGS}}
+
+  clean:
+    - python build.py clean all
+
+  nuke:
+    - task: clean
+    - rm -rf ResoddedFramework
+
+  transform:
+    - python transform.py
+
+  upgrade:
+    - python update.py {{.CLI_ARGS}}

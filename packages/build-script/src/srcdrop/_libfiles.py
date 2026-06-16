@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-import _common
-import _transformer
+from .. import _common
+from . import _transformer
 
 def copy_files():
     print("==> copying lib files")
@@ -11,7 +11,7 @@ def copy_files():
     _common.rm_rf(target_src_path)
     _common.rm_rf(root_path / "src")
 
-    framework_path = _common.get_framework_root()
+    framework_path = _common.get_upstream_root()
     thirdparty_src_path = framework_path / "thirdparty" / "src"
 
     exclude = set([
@@ -82,7 +82,7 @@ def transform():
 
 def run_fix():
     print("==> formatting lib files")
-    _common.run_fix(_get_target_project_root())
+    _transformer.run_fix(_get_target_project_root())
 
 
 def _get_transformers():

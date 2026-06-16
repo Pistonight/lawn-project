@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  setup:
+    - pvz-bintools pakc --unpack main10en.pak
+    - pvz-bintools pakc --unpack main12en.pak
+    - pvz-bintools pakc --unpack main11zh.pak

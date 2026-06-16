@@ -9,11 +9,15 @@ includes:
   lawn:      { taskfile: packages/lawn,            dir: packages/lawn,            internal: true }
   framework: { taskfile: packages/resod-framework, dir: packages/resod-framework, internal: true }
   lib:       { taskfile: packages/resod-lib,       dir: packages/resod-lib,       internal: true }
+  pvz:       { taskfile: packages/pvz-assets,      dir: packages/pvz-assets,      internal: true }
 
 tasks:
   install:
     - rm -rf mono-dev
     - git clone https://github.com/Pistonight/mono-dev --depth 1
+
+  setup:
+    - task: pvz:setup
 
   build:
     - task: lawn:build
@@ -29,17 +33,7 @@ tasks:
     - task: framework:fix
     - task: lawn:fix
 
+  clean:
+    - task: lawn:clean
 
-  setup:
-    - silent: true
-      cmd: >
-        if ! [ -e packages/pvz-assets/main-en.pak ]; then
-          echo 'please get main.pak from GOTY EN version (1.2.0.1096) and put it in packages/pvz-assets as main-en.pak';
-          exit 2;
-        fi;
-        if ! [ -e packages/pvz-assets/main-zh.pak ]; then
-          echo 'please get main.pak from GOTY ZH version (1.2.0.1096) and put it in packages/pvz-assets as main-zh.pak';
-          exit 2;
-        fi;
-    - pvz-bintools pakc --unpack packages/pvz-assets/main-en.pak
-    - pvz-bintools pakc --unpack packages/pvz-assets/main-zh.pak
+
