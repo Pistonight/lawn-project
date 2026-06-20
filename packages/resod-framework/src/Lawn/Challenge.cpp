@@ -1186,8 +1186,8 @@ void Challenge::BeghouledFlashPlant(int theFlashX, int theFlashY, int theFromX, 
 
     Plant* aFlashPlant =
         mBoard->GetTopPlantAt(theFlashX, theFlashY, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
-    if (aFlashPlant && aFlashPlant->mEatenFlashCountdown <= 300)
-        aFlashPlant->mEatenFlashCountdown = 300;
+    if (aFlashPlant && aFlashPlant->mBeghouledFlashCountdown <= 300)
+        aFlashPlant->mBeghouledFlashCountdown = 300;
 }
 
 bool Challenge::BeghouledTwistFlashMatch(BeghouledBoardState* theBoardState, int theGridX,
@@ -1198,8 +1198,8 @@ bool Challenge::BeghouledTwistFlashMatch(BeghouledBoardState* theBoardState, int
     for (int i = 0; i < 4; i++) {
         Plant* aPlant = mBoard->GetTopPlantAt(theGridX + (i % 2), theGridY + (i / 2),
                                               PlantPriority::TOPPLANT_ANY);
-        if (aPlant && aPlant->mEatenFlashCountdown <= 300) {
-            aPlant->mEatenFlashCountdown = 300;
+        if (aPlant && aPlant->mBeghouledFlashCountdown <= 300) {
+            aPlant->mBeghouledFlashCountdown = 300;
         }
     }
     return true;
@@ -1249,8 +1249,8 @@ bool Challenge::BeghouledFlashFromBoardState(BeghouledBoardState* theBoardState,
 void Challenge::BeghouledCancelMatchFlashing() {
     Plant* aPlant = nullptr;
     while (mBoard->IteratePlants(aPlant)) {
-        if (aPlant->mEatenFlashCountdown >= 25)
-            aPlant->mEatenFlashCountdown = 25;
+        if (aPlant->mBeghouledFlashCountdown >= 25)
+            aPlant->mBeghouledFlashCountdown = 25;
     }
 }
 

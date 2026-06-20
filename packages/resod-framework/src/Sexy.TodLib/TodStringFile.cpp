@@ -2,6 +2,7 @@
 #include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodDebug.h>
 #include <Sexy.TodLib/TodStringFile.h>
+#include <SexyAppFramework/Encoding.h>
 #include <SexyAppFramework/Font.h>
 
 int gTodStringFormatCount;
@@ -108,6 +109,7 @@ bool TodStringListReadItems(const char* theFileText) {
 }
 
 bool TodStringListReadFile(const char* theFileName) {
+    TodTrace("[TodLib] - Loading String File '%s'", theFileName);
     PFILE* pFile = p_fopen(theFileName, "rb");
     if (pFile == nullptr) {
         TodTrace("[TodLib] - Failed to open '%s'", theFileName);
@@ -115,22 +117,31 @@ bool TodStringListReadFile(const char* theFileName) {
     }
 
     p_fseek(pFile, 0, SEEK_END);
-    int aSize = p_ftell(pFile);
+    auto aSize = p_ftell(pFile);
     p_fseek(pFile, 0, SEEK_SET);
-    char* aFileText = new char[aSize + 1];
-    bool aSuccess = true;
-    if (p_fread(aFileText, sizeof(char), aSize, pFile) <= 0) {
-        TodTrace("[TodLib] - Failed to read '%s'", theFileName);
-        aSuccess = false;
-    }
-    aFileText[aSize] = '\0';
-    std::string aFixedContent = ANSIToUTF8(aFileText);
-    if (aSuccess) {
-        aSuccess = TodStringListReadItems(aFixedContent.c_str());
-    }
-    p_fclose(pFile);
-    delete[] aFileText;
 
+    if (aSize <= 0) {
+        TodTrace("[TodLib] - String file is empty: '%s'", theFileName);
+        p_fclose(pFile);
+        return false;
+    }
+
+    std::string aBytes;
+    aBytes.resize(aSize);
+    if (aSize > 0 && p_fread(&aBytes[0], sizeof(char), aSize, pFile) <= 0) {
+        TodTrace("[TodLib] - Failed to read '%s'", theFileName);
+        p_fclose(pFile);
+        return false;
+    }
+
+    p_fclose(pFile);
+
+    std::optional<std::string> aDecoded = Sexy::ConvertToUtf8IfNeeded(aBytes);
+    bool aSuccess = aDecoded ? TodStringListReadItems(aDecoded->c_str())
+                             : TodStringListReadItems(aBytes.c_str());
+    if (!aSuccess) {
+        TodTrace("[TodLib] - Failed to read list items from '%s'", theFileName);
+    }
     return aSuccess;
 }
 
@@ -160,7 +171,7 @@ SexyString TodStringTranslate(const SexyString& theString) {
 
 SexyString TodStringTranslate(const SexyChar* theString) {
     if (theString != nullptr) {
-        int aLen = sizeof(theString) / sizeof(theString[0]);
+        int aLen = StringLength(theString);
         if (aLen >= 3 && theString[0] == '[') {
             SexyString aName = SexyCharToString(theString, 1, aLen - 2);
             return TodStringListFind(aName);

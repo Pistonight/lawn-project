@@ -65,6 +65,7 @@ public:
     bool IsThumbOver();
     bool IsThumbDown();
     float GetValue();
+    void SetValue(float theValue);
 };
 
 bool ModInRange(int theNumber, int theMod, int theRange = 0);

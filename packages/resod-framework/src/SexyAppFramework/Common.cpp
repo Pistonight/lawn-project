@@ -1,5 +1,5 @@
-﻿#include "Common.h"
 #include "Platform.h" // for Windows API - do not remove
+#include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/MTRand.h>
 #include <chrono>
 #include <filesystem>
@@ -44,7 +44,7 @@ void Sexy::SetAppDataFolder(const std::string& thePath) {
 }
 
 std::string Sexy::URLEncode(const std::string& theString) {
-    char* aHexChars = "0123456789ABCDEF";
+    const char* aHexChars = "0123456789ABCDEF";
 
     std::string aString;
 
@@ -75,8 +75,15 @@ std::string Sexy::URLEncode(const std::string& theString) {
 std::string Sexy::StringToUpper(const std::string& theString) {
     std::string aString;
 
-    for (unsigned i = 0; i < theString.length(); i++)
-        aString += toupper(theString[i]);
+    auto it = theString.begin();
+    auto end = theString.end();
+    while (it != end) {
+        uint32_t aCodepoint = utf8::next(it, end);
+        // only touch ascii
+        if (aCodepoint < 0x80)
+            aCodepoint = toupper(aCodepoint);
+        utf8::append(aCodepoint, aString);
+    }
 
     return aString;
 }
@@ -84,8 +91,15 @@ std::string Sexy::StringToUpper(const std::string& theString) {
 std::string Sexy::StringToLower(const std::string& theString) {
     std::string aString;
 
-    for (unsigned i = 0; i < theString.length(); i++)
-        aString += tolower(theString[i]);
+    auto it = theString.begin();
+    auto end = theString.end();
+    while (it != end) {
+        uint32_t aCodepoint = utf8::next(it, end);
+        // only touch ascii
+        if (aCodepoint < 0x80)
+            aCodepoint = tolower(aCodepoint);
+        utf8::append(aCodepoint, aString);
+    }
 
     return aString;
 }
@@ -99,15 +113,28 @@ std::string Sexy::SexyStringToString(const SexyString& theString) {
 }
 
 std::string Sexy::Trim(const std::string& theString) {
-    int aStartPos = 0;
-    while (aStartPos < (int)theString.length() && isspace(theString[aStartPos]))
-        aStartPos++;
+    auto aStart = theString.begin();
+    auto anEnd = theString.end();
 
-    int anEndPos = theString.length() - 1;
-    while (anEndPos >= 0 && isspace(theString[anEndPos]))
-        anEndPos--;
+    while (aStart != anEnd) {
+        auto it = aStart;
+        uint32_t aCodepoint = utf8::next(it, anEnd);
+        // treat non-ascii as not whitespace
+        if (aCodepoint >= 0x80 || !isspace(aCodepoint))
+            break;
+        aStart = it;
+    }
 
-    return theString.substr(aStartPos, anEndPos - aStartPos + 1);
+    while (anEnd != aStart) {
+        auto it = anEnd;
+        uint32_t aCodepoint = utf8::prior(it, aStart);
+        // treat non-ascii as not whitespace
+        if (aCodepoint >= 0x80 || !isspace(aCodepoint))
+            break;
+        anEnd = it;
+    }
+
+    return std::string(aStart, anEnd);
 }
 
 bool Sexy::StringToInt(const std::string theString, int* theIntVal) {

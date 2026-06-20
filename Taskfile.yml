@@ -23,6 +23,9 @@ tasks:
     - task: lawn:build
     - task: lib:build
 
+  run:
+    - cd target/lawn/debug/out && ./PlantsVsZombies.exe
+
   check:
     - task: lib:check
     - task: framework:check

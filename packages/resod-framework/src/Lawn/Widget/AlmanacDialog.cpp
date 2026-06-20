@@ -131,7 +131,7 @@ void AlmanacDialog::SetupPlant() {
     mDescriptionScrollbar->mAllowedMouseZone = Rect(484, 350, 258, ALMANAC_PLANT_MAX_SPACE);
     mDescriptionScrollbar->mThumbColor = Color(131, 69, 32);
     mDescriptionScrollbar->mBaseColor = Color(233, 149, 88);
-    mDescriptionScrollbar->mValue = 0.0f;
+    mDescriptionScrollbar->SetValue(0.0f);
 
     ClearPlantsAndZombies();
 
@@ -160,7 +160,7 @@ void AlmanacDialog::SetupZombie() {
     mDescriptionScrollbar->mAllowedMouseZone = Rect(484, 377, 258, ALMANAC_ZOMBIE_MAX_SPACE);
     mDescriptionScrollbar->mBaseColor = Color(152, 149, 188);
     mDescriptionScrollbar->mThumbColor = Color(63, 64, 86);
-    mDescriptionScrollbar->mValue = 0.0f;
+    mDescriptionScrollbar->SetValue(0.0f);
 
     ClearPlantsAndZombies();
 
@@ -349,7 +349,7 @@ void AlmanacDialog::DrawPlants(Graphics* g) {
     if (aDescriptionHeight + aDistanceHeader < ALMANAC_PLANT_MAX_SPACE) {
         mDescriptionScrollbar->mDisabled = true;
         mDescriptionScrollbar->mVisible = false;
-        mDescriptionScrollbar->mValue = 0.0f;
+        mDescriptionScrollbar->SetValue(0.0f);
     } else {
         mDescriptionScrollbar->mDisabled = false;
         mDescriptionScrollbar->mVisible = true;
@@ -579,7 +579,7 @@ void AlmanacDialog::DrawZombies(Graphics* g) {
     if (aDescriptionHeight + aDistanceHeader < ALMANAC_ZOMBIE_MAX_SPACE) {
         mDescriptionScrollbar->mDisabled = true;
         mDescriptionScrollbar->mVisible = false;
-        mDescriptionScrollbar->mValue = 0.0f;
+        mDescriptionScrollbar->SetValue(0.0f);
     } else {
         mDescriptionScrollbar->mDisabled = false;
         mDescriptionScrollbar->mVisible = true;

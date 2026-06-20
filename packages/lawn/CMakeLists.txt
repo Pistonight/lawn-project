@@ -1,6 +1,6 @@
 # CMakeLists.txt
 cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
-project(PlantsVzZombies)
+project(PlantsVsZombies)
 if (MSVC)
     # Debugging library mismatch issue
     # need to be before add_executable
@@ -9,7 +9,7 @@ if (MSVC)
 endif()
 
 # Target
-add_executable(${PROJECT_NAME})
+add_executable(${PROJECT_NAME} WIN32)
 
 include(cmake/UserConfig.cmake)
 

@@ -1,6 +1,7 @@
 #include <PakLib/PakInterface.h>
 #include <SexyAppFramework/Common.h>
 #include <SexyAppFramework/DescParser.h>
+#include <SexyAppFramework/Encoding.h>
 
 using namespace Sexy;
 
@@ -242,22 +243,18 @@ bool DescParser::DataToDoubleVector(DataElement* theSource, DoubleVector* theDou
     return true;
 }
 
-bool DescParser::ParseToList(const std::string& theString, ListDataElement* theList,
-                             bool expectListEnd, int* theStringPos) {
+bool DescParser::ParseToList(std::string::const_iterator& it,
+                             const std::string::const_iterator& end, ListDataElement* theList,
+                             bool expectListEnd) {
     bool inSingleQuotes = false;
     bool inDoubleQuotes = false;
     bool escaped = false;
 
     SingleDataElement* aCurSingleDataElement = NULL;
 
-    int aStringPos = 0;
-
-    if (theStringPos == NULL)
-        theStringPos = &aStringPos;
-
-    while (*theStringPos < (int)theString.length()) {
+    while (it != end) {
         bool addSingleChar = false;
-        char aChar = theString[(*theStringPos)++];
+        uint32_t aChar = utf8::next(it, end); // really a Codepoint
 
         bool isSeperator = (aChar == ' ') || (aChar == '\t') || (aChar == '\n') || (aChar == ',');
 
@@ -287,7 +284,7 @@ bool DescParser::ParseToList(const std::string& theString, ListDataElement* theL
                     } else {
                         ListDataElement* aChildList = new ListDataElement();
 
-                        if (!ParseToList(theString, aChildList, true, theStringPos))
+                        if (!ParseToList(it, end, aChildList, true))
                             return false;
 
                         theList->mElementVector.push_back(aChildList);
@@ -307,7 +304,7 @@ bool DescParser::ParseToList(const std::string& theString, ListDataElement* theL
                 theList->mElementVector.push_back(aCurSingleDataElement);
             }
 
-            aCurSingleDataElement->mString += aChar;
+            utf8::append(aChar, aCurSingleDataElement->mString);
         }
     }
 
@@ -331,7 +328,8 @@ bool DescParser::ParseToList(const std::string& theString, ListDataElement* theL
 
 bool DescParser::ParseDescriptorLine(const std::string& theDescriptorLine) {
     ListDataElement aParams;
-    if (!ParseToList(theDescriptorLine, &aParams, false, NULL))
+    auto it = theDescriptorLine.begin();
+    if (!ParseToList(it, theDescriptorLine.end(), &aParams, false))
         return false;
 
     if (aParams.mElementVector.size() > 0) {
@@ -357,14 +355,37 @@ bool DescParser::LoadDescriptor(const std::string& theFileName) {
     mError.erase();
     mError.erase(mError.begin());
 
-    PFILE* aStream = p_fopen(theFileName.c_str(), "r");
-    if (aStream == NULL)
+    PFILE* pFile = p_fopen(theFileName.c_str(), "rb");
+    if (pFile == nullptr) {
+        return false;
+    }
+    p_fseek(pFile, 0, SEEK_END);
+    auto aSize = p_ftell(pFile);
+    p_fseek(pFile, 0, SEEK_SET);
+
+    if (aSize <= 0) {
+        p_fclose(pFile);
+        return false;
+    }
+
+    std::string aBytes;
+    aBytes.resize(aSize);
+
+    std::size_t aReadSize = p_fread(&aBytes[0], sizeof(char), aSize, pFile);
+    p_fclose(pFile);
+
+    if (aReadSize == 0)
         return false;
 
-    char aBuffChar = 0;
+    auto aDecoded = Sexy::ConvertToUtf8IfNeeded(aBytes);
+    const auto& aStream = aDecoded ? *aDecoded : aBytes;
+    auto it = aStream.begin();
+    auto end = aStream.end();
 
-    while (!p_feof(aStream)) {
-        int aChar;
+    uint32_t aBuffChar = 0; // really a Codepoint
+
+    while (it != end) {
+        uint32_t aChar; // really a Codepoint
 
         bool skipLine = false;
         bool atLineStart = true;
@@ -378,9 +399,10 @@ bool DescParser::LoadDescriptor(const std::string& theFileName) {
                 aChar = aBuffChar;
                 aBuffChar = 0;
             } else {
-                aChar = p_fgetc(aStream);
-                if (aChar == EOF)
+                if (it == end) {
                     break;
+                }
+                aChar = utf8::next(it, end);
             }
 
             if (aChar != '\r') {
@@ -435,13 +457,12 @@ bool DescParser::LoadDescriptor(const std::string& theFileName) {
                             if (mCurrentLine.size() == 0)
                                 mCurrentLineNum = aLineCount + 1;
 
-                            mCurrentLine += aChar;
+                            utf8::append(aChar, mCurrentLine);
                         }
                     }
                 }
             }
         }
-        mCurrentLine = ANSIToUTF8(mCurrentLine); // fix encoding cause fuck windows!!!
 
         if (mCurrentLine.length() > 0) {
             if (!ParseDescriptorLine(mCurrentLine)) {
@@ -460,6 +481,5 @@ bool DescParser::LoadDescriptor(const std::string& theFileName) {
     mCurrentLine.erase();
     mCurrentLineNum = 0;
 
-    p_fclose(aStream);
     return !hasErrors;
 }

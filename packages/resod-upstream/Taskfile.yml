@@ -41,3 +41,18 @@ tasks:
   merge-upgrade:
     - git checkout {{.CLI_ARGS}}
     - git merge srcdrop_/done --ff-only
+
+  pak:
+    - cp ../pvz-assets/main12en.pak ResoddedFramework/Export/main.pak
+    - cp -R ../pvz-assets/properties ResoddedFramework/Export
+
+  run:
+    - cd ResoddedFramework/Export && ./LawnProject.exe
+
+  build-run:
+    aliases: [br]
+    cmds:
+      - task: build
+      - task: run
+
+

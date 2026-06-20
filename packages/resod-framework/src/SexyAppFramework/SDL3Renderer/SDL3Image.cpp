@@ -269,6 +269,7 @@ void SDL3Image::ImplBltRotated(Image* theImage, float theX, float theY, const Re
 
     SDL_RenderTextureRotated(mSDL3Renderer->mBackendRenderer, aTexture, &aSrcRect, &aDestRect,
                              theRot, &aRotCenter, SDL_FLIP_NONE);
+    SDL_SetRenderClipRect(mSDL3Renderer->mBackendRenderer, nullptr);
     SDL_SetRenderTarget(mSDL3Renderer->mBackendRenderer, nullptr);
 }
 
