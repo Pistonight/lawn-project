@@ -1,9 +1,9 @@
 #version 420 core
 #define A_GPU
 #define A_GLSL
-#TXTPP#include ../../lawn-libs/FidelityFX-FSR/include/fsr/ffx_a.h
+#TXTPP#include ../../resod-lib/FidelityFX-FSR/include/fsr/ffx_a.h
 #define FSR_EASU_F 1
-#TXTPP#include ../../lawn-libs/FidelityFX-FSR/include/fsr/ffx_fsr1.h
+#TXTPP#include ../../resod-lib/FidelityFX-FSR/include/fsr/ffx_fsr1.h
 
 uniform sampler2D uInputTexture;
 uniform uvec4 con0, con1, con2, con3;

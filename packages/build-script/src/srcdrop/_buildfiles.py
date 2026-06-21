@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-from .. import _common
+from .. import _common, _fmt
 from . import _transformer
 
 def copy_files():
-    print("==> copying build files")
+    print(f"{_fmt.GREEN}==> copying build files{_fmt.RESET}")
     our_root_path = _get_target_project_root()
     our_cmake_path = our_root_path / "cmake"
     our_src_path = our_root_path / "src"
@@ -40,7 +40,7 @@ def copy_files():
 
 
 def transform():
-    print("==> transforming build files")
+    print(f"{_fmt.GREEN}==> transforming build files{_fmt.RESET}")
     our_root_path = _get_target_project_root()
     transformers = _get_transformers()
     for (dirpath, _, filenames) in os.walk(our_root_path / "src"):
@@ -51,7 +51,7 @@ def transform():
     run_fix()
 
 def run_fix():
-    print("==> formatting build files")
+    print(f"{_fmt.CYAN}==> formatting build files{_fmt.RESET}")
     _transformer.run_fix(_get_target_project_root())
 
 def _get_transformers():

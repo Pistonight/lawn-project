@@ -1,7 +1,12 @@
 version: '3'
 
+vars:
+  TARGET_DIR: ../../target/assets
+  EN_DIR: ../pvz-assets/main12en
+  ZH_DIR: ../pvz-assets/main11zh
+
 tasks:
-  build:
+  build-old:
     sources:
       - 'shaders/**/*'
       - 'fonts/**/*'
@@ -17,9 +22,9 @@ tasks:
       - ../lawn/export/shaders/**
       - ../lawn/export/fonts/**
     cmds:
+      - task: build-shaders
       - silent: true
         cmd: >
-          txtpp -rN shaders;
           echo '==> processing original assets';
           pvz-bintools pakc --unpack ../pvz-assets/main-en.pak main;
           pvz-bintools pakc --unpack ../pvz-assets/main-zh.pak main-zh;
@@ -42,3 +47,133 @@ tasks:
           cp shaders/*.glsl ../lawn/export/shaders;
           rm -f ../lawn/export/shaders/*.txtpp.glsl;
           cp fonts/*.ttf ../lawn/export/fonts;
+
+  build:
+    # Build game assets
+    - task: build-game-shared
+    - task: build-game-mainen
+    - task: build-game-mainzh
+    # Build mod assets
+    - task: build-shaders
+    - task: build-framework
+    - task: build-mod-shared
+    - task: build-mod-mainen
+    - task: build-mod-mainzh
+    # Pack paks
+    - task: pak-shared
+    - task: pak-mainen
+    - task: pak-mainzh
+
+  build-shaders:
+    sources:
+      - 'shaders/**/*'
+      - Taskfile.yml
+    cmds:
+      - txtpp -rN shaders
+      - rm -rf {{.TARGET_DIR}}/shared/shaders
+      - mkdir -p {{.TARGET_DIR}}/shared/shaders
+      - cp shaders/*.glsl {{.TARGET_DIR}}/shared/shaders
+      - rm -f {{.TARGET_DIR}}/shared/shaders/*.txtpp.glsl
+
+  build-framework:
+    sources:
+      - 'framework/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/shared
+      - cp -R framework/* {{.TARGET_DIR}}/shared
+
+  build-mod-shared:
+    sources:
+      - 'mod/shared/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/shared
+      - cp -R mod/shared/* {{.TARGET_DIR}}/shared
+
+  build-mod-mainen:
+    sources:
+      - 'mod/mainen/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/mainen
+      - cp -R mod/mainen/* {{.TARGET_DIR}}/mainen
+
+  build-mod-mainzh:
+    sources:
+      - 'mod/mainzh/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/mainzh
+      - cp -R mod/mainzh/* {{.TARGET_DIR}}/mainzh
+
+  build-game-shared:
+    sources:
+      - '{{.EN_DIR}}/**/*'
+      - '{{.ZH_DIR}}/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/shared/properties
+      - cp {{.EN_DIR}}/properties/default.xml {{.TARGET_DIR}}/shared/properties
+      # sounds are identical
+      - mkdir -p {{.TARGET_DIR}}/shared/sounds
+      - cp {{.EN_DIR}}/sounds/* {{.TARGET_DIR}}/shared/sounds
+      # copying image fonts from EN, use sys fonts for ZH
+      - mkdir -p {{.TARGET_DIR}}/shared/data
+      - cp {{.EN_DIR}}/data/* {{.TARGET_DIR}}/shared/data
+      # copying image assets
+      - python scripts/copypak.py '{{.TARGET_DIR}}' '{{.EN_DIR}}' '{{.ZH_DIR}}'
+
+      
+  build-game-mainen:
+    sources:
+      - '{{.EN_DIR}}/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/mainen/properties
+      - python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainen/properties/ZombatarTOS.txt
+      - python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainen/properties/LawnStrings.txt
+
+  build-game-mainzh:
+    sources:
+      - '{{.ZH_DIR}}/**/*'
+      - Taskfile.yml
+    cmds:
+      - mkdir -p {{.TARGET_DIR}}/mainzh/properties
+      - python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainzh/properties/ZombatarTOS.txt --lang
+      - python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainzh/properties/LawnStrings.txt --lang
+
+  pak-shared:
+    sources:
+      - '{{.TARGET_DIR}}/shared/**/*'
+      - Taskfile.yml
+    cmds:
+      - pvz-bintools pakc --pack {{.TARGET_DIR}}/shared.pak {{.TARGET_DIR}}/shared
+
+  pak-mainen:
+    sources:
+      - '{{.TARGET_DIR}}/mainen/**/*'
+      - Taskfile.yml
+    cmds:
+      - pvz-bintools pakc --pack {{.TARGET_DIR}}/mainen.pak {{.TARGET_DIR}}/mainen
+
+  pak-mainzh:
+    sources:
+      - '{{.TARGET_DIR}}/mainzh/**/*'
+      - Taskfile.yml
+    cmds:
+      - pvz-bintools pakc --pack {{.TARGET_DIR}}/mainzh.pak {{.TARGET_DIR}}/mainzh
+
+  copy-paks:
+    - mkdir -p ../../target/lawn/debug/out
+    - cp {{.TARGET_DIR}}/*.pak ../../target/lawn/debug/out
+    - mkdir -p ../../target/lawn/release/out
+    - cp {{.TARGET_DIR}}/*.pak ../../target/lawn/release/out
+
+  clean:
+    - rm -rf {{.TARGET_DIR}}
+
+
+
+  fix-srcdrop:
+    - python scripts/cleantxt.py auto framework/properties/FrameworkStrings.txt

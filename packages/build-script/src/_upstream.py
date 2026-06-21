@@ -1,11 +1,11 @@
 import subprocess
 
-from . import _common
+from . import _common, _fmt
 
 def ensure_repo(commit: str):
     repo_path = _common.get_upstream_root();
     clean_clone = True
-    print("==> checking out ResoddedFramework")
+    print(f"{_fmt.PINK}==> checking out ResoddedFramework{_fmt.RESET}")
     if repo_path.exists():
         clean_clone = False
         is_clean = True
@@ -20,6 +20,7 @@ def ensure_repo(commit: str):
             try:
                 subprocess.check_call(["git", "-C", repo_path, "fetch"])
                 subprocess.check_call(["git", "-C", repo_path, "reset", "--hard", commit])
+                print(f"{_fmt.PINK}==> checked out ResoddedFramework " + commit + _fmt.RESET)
             except:
                 clean_clone = True
 
@@ -34,6 +35,6 @@ def ensure_repo(commit: str):
     subprocess.check_call([ "git", "-C", repo_path, "config", "advice.detachedHead", "false" ])
     subprocess.check_call([ "git", "-C", repo_path, "checkout", commit ])
 
-    print("==> checked out ResoddedFramework " + commit)
+    print(f"{_fmt.PINK}==> cloned ResoddedFramework " + commit + _fmt.RESET)
 
 

@@ -8,12 +8,7 @@ from pathlib import Path
 from threading import Thread
 from typing import IO
 
-CLEAR_LINE = "\r\033[2K"
-RED = "\033[31m"
-YELLOW = "\033[33m"
-CYAN = "\033[36m"
-PINK = "\033[95m"
-RESET = "\033[0m"
+from . import _fmt
 
 @dataclass
 class BuildArgs:
@@ -65,7 +60,7 @@ def cmake_configure_ninja(project_dir, preset, build_dir, is_release, is_raw) ->
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
         f"-DCMAKE_BUILD_TYPE={build_type}"
     ]
-    print(f"{CYAN}==> configuring ninja ({build_type.lower()}){RESET}")
+    print(f"{_fmt.CYAN}==> configuring ninja ({build_type.lower()}){_fmt.RESET}")
     return _drive_cmake_configure(command, project_dir, is_raw)
 
 def cmake_configure_msvc(project_dir, preset, build_dir, is_x86, is_release, is_raw) -> int:
@@ -83,7 +78,7 @@ def cmake_configure_msvc(project_dir, preset, build_dir, is_x86, is_release, is_
         command += ["-A", "Win32"]
     else:
         command += ["-A", "x64"]
-    print(f"{CYAN}==> configuring msvc ({arch},{build_type}){RESET}")
+    print(f"{_fmt.CYAN}==> configuring msvc ({arch},{build_type}){_fmt.RESET}")
     return _drive_cmake_configure(command, project_dir, is_raw)
 
 def _drive_cmake_configure(command, project_dir, is_raw) -> int:
@@ -92,7 +87,7 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
             subprocess.check_call(command, cwd=project_dir)
             return 0
         except:
-            print(f"{RED}==> cmake configure failed{RESET}")
+            print(f"{_fmt.RED}==> cmake configure failed{_fmt.RESET}")
             return 1
 
     # make an 8-line window that prints the last 8 lines of the output
@@ -117,7 +112,7 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
             sys.stdout.write(f"\033[{drawn}A")
         for line in lines:
             # truncate so long lines don't wrap and desync the cursor math
-            sys.stdout.write(f"{CLEAR_LINE}{YELLOW}{line[:width]}{RESET}\n")
+            sys.stdout.write(f"{_fmt.CLEAR_LINE}{_fmt.YELLOW}{line[:width]}{_fmt.RESET}\n")
         drawn = len(lines)
         sys.stdout.flush()
 
@@ -133,14 +128,14 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
     if drawn:
         sys.stdout.write(f"\033[{drawn}A")
         for _ in range(drawn):
-            sys.stdout.write(f"{CLEAR_LINE}\n")
+            sys.stdout.write(f"{_fmt.CLEAR_LINE}\n")
         sys.stdout.write(f"\033[{drawn}A")
         sys.stdout.flush()
 
     if status:
-        print(f"{CLEAR_LINE}==> {RED}configure failed{RESET}")
+        print(f"{_fmt.CLEAR_LINE}==> {_fmt.RED}configure failed{_fmt.RESET}")
     else:
-        print(f"{CLEAR_LINE}==> cmake configure finished :)")
+        print(f"{_fmt.CLEAR_LINE}==> cmake configure finished :)")
 
     return status
 
@@ -180,9 +175,9 @@ def cmake_build(build_dir, is_release, is_raw) -> int:
     stderr.join()
 
     if status:
-        print(f"{CLEAR_LINE}{RED}==> build failed D:{RESET}")
+        print(f"{_fmt.CLEAR_LINE}{_fmt.RED}==> build failed D:{_fmt.RESET}")
     else:
-        print(f"{CLEAR_LINE}==> build successful :D")
+        print(f"{_fmt.CLEAR_LINE}==> build successful :D")
 
     return status
 
@@ -201,17 +196,17 @@ def _drive_stdout(stream: IO[str]):
         line_lstrip = line.lstrip()
         if line_lstrip.startswith("CMake is re-running"):
             is_in_cmake_configure = True
-            print(f"{CYAN}==> rerunning cmake config...{RESET}{YELLOW}")
+            print(f"{_fmt.CYAN}==> rerunning cmake config...{_fmt.RESET}{_fmt.YELLOW}")
             continue
         if "Build files have been written to" in line_lstrip:
             if is_in_cmake_configure:
-                print(f"{CLEAR_LINE}{RESET}==> cmake reconfigure finished :)")
+                print(f"{_fmt.CLEAR_LINE}{_fmt.RESET}==> cmake reconfigure finished :)")
             is_in_cmake_configure = False
             continue
         if is_in_cmake_configure:
             # take out one char in case it goes out of screen
             l = line.rstrip()
-            print(f"{CLEAR_LINE}  {l[:width-3]}\r", end="", flush=True)
+            print(f"{_fmt.CLEAR_LINE}  {l[:width-3]}\r", end="", flush=True)
             continue
 
         
@@ -220,13 +215,13 @@ def _drive_stdout(stream: IO[str]):
             is_error = "error" in line or "LNK" in line
             if is_error:
                 line = _try_parse_compiler_error(line)
-                print(f"{CLEAR_LINE}{RED}{line}{RESET}")
+                print(f"{_fmt.CLEAR_LINE}{_fmt.RED}{line}{_fmt.RESET}")
                 continue
             is_warning = "warning" in line
             if is_warning:
-                print(f"{CLEAR_LINE}{YELLOW}{line}{RESET}")
+                print(f"{_fmt.CLEAR_LINE}{_fmt.YELLOW}{line}{_fmt.RESET}")
                 continue
-            print(f"{CLEAR_LINE}{line}")
+            print(f"{_fmt.CLEAR_LINE}{line}")
 
         else:
             line = line_lstrip.rstrip()
@@ -235,14 +230,14 @@ def _drive_stdout(stream: IO[str]):
                 continue
             is_cc_progress = line.endswith(".cpp") or line.endswith(".c")
             if is_cc_progress:
-                print(f"{CLEAR_LINE}  Compile: {line}\r", end="", flush=True)
+                print(f"{_fmt.CLEAR_LINE}  Compile: {line}\r", end="", flush=True)
                 continue
             if ".vcxproj -> " in line:
                 _, artifact = line.split(".vcxproj -> ")
-                print(f"{CLEAR_LINE}Exported: {artifact}")
+                print(f"{_fmt.CLEAR_LINE}Exported: {artifact}")
                 continue
 
-            print(f"{CLEAR_LINE}. {line}")
+            print(f"{_fmt.CLEAR_LINE}. {line}")
 
 def _try_parse_compiler_error(line: str):
     if "): error C" not in line:
@@ -262,7 +257,7 @@ def _try_parse_compiler_error(line: str):
     output = ""
     if file:
         output += file + "\n"
-    output += RESET + "  " + line + "\n"
+    output += _fmt.RESET + "  " + line + "\n"
     if project:
         output += "  " + project + "\n"
     return output.strip()

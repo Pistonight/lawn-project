@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-from .. import _common
+from .. import _common, _fmt
 from . import _transformer
 
 def copy_files():
-    print("==> copying lib files")
+    print(f"{_fmt.GREEN}==> copying lib files{_fmt.RESET}")
     root_path = _get_target_project_root()
     target_src_path = root_path / "thirdparty" / "src"
     _common.rm_rf(target_src_path)
@@ -69,7 +69,7 @@ def copy_files():
 
 
 def transform():
-    print("==> transforming lib files")
+    print(f"{_fmt.GREEN}==> transforming lib files{_fmt.RESET}")
     our_root_path = _get_target_project_root()
     transformers = _get_transformers()
     for (dirpath, _, filenames) in os.walk(our_root_path / "src"):
@@ -81,7 +81,7 @@ def transform():
 
 
 def run_fix():
-    print("==> formatting lib files")
+    print(f"{_fmt.CYAN}==> formatting lib files{_fmt.RESET}")
     _transformer.run_fix(_get_target_project_root())
 
 

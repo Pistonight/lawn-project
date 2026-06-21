@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-from .. import _common
+from .. import _common, _fmt
 from . import _transformer
 
 def copy_files():
-    print("==> copying framework files")
+    print(f"{_fmt.GREEN}==> copying framework files{_fmt.RESET}")
     our_root_path = _get_target_project_root()
     framework_path = _common.get_upstream_root()
     framework_src_path = framework_path / "src"
@@ -56,7 +56,7 @@ def copy_files():
 
 
 def transform():
-    print("==> transforming framework files")
+    print(f"{_fmt.GREEN}==> transforming framework files{_fmt.RESET}")
     our_root_path = _get_target_project_root()
     transformers = _get_transformers()
     for (dirpath, _, filenames) in os.walk(our_root_path / "src"):
@@ -67,7 +67,7 @@ def transform():
 
 
 def run_fix():
-    print("==> formatting framework files")
+    print(f"{_fmt.CYAN}==> formatting framework files{_fmt.RESET}")
     _transformer.run_fix(_get_target_project_root())
 
 

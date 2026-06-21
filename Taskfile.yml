@@ -7,6 +7,7 @@ includes:
     flatten: true
 
   lawn:      { taskfile: packages/lawn,            dir: packages/lawn,            internal: true }
+  assets:    { taskfile: packages/lawn-assets,     dir: packages/lawn-assets,     internal: true }
   framework: { taskfile: packages/resod-framework, dir: packages/resod-framework, internal: true }
   lib:       { taskfile: packages/resod-lib,       dir: packages/resod-lib,       internal: true }
   pvz:       { taskfile: packages/pvz-assets,      dir: packages/pvz-assets,      internal: true }
@@ -20,8 +21,10 @@ tasks:
     - task: pvz:setup
 
   build:
+    - task: assets:build
     - task: lawn:build
     - task: lib:build
+    - task: assets:copy-paks
 
   run:
     - cd target/lawn/debug/out && ./PlantsVsZombies.exe
