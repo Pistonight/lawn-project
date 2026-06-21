@@ -1,6 +1,7 @@
 # copy particles, reanim and images
 # usage: copypak.py TARGET_DIR EN_DIR ZH_DIR
 
+import os
 import sys
 import shutil
 from pathlib import Path
@@ -108,10 +109,13 @@ def main():
 
         en_subdir = en / dir
         en_subdir_copyseparately = set(en_subdir / x for x in excludes)
-        for file in en_subdir.iterdir():
-            if file in en_subdir_copyseparately:
+        for file in os.listdir(str(en_subdir)):
+            full_file = en_subdir / file
+            if full_file in en_subdir_copyseparately:
                 continue
-            checked_cp(file, target_subdir)
+            if not full_file.is_file():
+                continue
+            checked_cp(full_file, target_subdir)
 
         target_en_subdir = target_en / dir
         remakedir(target_en_subdir)

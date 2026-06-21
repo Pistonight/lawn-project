@@ -20,3 +20,5 @@ assets/base
 
 /src/SexyAppFramework/BuildInfo.h
 /src-mixin/SexyAppFramework/BuildInfo.inc
+/src-mixin/LawnApp/Resources.cpp
+/src-mixin/LawnApp/Resources.h

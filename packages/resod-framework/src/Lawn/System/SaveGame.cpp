@@ -123,6 +123,7 @@ void SaveContext::SyncTrailDef(TrailDefinition*& theDefinition, const std::strin
     }
 }
 
+#ifndef PISTON_MIXIN
 void SaveContext::SyncImage(Image*& theImage, const std::string& theOwner) {
     if (mReading) {
         ResourceId aResID;
@@ -142,6 +143,7 @@ void SaveContext::SyncImage(Image*& theImage, const std::string& theOwner) {
         SyncVar((int&)aResID, StrFormat("IMAGE_%s", theOwner.c_str()));
     }
 }
+#endif
 
 void SyncDataIDList(TodList<unsigned int>* theDataIDList, SaveContext& theContext,
                     TodAllocator* theAllocator, const std::string& aListOwner) {

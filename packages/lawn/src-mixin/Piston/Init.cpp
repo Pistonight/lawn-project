@@ -11,7 +11,7 @@ namespace Piston {
 void InitMod(LawnApp& app) {
     // load our multi-lang pak files
     gPakInterface->AddPakFile("shared.pak");
-    gPakInterface->AddPakFile("mainen.pak");
+    gPakInterface->AddPakFile("mainzh.pak");
     // this will put data at Piston/PlantsVsZombies
     app.mFullCompanyName = "Piston";
     std::string appPath = SDL_GetBasePath();

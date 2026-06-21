@@ -1,0 +1,495 @@
+paths:
+  input-directories:
+    - ../../target/assets/shared
+    - ../../target/assets/mainen
+  output-xml: ../../target/assets/shared/properties/resources.xml
+  output-cpp: ../resod-framework/src-mixin/LawnApp/Resources.cpp
+  excludes:
+    - glob:properties/*.txt
+    - glob:fonts/**/*
+    - glob:shaders/**/*
+    # not in the manifest
+    - glob:sounds/ZombiesOnYourLawn.ogg
+    - glob:sounds/mainmusic.mo3
+    - glob:sounds/mainmusic_hihats.mo3
+    - glob:images/icesparkle.png
+    # name conflict with _?
+    - glob:images/blank_.gif
+    - glob:images/PvZ_Logo_.png
+    - glob:images/sod1row_.png
+    - glob:images/sod3row_.png
+    - glob:images/Store_Car_.png
+    - glob:images/Store_CarClosed_.png
+    - glob:images/Tombstones_.png
+    # bad decisions cause conflicts
+    - glob:images/Credits_ZombieNote.png
+    - glob:images/ZombieNote*
+    - glob:images/ZombieFinalNote*
+    - glob:images/Zombiefinalnote*
+
+
+
+codegen:
+  include-prefix: LawnApp
+
+resource-groups:
+  - name: Init
+    contents:
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        items:
+          - { path: blank, id: BLANK, external: true }
+          - path: PopCap_Logo.jpg
+
+      - type: Image
+        defaults: { path: properties, id-prefix: IMAGE_ }
+        items:
+          - path: partner_logo.jpg
+
+
+  - name: LoaderBar
+    contents:
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        items:
+          - path: titlescreen.jpg
+            attrs: 
+              a8r8g8b8: true
+          - pattern: glob:LoadBar_*.png
+          - path: PvZ_Logo.jpg
+
+      - type: Image
+        defaults: { path: reanim, id-prefix: IMAGE_REANIM_ }
+        items:
+          - path: SodRollCap.png
+
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - path: BrianneTod16.txt
+
+      - type: Sound
+        defaults: { path: sounds, id-prefix: SOUND_ }
+        items:
+          - path: buttonclick.ogg
+          - pattern: glob:loadingbar_*
+
+
+  - name: LoadingSounds
+    contents:
+      - type: Sound
+        defaults: { path: sounds, id-prefix: SOUND_ }
+        items:
+          - path: hugewave.ogg
+            id: HUGE_WAVE
+          - path: slotmachine.ogg
+            id: SLOT_MACHINE
+          - pattern: glob:*
+
+  - name: LoadingFonts
+    # note: there aren't many non-delay fonts so we preload them all to save some headaches
+    #       we also removed IMAGE_HOUSEOFTERROR28 since that doesn't seem used
+    contents:
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - { path: Pix118Bold.txt, id: TINYBOLD }
+          - { path: ContinuumBold14outback.txt, id: CONTINUUMBOLD14OUTLINE }
+          - pattern: glob:*.txt
+
+
+  - name: DelayLoad_Background1
+    contents: [] # preloaded
+  - name: DelayLoad_BackgroundUnsodded
+    contents: [] # preloaded
+  - name: DelayLoad_Background2
+    contents: [] # preloaded
+  - name: DelayLoad_Background3
+    contents: [] # preloaded
+  - name: DelayLoad_Background4
+    contents: [] # preloaded
+  - name: DelayLoad_Background5
+    contents: [] # preloaded
+  - name: DelayLoad_Background6
+    contents: [] # preloaded
+  - name: DelayLoad_MushroomGarden
+    contents: [] # preloaded
+  - name: DelayLoad_GreenHouseGarden
+    contents: [] # preloaded
+  - name: DelayLoad_GreenHouseOverlay
+    contents: [] # preloaded
+  - name: DelayLoad_Zombiquarium
+    contents: [] # preloaded
+  - name: DelayLoad_TreeOfWisdom
+    contents: []
+  - name: DelayLoad_AwardScreen
+    contents: [] # preloaded
+  - name: DelayLoad_ChallengeScreen
+    contents: [] # preloaded
+  - name: DelayLoad_Almanac
+    contents: [] # preloaded
+  - name: DelayLoad_Store
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNote
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNote1
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNote2
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNote3
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNote4
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieFinalNote
+    contents: [] # preloaded
+  - name: DelayLoad_ZombieNoteHelp
+    contents: [] # preloaded
+
+
+  - name: DelayLoad_Credits
+    contents:
+      - type: Image
+        defaults: { path: reanim, id-prefix: IMAGE_REANIM_ }
+        items:
+          - pattern: glob:SunFlower_head_*
+          - path: Credits_DiscoLights.png
+          - path: Credits_fogmachine.png
+
+  - name: DelayLoad_Zombatar
+    contents:
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        items:
+          - path: zombatar_fhair_button.png
+            id: ZOMBATAR_FACIAL_HAIR_BUTTON
+          - path: zombatar_fhair_button_highlight.png
+            id: ZOMBATAR_FACIAL_HAIR_BUTTON_HIGHLIGHT
+          - path: zombatar_fhair_button_over.png
+            id: ZOMBATAR_FACIAL_HAIR_BUTTON_OVER
+          - pattern: regex:zombatar_.*[^_]\.png
+
+  - name: LoadingImages
+    contents:
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        items:
+          - { path: Achievements_pedestal.png, id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL }
+          - { path: Achievements_pedestal_press.png, id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL_PRESS }
+          - path: Almanac_IndexBack.jpg
+            attrs: 
+              a8r8g8b8: true
+          - path: aquarium1.jpg
+            attrs: 
+              a8r8g8b8: true
+          - path: AwardScreen_Back.jpg
+            attrs: 
+              a8r8g8b8: true
+          - pattern: glob:background*.jpg
+            attrs: 
+              ddsurface: true
+              a8r8g8b8: true
+          - path: Challenge_Background.jpg
+            attrs: 
+              a8r8g8b8: true
+          - path: Challenge_Thumbnails.jpg
+            attrs: 
+              cols: 22
+          - path: CobCannon_popcorn.png
+            attrs:
+              cols: 5
+          - path: ConveyorBelt.png
+            attrs:
+              rows: 6
+          - pattern: glob:crater*
+            attrs:
+              cols: 2
+          - path: Credits_ZombieNoteBlack
+            id: CREDITS_ZOMBIENOTE
+            attrs:
+              alphagrid: Credits_ZombieNote
+            external: true
+          - path: dirtbig.png
+            attrs:
+              rows: 2
+              cols: 4
+          - path: dirtsmall.png
+            attrs:
+              rows: 2
+              cols: 8
+          - path: FlagMeter.png
+            attrs:
+              rows: 2
+              minsubdivide: true
+          - path: FlagMeterParts.png
+            attrs:
+              cols: 3
+          - path: fog.jpg
+            attrs: 
+              cols: 8
+          - path: fog_software.png
+            attrs: 
+              cols: 3
+          - path: ice_sparkles.png
+            attrs: 
+              cols: 3
+          - path: icetrap_particles.png
+            attrs: 
+              cols: 4
+          - path: Melonpult_particles.png
+            attrs:
+              cols: 9
+          - path: packet_plants.png
+            attrs:
+              cols: 13
+          - path: pea_shadows.png
+            attrs:
+              cols: 2
+          - pattern: glob:plantshadow*
+            attrs:
+              minsubdivide: true
+          - path: pool.jpg
+            attrs:
+              minsubdivide: true
+          - path: pool_base.jpg
+            attrs:
+              minsubdivide: true
+          - path: pool_base_night.jpg
+            attrs:
+              minsubdivide: true
+              alphagrid: pool_base_.png
+          - path: pool_caustic_effect.jpg
+            attrs:
+              minsubdivide: true
+              nopal: true
+          - path: pool_night.jpg
+            attrs:
+              minsubdivide: true
+          - path: pool_shading.jpg
+            attrs:
+              minsubdivide: true
+          - path: pool_shading_night.jpg
+            attrs:
+              minsubdivide: true
+              alphagrid: pool_shading_.jpg
+          - path: RockSmall.png
+            attrs:
+              rows: 2
+              cols: 8
+          - path: Scary_Pot.png
+            attrs:
+              rows: 2
+              cols: 3
+          - path: SeedBank.png
+            attrs:
+              minsubdivide: true
+          - path: seeds.png
+            attrs:
+              cols: 9
+          - path: selector_morewaystoplay_background.png
+            id: SELECTORSCREEN_MOREWAYSTOPLAY_BG
+          - path: SelectorScreen_LevelNumbers.png
+            attrs:
+              cols: 10
+          - pattern: regex:^sod\drow\.jpg$
+            attrs: 
+              ddsurface: true
+          - path: Sunflower_trophy.png
+            attrs:
+              cols: 2
+          - path: Survival_Thumbnails.jpg
+            attrs: 
+              cols: 11
+          - path: Tombstone_mounds.png
+            attrs:
+              rows: 4
+              cols: 5
+          - path: Tombstones.jpg
+            attrs:
+              rows: 4
+              cols: 5
+          - path: waterparticle.png
+            attrs:
+              cols: 6
+          - path: wavecenter.gif
+            attrs: { rows: 12 }
+          - path: waveside.gif
+            attrs: { rows: 12 }
+          - path: whitewater.png
+            attrs:
+              cols: 3
+          - path: WinterMelon_particles.png
+            attrs:
+              cols: 9
+          - path: zen_need_icons.png
+            attrs:
+              cols: 3
+          - { id: ZOMBIE_NOTE, path: ZombieNote, external: true }
+          - path: ZombieNoteSmall
+            id: ZOMBIE_NOTE_SMALL
+            external: true
+          - { id: ZOMBIE_NOTE1, path: ZombieNoteBlack1, 
+            attrs: { alphagrid: ZombieNote1}, external: true }
+          - { id: ZOMBIE_NOTE2, path: ZombieNoteBlack2, attrs: { alphagrid: ZombieNote2}, external: true }
+          - { id: ZOMBIE_NOTE3, path: ZombieNoteBlack3, attrs: { alphagrid: ZombieNote3}, external: true }
+          - { id: ZOMBIE_NOTE4, path: ZombieNoteBlack4, attrs: { alphagrid: ZombieNote4}, external: true }
+          - { id: ZOMBIE_FINAL_NOTE, path: ZombieFinalNoteBlack, attrs: { alphagrid: Zombiefinalnote }, external: true }
+          - { id: ZOMBIE_NOTE_HELP, path: ZombieNoteHelpBlack, attrs: { alphagrid: ZombieNoteHelp }, external: true }
+          - pattern: glob:*
+
+      - type: Image
+        # --- particle images that are also called in code
+        defaults: { path: particles, id-prefix: IMAGE_ }
+        items:
+          - path: AwardPickupGlow.png
+          - path: PuffShroom_puff1.png
+          - path: Rain.png
+          - path: SeedPacketFlash.png
+          - { path: ZombieBackupDancerHead_disco.png, id: ZOMBIEBACKUPDANCERHEAD }
+          - path: ZombieBobsledHead.png
+          - path: Zombie_boss_iceball_particles.png
+            attrs:
+              cols: 4
+          - { path: ZombieDancerHead_disco.png, id: ZOMBIEDANCERHEAD }
+          - path: ZombieDiggerArm.png
+          - path: ZombieDiggerHead.png
+          - path: ZombieDolphinRiderHead.png
+          - path: ZombieFootballHead.png
+          - path: ZombieImpHead.png
+          - path: ZombieJackboxArm.png
+          - path: ZombieLadderHead.png
+          - path: ZombiePogo.png
+          - path: ZombiePoleVaulterHead.png
+          - path: ZombieYetiHead.png
+
+      - type: Image
+        # --- reanim images that are also called in code
+        defaults: { path: reanim, id-prefix: IMAGE_REANIM_ }
+        items:
+          - path: Cabbagepult_cabbage.png
+          - path: CobCannon_cob.png
+          - path: CoinGlow.png
+          - path: coin_gold_dollar.png
+          - path: coin_silver_dollar.png
+          - path: Cornpult_butter.png
+          - path: Cornpult_butter_splat.png
+          - path: Cornpult_kernal.png
+          - path: CrazyDave_mouth1.png
+          - path: CrazyDave_mouth4.png
+          - path: CrazyDave_mouth5.png
+          - path: CrazyDave_mouth6.png
+          - path: Diamond.png
+          - path: Garlic_body2.png
+          - path: Garlic_body3.png
+          - path: Melonpult_melon.png
+          - path: Pot_top_dark.png
+          - path: pumpkin_damage1.png
+          - path: Pumpkin_damage3.png
+          - path: SelectorScreen_Adventure_button.png
+          - path: SelectorScreen_Adventure_highlight.png
+          - path: SelectorScreen_almanac_shadow.png
+          - path: SelectorScreen_Challenges_button.png
+          - path: SelectorScreen_Challenges_highlight.png
+          - path: SelectorScreen_key_shadow.png
+          - { path: SelectorScreen_StartAdventure_Button1.png, id: SELECTORSCREEN_STARTADVENTURE_BUTTON }
+          - path: SelectorScreen_StartAdventure_Highlight.png
+          - path: SelectorScreen_Survival_button.png
+          - path: SelectorScreen_Survival_highlight.png
+          - path: SelectorScreen_Vasebreaker_button.png
+          - path: SelectorScreen_vasebreaker_highlight.png
+          - path: SelectorScreen_WoodSign2_press.png
+          - path: SelectorScreen_WoodSign3_press.png
+          - path: Stinky_turn3.png
+          - path: Tallnut_cracked1.png
+          - path: Tallnut_cracked2.png
+          - path: Wallnut_body.png
+          - path: Wallnut_cracked1.png
+          - path: Wallnut_cracked2.png
+          - path: WinterMelon_projectile.png
+          - { path: Zombie_backup_innerhand.png, id: ZOMBIE_BACKUP_INNERARM_HAND }
+          - path: Zombie_balloon_outerarm_upper2.png
+          - path: Zombie_bobsled_outerarm_hand.png
+          - path: Zombie_bobsled_outerarm_upper2.png
+          - path: Zombie_boss_eyeglow_blue.png
+          - path: Zombie_boss_foot_damage1.png
+          - path: Zombie_boss_foot_damage2.png
+          - path: Zombie_boss_head_damage1.png
+          - path: Zombie_boss_head_damage2.png
+          - path: Zombie_boss_jaw_damage1.png
+          - path: Zombie_boss_jaw_damage2.png
+          - path: Zombie_boss_mouthglow_blue.png
+          - path: Zombie_boss_outerarm_hand_damage1.png
+          - path: Zombie_boss_outerarm_hand_damage2.png
+          - path: Zombie_boss_outerarm_thumb_damage1.png
+          - path: Zombie_boss_outerarm_thumb_damage2.png
+          - path: Zombie_bucket1.png
+          - path: Zombie_bucket2.png
+          - path: Zombie_bucket3.png
+          - path: Zombie_catapult_basketball.png
+          - path: Zombie_catapult_pole.png
+          - path: Zombie_catapult_pole_damage.png
+          - path: Zombie_catapult_pole_damage_withball.png
+          - path: Zombie_catapult_pole_withball.png
+          - path: Zombie_catapult_siding_damage.png
+          - path: Zombie_cone2.png
+          - path: Zombie_cone3.png
+          - path: Zombie_digger_hardhat2.png
+          - path: Zombie_digger_hardhat3.png
+          - path: Zombie_digger_outerarm_upper2.png
+          - path: Zombie_digger_pickaxe.png
+          - { path: Zombie_disco_outerhand.png, id: ZOMBIE_DISCO_OUTERARM_HAND }
+          - { path: Zombie_disco_outerarm_upper_bone.png, id: ZOMBIE_DISCO_OUTERARM_UPPER2 }
+          - path: Zombie_dolphinrider_outerarm_upper2.png
+          - path: Zombie_flag3.png
+          - path: Zombie_football_helmet.png
+          - path: Zombie_football_helmet2.png
+          - path: Zombie_football_helmet3.png
+          - path: Zombie_football_leftarm_hand.png
+          - path: zombie_football_leftarm_upper2.png
+          - path: Zombie_gargantuar_body1_2.png
+          - path: Zombie_gargantuar_body1_3.png
+          - path: Zombie_gargantuar_duckxing.png
+          - path: Zombie_gargantuar_foot2.png
+          - path: Zombie_gargantuar_head2.png
+          - path: Zombie_gargantuar_head2_redeye.png
+          - path: Zombie_gargantuar_head_redeye.png
+          - path: Zombie_gargantuar_outerarm_lower2.png
+          - path: Zombie_gargantuar_zombie.png
+          - path: Zombie_head_grossout.png
+          - path: Zombie_head_sunglasses1.png
+          - path: Zombie_head_sunglasses2.png
+          - path: Zombie_head_sunglasses3.png
+          - path: Zombie_head_sunglasses4.png
+          - path: Zombie_imp_arm1_bone.png
+          - path: Zombie_imp_arm2.png
+          - path: Zombie_jackbox_box.png
+          - path: Zombie_jackbox_outerarm_lower2.png
+          - path: Zombie_ladder_1.png
+          - path: Zombie_ladder_1_damage1.png
+          - path: Zombie_ladder_1_damage2.png
+          - path: Zombie_ladder_5.png
+          - path: Zombie_ladder_outerarm_upper2.png
+          - path: Zombie_mustache2.png
+          - path: Zombie_mustache3.png
+          - path: Zombie_outerarm_hand.png
+          - path: Zombie_outerarm_upper2.png
+          - path: Zombie_paper_leftarm_lower.png
+          - path: Zombie_paper_leftarm_upper2.png
+          - path: Zombie_paper_madhead.png
+          - path: Zombie_paper_paper2.png
+          - path: Zombie_paper_paper3.png
+          - path: Zombie_pogo_outerarm_upper2.png
+          - path: Zombie_pogo_stick2damage2.png
+          - path: Zombie_pogo_stickdamage2.png
+          - path: Zombie_pogo_stickhands2.png
+          - path: Zombie_polevaulter_outerarm_upper2.png
+          - path: Zombie_screendoor1.png
+          - path: Zombie_screendoor2.png
+          - path: Zombie_screendoor3.png
+          - path: Zombie_snorkle_head.png
+          - path: Zombie_snorkle_outerarm_upper2.png
+          - path: Zombie_yeti_outerarm_hand.png
+          - path: Zombie_yeti_outerarm_upper2.png
+          - path: Zombie_zamboni_1_damage1.png
+          - path: Zombie_zamboni_1_damage2.png
+          - path: Zombie_zamboni_2_damage1.png
+          - path: Zombie_zamboni_2_damage2.png

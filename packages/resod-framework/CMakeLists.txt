@@ -6,13 +6,13 @@ add_library(${PROJECT_NAME} STATIC)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     C_STANDARD 17
     CXX_STANDARD 17
-    CXX_EXTENSIONS ON
+    CXX_EXTENSIONS NO
 )
 
 # Source Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src-mixin/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src-mixin/**/*.cpp"
 )
 # cpp as include files
 set(EXCLUDE_FILES

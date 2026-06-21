@@ -13,7 +13,7 @@ add_executable(${PROJECT_NAME} WIN32)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     C_STANDARD 17
     CXX_STANDARD 17
-    CXX_EXTENSIONS ON
+    CXX_EXTENSIONS NO
 )
 
 include(cmake/UserConfig.cmake)

@@ -9,7 +9,7 @@ tasks:
   build:
     sources:
       - Taskfile.yml
-      - resources.yml
+      - resources.yaml
       - 'shaders/**/*'
       - 'scripts/**/*'
       - 'mod/**/*'
@@ -24,10 +24,8 @@ tasks:
     cmds:
       - silent: true
         cmd: |
-          echo '==> running copypak.py'
           mkdir -p {{.TARGET_DIR}}/shared/properties
           cp {{.EN_DIR}}/properties/default.xml {{.TARGET_DIR}}/shared/properties/default.xml
-          cp {{.EN_DIR}}/properties/resources.xml {{.TARGET_DIR}}/shared/properties/resources.xml
           # sounds are identical
           mkdir -p {{.TARGET_DIR}}/shared/sounds
           $(which cp) {{.EN_DIR}}/sounds/* {{.TARGET_DIR}}/shared/sounds
@@ -55,10 +53,6 @@ tasks:
           rm -f {{.TARGET_DIR}}/shared/shaders/*.txtpp.glsl
       - silent: true
         cmd: |
-          echo '==> copying framework assets'
-          $(which cp) -R framework/* {{.TARGET_DIR}}/shared
-      - silent: true
-        cmd: |
           echo '==> copying mod assets'
           mkdir -p {{.TARGET_DIR}}/shared
           $(which cp) -R mod/shared/* {{.TARGET_DIR}}/shared
@@ -66,6 +60,16 @@ tasks:
           $(which cp) -R mod/mainen/* {{.TARGET_DIR}}/mainen
           mkdir -p {{.TARGET_DIR}}/mainzh
           $(which cp) -R mod/mainzh/* {{.TARGET_DIR}}/mainzh
+      - silent: true
+        cmd: |
+          echo '==> generating resource manifest'
+          pvz-bintools resc resources.yaml
+        # framework assets need to be after manifest so it doesn't get mangled into our manifest
+        # which causes symbol conflicts
+      - silent: true
+        cmd: |
+          echo '==> copying framework assets'
+          $(which cp) -R framework/* {{.TARGET_DIR}}/shared
       - silent: true
         cmd: |
           echo '==> creating paks'
@@ -80,6 +84,14 @@ tasks:
 
   clean:
     - rm -rf {{.TARGET_DIR}}
+
+
+
+
+
+
+
+
 
 
 
