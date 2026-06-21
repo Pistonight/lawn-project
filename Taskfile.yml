@@ -24,7 +24,6 @@ tasks:
     - task: assets:build
     - task: lawn:build
     - task: lib:build
-    - task: assets:copy-paks
 
   run:
     - cd target/lawn/debug/out && ./PlantsVsZombies.exe
@@ -40,6 +39,6 @@ tasks:
     - task: lawn:fix
 
   clean:
-    - task: lawn:clean
+    - rm -rf target lawn-assets/.task .task
 
 

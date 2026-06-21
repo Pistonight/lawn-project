@@ -10,6 +10,11 @@ endif()
 
 # Target
 add_executable(${PROJECT_NAME} WIN32)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    C_STANDARD 17
+    CXX_STANDARD 17
+    CXX_EXTENSIONS ON
+)
 
 include(cmake/UserConfig.cmake)
 
@@ -29,11 +34,6 @@ if(MSVC AND GITHUB_ACTIONS)
     message(STATUS "GitHub Actions, adding /SAFESEH:NO, screw you BASS")
     add_link_options(/SAFESEH:NO)
 endif()
-
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
 
 # woohooo now we can use folder filters
 set(CMAKE_USE_FOLDERS ON)

@@ -22,7 +22,9 @@ def get_upstream_config():
     return json.loads(get_upstream_config_path().read_text())
 
 def save_upstream_config(config):
-    get_upstream_config_path().write_text(json.dumps(config, indent=4)+"\n")
+    get_upstream_config_path().write_text(
+        json.dumps(config, indent=4) + "\n", encoding="utf8", newline="\n"
+    )
     
 def rm_rf(d: Path | str):
     if Path(d).exists():

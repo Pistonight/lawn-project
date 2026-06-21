@@ -34,4 +34,4 @@ def generate_buildinfo_inc(input_version_file: Path | str, output_inc_file: Path
     ]
     content = "\n".join(lines) + "\n"
 
-    output_inc_file.write_text(content)
+    output_inc_file.write_text(content, encoding="utf8", newline="\n")

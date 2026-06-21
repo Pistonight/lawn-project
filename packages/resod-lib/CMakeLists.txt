@@ -1,6 +1,12 @@
 project(ResodLib)
 add_library(${PROJECT_NAME} STATIC)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    C_STANDARD 17
+    CXX_STANDARD 17
+    CXX_EXTENSIONS ON
+)
+
 # Source Files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
