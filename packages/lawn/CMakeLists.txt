@@ -46,12 +46,14 @@ add_subdirectory(../resod-lib resod-lib)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.rc"
+    "${CMAKE_SOURCE_DIR}/src-mixin/*.cpp"
 )
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 # Include Paths
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src-mixin"
 )
 
 # Libraries
@@ -66,8 +68,11 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:_DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
 )
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH_UPSTREAM)
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_MIXIN)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    PISTON_PATCH_UPSTREAM
+    PISTON_PATCH
+    PISTON_MIXIN
+)
 
 if (MSVC)
     set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_FORCE_SYNCHRONOUS_PDB_WRITES ON)

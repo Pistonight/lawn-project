@@ -1,6 +1,5 @@
 #if SEXY_USE_SDL3_RENDERER
 
-#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Renderer.h>
 #include <SexyAppFramework/SexyAppBase.h>
 #include <SexyAppFramework/SexyMatrix.h>
@@ -190,7 +189,7 @@ void SDL3Renderer::Remove3DData(MemoryImage* theImage) {
         delete (SDL3TextureData*)theImage->mGPUData;
         theImage->mGPUData = nullptr;
 
-        AutoCrit aCrit(mCritSect); // Make images thread safe
+        auto aLock = std::scoped_lock(mCritSect); // Make images thread safe
         mImageSet.erase(theImage);
     }
 }
@@ -320,7 +319,7 @@ bool SDL3Renderer::CreateImageTexture(MemoryImage* theImage) {
         // The actual purging was deferred
         wantPurge = theImage->mPurgeBits;
 
-        AutoCrit aCrit(mCritSect); // Make images thread safe
+        auto aLock = std::scoped_lock(mCritSect); // Make images thread safe
         mImageSet.insert(theImage);
     }
 
@@ -433,8 +432,7 @@ void SDL3TextureData::CreateTextures(MemoryImage* theImage, void* theRendererDat
     mWidth = theImage->mWidth;
     mHeight = theImage->mHeight;
     mBitsChangedCount = theImage->mBitsChangedCount;
-    if (mTexData != nullptr)
-        delete mTexData;
+    delete mTexData;
     mTexData = mTexturePtr;
     mTexMemSize = mWidth * mHeight * 4; // Using ARGB
     SDL3Renderer::gSDLUsedMemoryCount += mTexMemSize;

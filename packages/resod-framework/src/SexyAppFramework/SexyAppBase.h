@@ -8,7 +8,6 @@
 #include <SexyAppFramework/ButtonListener.h>
 #include <SexyAppFramework/Color.h>
 #include <SexyAppFramework/Common.h>
-#include <SexyAppFramework/CritSect.h>
 #include <SexyAppFramework/DialogListener.h>
 #include <SexyAppFramework/Gamepad.h>
 #include <SexyAppFramework/Rect.h>
@@ -16,6 +15,7 @@
 #include <SexyAppFramework/Version.h>
 #include <ft2build.h>
 #include <list>
+#include <mutex>
 #include <set>
 #include FT_FREETYPE_H
 
@@ -175,7 +175,6 @@ public:
 #ifdef _WIN32
     HANDLE mCopyMutex;
 #endif
-    CritSect mCritSect;
     bool mBetaValidate;
     uint8_t mAdd8BitMaxTable[512];
     WidgetManager* mWidgetManager;

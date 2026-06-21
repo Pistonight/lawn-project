@@ -1,7 +1,5 @@
 #if SEXY_USE_SDL3_RENDERER
 
-#include <SexyAppFramework/AutoCrit.h>
-#include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/PerfTimer.h>
 #include <SexyAppFramework/Rect.h>
@@ -89,7 +87,7 @@ bool SDL3Image::GenerateSurface() {
     if (mColorTable != NULL)
         GetBits();
 
-    AutoCrit aCrit(
+    auto aLock = std::scoped_lock(
         mRenderer->mCritSect); // prevent mSurface from being released while we're in this code
 
     if (!LockSurface())

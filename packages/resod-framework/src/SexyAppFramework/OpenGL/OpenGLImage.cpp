@@ -1,7 +1,5 @@
 #if SEXY_USE_OPENGL
 
-#include <SexyAppFramework/AutoCrit.h>
-#include <SexyAppFramework/Debug.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/OpenGL/OpenGLImage.h>
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
@@ -96,8 +94,8 @@ bool OpenGLImage::GenerateSurface() {
     if (mColorTable != NULL)
         GetBits();
 
-    AutoCrit aCrit(
-        mRenderer->mCritSect); // prevent mSurface from being released while we're in this code
+    // prevent mSurface from being released while we're in this code
+    auto aLock = std::scoped_lock(mRenderer->mCritSect);
 
     if (!LockSurface())
         return false;

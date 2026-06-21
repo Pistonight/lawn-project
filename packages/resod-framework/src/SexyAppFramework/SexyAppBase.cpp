@@ -37,7 +37,6 @@
 #include <fstream>
 
 #include <PakLib/PakInterface.h>
-#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/BassMusicInterface.h>
 #include <SexyAppFramework/ResourceManager.h>
 #include <SexyAppFramework/SysFont.h>
@@ -3870,7 +3869,7 @@ void SexyAppBase::DeleteNativeImageData() {
 }
 
 void SexyAppBase::DeleteExtraImageData() {
-    AutoCrit anAutoCrit(mRenderer->mCritSect);
+    auto aLock = std::scoped_lock(mRenderer->mCritSect);
     MemoryImageSet::iterator anItr = mMemoryImageSet.begin();
     while (anItr != mMemoryImageSet.end()) {
         MemoryImage* aMemoryImage = *anItr;
@@ -5572,12 +5571,12 @@ void SexyAppBase::SetMasterVolume(double theMasterVolume) {
 }
 
 void SexyAppBase::AddMemoryImage(MemoryImage* theMemoryImage) {
-    AutoCrit anAutoCrit(mRenderer->mCritSect);
+    auto aLock = std::scoped_lock(mRenderer->mCritSect);
     mMemoryImageSet.insert(theMemoryImage);
 }
 
 void SexyAppBase::RemoveMemoryImage(MemoryImage* theMemoryImage) {
-    AutoCrit anAutoCrit(mRenderer->mCritSect);
+    auto aLock = std::scoped_lock(mRenderer->mCritSect);
     MemoryImageSet::iterator anItr = mMemoryImageSet.find(theMemoryImage);
     if (anItr != mMemoryImageSet.end())
         mMemoryImageSet.erase(anItr);
@@ -5653,7 +5652,7 @@ SharedImageRef SexyAppBase::GetSharedImage(const std::string& theFileName,
     SharedImageRef aSharedImageRef;
 
     {
-        AutoCrit anAutoCrit(mRenderer->mCritSect);
+        auto aLock = std::scoped_lock(mRenderer->mCritSect);
         aResultPair = mSharedImageMap.insert(SharedImageMap::value_type(
             SharedImageMap::key_type(anUpperFileName, anUpperVariant), SharedImage()));
         aSharedImageRef = &aResultPair.first->second;
@@ -5674,7 +5673,7 @@ SharedImageRef SexyAppBase::GetSharedImage(const std::string& theFileName,
 }
 
 void SexyAppBase::CleanSharedImages() {
-    AutoCrit anAutoCrit(mRenderer->mCritSect);
+    auto aLock = std::scoped_lock(mRenderer->mCritSect);
 
     if (mCleanupSharedImages) {
         // Delete shared images with reference counts of 0

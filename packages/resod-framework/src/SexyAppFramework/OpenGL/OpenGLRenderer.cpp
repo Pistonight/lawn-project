@@ -1,6 +1,5 @@
 #if SEXY_USE_OPENGL
 #include <SDL3/SDL.h>
-#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/OpenGL/OpenGLRenderer.h>
 #include <SexyAppFramework/SexyAppBase.h>
 #include <SexyAppFramework/SexyMatrix.h>
@@ -225,7 +224,7 @@ void OpenGLRenderer::Remove3DData(MemoryImage* theImage) {
         delete (OpenGLTextureData*)theImage->mGPUData;
         theImage->mGPUData = nullptr;
 
-        AutoCrit aCrit(mCritSect); // Make images thread safe
+        auto aLock = std::scoped_lock(mCritSect); // Make images thread safe
         mImageSet.erase(theImage);
     }
 }
@@ -536,7 +535,7 @@ bool OpenGLRenderer::CreateImageTexture(MemoryImage* theImage) {
         // The actual purging was deferred
         wantPurge = theImage->mPurgeBits;
 
-        AutoCrit aCrit(mCritSect); // Make images thread safe
+        auto aLock = std::scoped_lock(mCritSect); // Make images thread safe
         mImageSet.insert(theImage);
     }
 

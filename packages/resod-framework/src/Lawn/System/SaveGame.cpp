@@ -328,6 +328,7 @@ void SaveContext::LoadScheme(std::string thePath) {
 
 #define SYNC_VAR(name) theContext.SyncVar(name, #name)
 #define SYNC_ARRAY(name) theContext.SyncBytes(name, sizeof(name), #name)
+#define SYNC_STD_ARRAY(name) theContext.SyncBytes(name.data(), name.size(), #name)
 #define SYNC_CLASS(obj) theContext.SyncBytes(obj, sizeof(*obj), #obj)
 #define SYNC_DATA_ARRAY(type, arr)                                                                 \
     theContext.SyncVar(arr.mMaxUsedCount, #arr ".mMaxUsedCount");                                  \
@@ -538,14 +539,14 @@ void LawnSyncGame(Board* theBoard, SaveContext& theContext) {
     SYNC_VAR(theBoard->mSeedBank->mAxisProgress);
 #endif
 
-    SYNC_ARRAY(theBoard->mAdvice->mLabel);
+    SYNC_STD_ARRAY(theBoard->mAdvice->mLabel);
     SYNC_VAR(theBoard->mAdvice->mDisplayTime);
     SYNC_VAR(theBoard->mAdvice->mDuration);
     SYNC_VAR(theBoard->mAdvice->mMessageStyle);
-    SYNC_ARRAY(theBoard->mAdvice->mTextReanimID);
+    SYNC_STD_ARRAY(theBoard->mAdvice->mTextReanimID);
     SYNC_VAR(theBoard->mAdvice->mReanimType);
     SYNC_VAR(theBoard->mAdvice->mSlideOffTime);
-    SYNC_ARRAY(theBoard->mAdvice->mLabelNext);
+    SYNC_STD_ARRAY(theBoard->mAdvice->mLabelNext);
     SYNC_VAR(theBoard->mAdvice->mMessageStyleNext);
 
     SYNC_VAR(theBoard->mCursorPreview->mGridX);

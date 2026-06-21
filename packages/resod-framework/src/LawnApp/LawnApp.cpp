@@ -647,9 +647,9 @@ void LawnApp::DoPauseDialog() {
     mBoard->Pause(true);
     // FinishModelessDialogs();
 
-    LawnDialog* aDialog = (LawnDialog*)DoDialog(
-        Dialogs::DIALOG_PAUSED, true, "GAME PAUSED" /*"[GAME_PAUSED]"*/, "Click to resume game",
-        "Resume Game" /*"[RESUME_GAME]"*/, Dialog::BUTTONS_FOOTER);
+    LawnDialog* aDialog =
+        (LawnDialog*)DoDialog(Dialogs::DIALOG_PAUSED, true, "[GAME_PAUSED]", "[CLICK_TO_RESUME]",
+                              "[RESUME_GAME]", Dialog::BUTTONS_FOOTER);
 
     aDialog->mReanimation->AddReanimation(72.0f, 42.0f, ReanimationType::REANIM_ZOMBIE_NEWSPAPER);
     aDialog->mSpaceAfterHeader = 155;
@@ -2572,7 +2572,7 @@ void LawnApp::DrawCrazyDave(Graphics* g) {
         TodDrawStringWrapped(g, aBubbleText, aRect, FONT_BRIANNETOD16, Color::Black,
                              DrawStringJustification::DS_ALIGN_CENTER_VERTICAL_MIDDLE);
         if (clickToContinue) {
-            TodDrawString(g, "click to continue", aPosX + 139, aPosY + 140, FONT_PICO129,
+            TodDrawString(g, "[CLICK_TO_CONTINUE]", aPosX + 139, aPosY + 140, FONT_PICO129,
                           Color::Black, DrawStringJustification::DS_ALIGN_CENTER);
         }
     }

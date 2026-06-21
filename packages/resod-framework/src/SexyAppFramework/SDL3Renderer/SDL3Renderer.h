@@ -5,9 +5,6 @@
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/SDL3Renderer/SDL3Image.h>
 
-#include <unordered_map>
-#include <vector>
-
 namespace Sexy {
 
 class TriVertex;

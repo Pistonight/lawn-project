@@ -1,4 +1,3 @@
-#include <SexyAppFramework/AutoCrit.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/SexyAppBase.h>
@@ -72,13 +71,12 @@ BlendMode Renderer::ChooseBlendMode(int theBlendMode) {
 }
 
 void Renderer::AddImage(Image* theImage) {
-    AutoCrit anAutoCrit(mCritSect);
-
+    auto lock = std::scoped_lock(mCritSect);
     mImageSet.insert((MemoryImage*)theImage);
 }
 
 void Renderer::RemoveImage(Image* theImage) {
-    AutoCrit anAutoCrit(mCritSect);
+    auto lock = std::scoped_lock(mCritSect);
 
     ImageSet::iterator anItr = mImageSet.find((MemoryImage*)theImage);
     if (anItr != mImageSet.end())

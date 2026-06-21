@@ -123,8 +123,11 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
 endif()
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_PATCH_UPSTREAM)
-target_compile_definitions(${PROJECT_NAME} PRIVATE PISTON_MIXIN)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    PISTON_PATCH_UPSTREAM
+    PISTON_PATCH
+    PISTON_MIXIN
+)
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:Debug>:DEBUG>

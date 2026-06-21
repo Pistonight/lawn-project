@@ -3,6 +3,10 @@
 #include <LawnApp/LawnApp.h>
 #include <Sexy.TodLib/TodStringFile.h>
 
+#ifdef PISTON_PATCH
+#include <Piston/Init.h>
+#endif
+
 bool (*gAppCloseRequest)();
 bool (*gAppHasUsedCheatKeys)();
 SexyString (*gGetCurrentLevelName)();
@@ -21,6 +25,10 @@ int LawnMain() {
                               Sexy::FileExists("../properties/resources.xml"))
                                  ? ".."
                                  : ".";
+
+#ifdef PISTON_PATCH
+    Piston::InitMod(*gLawnApp);
+#endif
 
     gLawnApp->Init();
     gLawnApp->Start();

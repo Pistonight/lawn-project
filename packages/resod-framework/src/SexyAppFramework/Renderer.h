@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SexyAppFramework/CritSect.h>
 #include <SexyAppFramework/GPUImage.h>
 #include <SexyAppFramework/SexyMatrix.h>
+#include <mutex>
 #include <set>
 #include <unordered_map>
 
@@ -139,7 +139,7 @@ public:
     TransformStack mTransformStack;
 
     static std::string mErrorString;
-    CritSect mCritSect;
+    std::recursive_mutex mCritSect;
 
     GPUImage* mScreenImage;
 
