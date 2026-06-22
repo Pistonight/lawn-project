@@ -45,6 +45,6 @@ tasks:
     - task: lawn:fix
 
   clean:
-    - rm -rf target lawn-assets/.task .task
+    - rm -rf build target lawn-assets/.task .task
 
 

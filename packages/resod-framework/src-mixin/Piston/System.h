@@ -19,8 +19,13 @@ public:
         return gInstance;
     }
 
+    static bool IsChinese() {
+        return Instance().GetLanguage() == Language::ZH;
+    }
+
     Language GetLanguage() const { return mLanguage; }
-    void SetLanguageForNextTime(Language x) const;
+    void SetLanguageForNextTime(Language language) const;
+    const std::string& GetCurrPath() const { return mCurrPath; }
 private:
     System();
 

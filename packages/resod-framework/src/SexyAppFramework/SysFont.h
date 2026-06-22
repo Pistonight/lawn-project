@@ -5,6 +5,11 @@
 #include <freetype/freetype.h>
 #include <unordered_map>
 
+#ifdef PISTON_MIXIN
+#include <memory>
+#include <Piston/SysFont.h>
+#endif
+
 namespace Sexy {
 
 class ImageFont;
@@ -67,6 +72,9 @@ struct TrueTypeData {
     FT_Face mFace;
     int mSize;
     bool mIsDirty;
+#ifdef PISTON_MIXIN
+    std::shared_ptr<Piston::SysFont::FontObj> mFontObj;
+#endif
 
     TrueTypeData(SysFont* theFontPtr, FT_Face& theFace, int theSize)
         : mFont(theFontPtr), mFace(theFace), mSize(theSize) {

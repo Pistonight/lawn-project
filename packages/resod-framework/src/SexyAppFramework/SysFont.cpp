@@ -77,6 +77,7 @@ SysFont::SysFont(SexyAppBase* theApp, const std::string& theFace, int thePointSi
     Init(theApp, theFace, thePointSize, bold, italics, underline, true);
 }
 
+#ifndef PISTON_MIXIN
 void SysFont::Init(SexyAppBase* theApp, const std::string& theFace, int thePointSize, bool bold,
                    bool italics, bool underline, bool useDevCaps) {
     mApp = theApp;
@@ -125,7 +126,9 @@ void SysFont::Init(SexyAppBase* theApp, const std::string& theFace, int thePoint
     mDrawShadow = false;
     mFontName = theFace;
 }
+#endif
 
+#ifndef PISTON_MIXIN
 void SysFont::Reinit() {
     if (!mFontData || !mFontData->mFace)
         return;
@@ -156,7 +159,9 @@ void SysFont::Reinit() {
         mHeight = (aFontFace->size->metrics.ascender - aFontFace->size->metrics.descender) >> 6;
     }
 }
+#endif
 
+#ifndef PISTON_MIXIN
 SysFont::SysFont(const SysFont& theSysFont) {
     mApp = theSysFont.mApp;
     mHeight = theSysFont.mHeight;
@@ -168,6 +173,7 @@ SysFont::SysFont(const SysFont& theSysFont) {
 
     mDrawShadow = false;
 }
+#endif
 
 SysFont::~SysFont() {
     if (mFontData)
@@ -334,6 +340,7 @@ void TrueTypeData::Init() {
     delete[] anAtlasPixels;
 }
 
+#ifndef PISTON_MIXIN
 TrueTypeData::~TrueTypeData() {
     if (mAtlas.mAtlas != nullptr) {
         mFont->mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
@@ -341,3 +348,4 @@ TrueTypeData::~TrueTypeData() {
     mAtlas.mGlyphs.clear();
     FT_Done_Face(mFace);
 }
+#endif

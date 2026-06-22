@@ -4,8 +4,8 @@ project(ResoddedFramework)
 add_library(${PROJECT_NAME} STATIC)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    C_STANDARD 17
-    CXX_STANDARD 20
+    C_STANDARD 23
+    CXX_STANDARD 23
     CXX_EXTENSIONS NO
 )
 
