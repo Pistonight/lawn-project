@@ -1,6 +1,12 @@
 #ifndef __BASSMUSICINTERFACE_H__
 #define __BASSMUSICINTERFACE_H__
 
+// Include windows ourselves to prevent bass.h from including windows and leak macros
+// IWYU pragma: begin_exports <- this suppresses clangd warning
+#include <SexyAppFramework/Platform.h>
+// IWYU pragma: end_exports
+// this comment exists to prevent formatter from reording this include
+
 #include <SexyAppFramework/MusicInterface.h>
 #include <SexyAppFramework/Window.h>
 #include <bass.h>

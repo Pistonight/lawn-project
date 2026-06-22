@@ -37,7 +37,7 @@ uint32_t DefinitionCalcHashSymbolMap(int aSchemaHash, DefSymbol* theSymbolMap);
 uint32_t DefinitionCalcHashDefMap(int aSchemaHash, DefMap* theDefMap,
                                   TodList<DefMap*>& theProgressMaps);
 uint32_t DefinitionCalcHash(DefMap* theDefMap);
-bool DefReadFromCacheString(void*& theReadPtr, char** theString);
+bool DefReadFromCacheString(void*& theReadPtr, const char** theString);
 bool DefReadFromCacheArray(void*& theReadPtr, DefinitionArrayDef* theArray, DefMap* theDefMap);
 bool DefReadFromCacheImage(void*& theReadPtr, Image** theImage);
 bool DefReadFromCacheFont(void*& theReadPtr, Font** theFont);

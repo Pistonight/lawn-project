@@ -78,7 +78,6 @@ void PlayerInfo::LoadDetails() {
                 Reset();
             }
         }
-
     } catch (nlohmann::json::parse_error& anError) {
         TodTraceAndLog("[LawnProject] - Failed to parse profile data, resetting it\n");
         TodTraceAndLog("[LawnProject] - JSON Reading Error: %s", anError.what());

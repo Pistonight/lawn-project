@@ -980,7 +980,6 @@ void ZombatarWidget::Draw(Graphics* g) {
                                               TodCurves::CURVE_LINEAR);
         mFinishedButton->mY = TodAnimateCurve(0, TimeTransitionEnd, mTransitionTimer, 472, 345,
                                               TodCurves::CURVE_LINEAR);
-
     } else if (mState == STATE_AVATAR_TRANSITION) {
         g->SetColorizeImages(true);
         g->SetColor(Color::White);
@@ -993,7 +992,6 @@ void ZombatarWidget::Draw(Graphics* g) {
                                               TodCurves::CURVE_LINEAR);
         mFinishedButton->mY = TodAnimateCurve(0, TimeTransitionEnd, mTransitionTimer, 345, 472,
                                               TodCurves::CURVE_LINEAR);
-
     } else if (mState == STATE_CONFIRM) {
         g->DrawImage(IMAGE_ZOMBATAR_WIDGET_BG, aWidgetX, aWidgetY);
         mAvatarBackButton->Draw(g);
@@ -1608,7 +1606,6 @@ void ZombatarWidget::MouseUp(int x, int y, int theClickCount) {
         mNextButton->mDisabled =
             mApp->mPlayerInfo->mZombatarIndex == mApp->mPlayerInfo->mNumZombatars - 1;
         mPrevButton->mDisabled = mApp->mPlayerInfo->mZombatarIndex == 0;
-
     } else if (mNextPageButton->IsMouseOver()) {
         if (mSubPage < mMaxSubPages)
             mSubPage++;
@@ -1676,7 +1673,6 @@ void ZombatarWidget::MouseUp(int x, int y, int theClickCount) {
             mZombie->ResetZombatar();
             ChangeState(STATE_AVATAR_LIST);
         }
-
     } else if (mSkinButton->IsMouseOver()) {
         ChangePage(PAGE_SKIN);
     } else if (mHairButton->IsMouseOver()) {

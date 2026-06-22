@@ -45,7 +45,6 @@
 #include <SexyAppFramework/SoundManager.h>
 #include <SexyAppFramework/SysFont.h>
 #include <SexyAppFramework/WidgetManager.h>
-#include <bass.h>
 #include <cmath>
 
 #define SEXY_PERF_ENABLED

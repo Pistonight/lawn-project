@@ -271,7 +271,6 @@ GPUImage* ReanimatorCache::MakeCachedZombieFrame(ZombieType theZombieType) {
         aPropellerReanim.SetFramesForLayer("Propeller");
         aReanim.Draw(&aMemoryGraphics);
         aPropellerReanim.Draw(&aMemoryGraphics);
-
     } else if (aZombieDef.mReanimationType == ReanimationType::REANIM_BOSS) {
         Reanimation aReanim;
         aReanim.ReanimationInitializeType(-524.0f, -88.0f, aZombieDef.mReanimationType);

@@ -64,20 +64,22 @@ public:
     int mFieldOffset; // Offset within the class (understand in conjunction with assembly language)
     DefFieldType mFieldType; // *_MemVar The data storage type varies, and the reading method also
                              // differs for different types of data.
-    void* mExtraData; // Additional data. Used for deep copying pointer variables contained in
-                      // *_MemVar.
-    // If _MemVar is a pointer variable pointing to other defined data, then mExtraData is a pointer
-    // to the definition structure diagram of the class defined by _MemVar; If _MemVar is data of a
-    // flag or enumeration type, then mExtraData is a pointer to an array of DefSymbol arrays for
-    // each of its flag data; otherwise, mExtraData is a null pointer. Although by using the
-    // definition structure diagram of a _DefClass class, it is possible to read all the data of the
-    // _DefClass through relevant functions (i.e., perform a shallow copy). However, the data
-    // pointed to by some pointer variables in _DefClass still needs to be recursively read (i.e.,
-    // deep copied) based on the definition structure diagram of the corresponding type. In other
-    // words, by using a nested definition structure diagram, the pointers of various types of
-    // variables that originally had hierarchical relationships are "expanded" until there are no
-    // pointers in the current variable's data that can be "expanded", at which point the recursive
-    // reading ends.
+    void*
+        mExtraData; // Additional data. Used for deep copying pointer variables contained in
+                    // *_MemVar. If _MemVar is a pointer variable pointing to other defined data,
+                    // then mExtraData is a pointer to the definition structure diagram of the class
+                    // defined by _MemVar; If _MemVar is data of a flag or enumeration type, then
+                    // mExtraData is a pointer to an array of DefSymbol arrays for each of its flag
+                    // data; otherwise, mExtraData is a null pointer. Although by using the
+                    // definition structure diagram of a _DefClass class, it is possible to read all
+                    // the data of the _DefClass through relevant functions (i.e., perform a shallow
+                    // copy). However, the data pointed to by some pointer variables in _DefClass
+                    // still needs to be recursively read (i.e., deep copied) based on the
+                    // definition structure diagram of the corresponding type. In other words, by
+                    // using a nested definition structure diagram, the pointers of various types of
+                    // variables that originally had hierarchical relationships are "expanded" until
+                    // there are no pointers in the current variable's data that can be "expanded",
+                    // at which point the recursive reading ends.
 };
 
 // ====================================================================================================
@@ -136,12 +138,14 @@ public:
                       // the "track" definition in an animation definition.
     int mArrayCount;  // The size of the array, such as the number of "tracks" in an animation
                       // definition or the number of "emitters" in a particle system definition.
-    // Define a combination of "array (pointer) + quantity" in the data class, which will be treated
-    // as a DefinitionArrayDef structure by DefField when read. For example, *mEmitterDefs and
-    // mEmitterDefCount under TodParticleDefinition, and *mParticleFields and mParticleFieldCount
-    // under TodEmitterDefinition. During reading, data items in mArrayCount are always correctly
-    // read on the first read (because they are integers), and therefore will also serve as a
-    // verification reference during the subsequent repair process of mArrayData.
+                      // Define a combination of "array (pointer) + quantity" in the data class,
+                      // which will be treated as a DefinitionArrayDef structure by DefField when
+                     // read. For example, *mEmitterDefs and mEmitterDefCount under
+                     // TodParticleDefinition, and *mParticleFields and mParticleFieldCount under
+                     // TodEmitterDefinition. During reading, data items in mArrayCount are always
+                     // correctly read on the first read (because they are integers), and therefore
+                     // will also serve as a verification reference during the subsequent repair
+                     // process of mArrayData.
 };
 
 // ====================================================================================================
@@ -197,7 +201,7 @@ uint32_t /*__cdecl*/ DefinitionCalcHash(DefMap* theDefMap);
 bool DefReadFromCacheInt(void*& theReadPtr, int* theInt);
 bool DefReadFromCacheFloat(void*& theReadPtr, float* theFloat);
 bool DefReadFromCacheFlag(void*& theReadPtr, uint32_t* theFlag);
-bool DefReadFromCacheString(void*& theReadPtr, char** theString);
+bool DefReadFromCacheString(void*& theReadPtr, const char** theString);
 bool DefReadFromCacheVector2(void*& theReadPtr, SexyVector2* theVector);
 bool DefReadFromCacheArray(void*& theReadPtr, DefinitionArrayDef* theArray, DefMap* theDefMap);
 bool DefReadFromCacheImage(void*& theReadPtr, Image** theImage);

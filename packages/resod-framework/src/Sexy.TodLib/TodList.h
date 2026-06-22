@@ -3,6 +3,7 @@
 
 #define MAX_GLOBAL_ALLOCATORS 128
 
+#include <Sexy.TodLib/TodCommon.h>
 #include <Sexy.TodLib/TodDebug.h>
 
 struct TodAllocator {

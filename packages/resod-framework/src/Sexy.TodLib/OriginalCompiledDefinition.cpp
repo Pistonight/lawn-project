@@ -48,7 +48,7 @@ bool LegacyDefinition::DefReadFromCacheFloatTrack(void*& theReadPtr,
     return true;
 }
 
-bool LegacyDefinition::DefReadFromCacheString(void*& theReadPtr, char** theString) {
+bool LegacyDefinition::DefReadFromCacheString(void*& theReadPtr, const char** theString) {
     int aLen;
     SMemR(theReadPtr, &aLen, sizeof(int));
     TOD_ASSERT(aLen >= 0 && aLen <= 100000);
@@ -97,7 +97,7 @@ bool LegacyDefinition::DefMapReadFromCache(void*& theReadPtr, DefMap* theDefMap,
             (void*)((int)theDefinition + aField->mFieldOffset); // Pointer to this member variable
         switch (aField->mFieldType) {
         case DefFieldType::DT_STRING:
-            aSucceed = LegacyDefinition::DefReadFromCacheString(theReadPtr, (char**)aDest);
+            aSucceed = LegacyDefinition::DefReadFromCacheString(theReadPtr, (const char**)aDest);
             break;
         case DefFieldType::DT_ARRAY:
             aSucceed = LegacyDefinition::DefReadFromCacheArray(

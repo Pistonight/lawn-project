@@ -1,3 +1,9 @@
+// Include windows ourselves to prevent bass.h and curl.h from including windows and leak macros
+// IWYU pragma: begin_exports <- this suppresses clangd warning
+#include <SexyAppFramework/Platform.h>
+// IWYU pragma: end_exports
+// this comment exists to prevent formatter from reording this include
+
 // #define SEXY_TRACING_ENABLED
 // #define SEXY_PERF_ENABLED
 // #define SEXY_MEMTRACE
@@ -1017,7 +1023,7 @@ std::string SexyAppBase::GetProductVersionDLL(const std::string& thePath) {
     typedef DWORD(APIENTRY * GetFileVersionInfoSizeFunc)(LPSTR lptstrFilename, LPDWORD lpdwHandle);
     typedef BOOL(APIENTRY * GetFileVersionInfoFunc)(LPSTR lptstrFilename, DWORD dwHandle,
                                                     DWORD dwLen, LPVOID lpData);
-    typedef BOOL(APIENTRY * VerQueryValueFunc)(const LPVOID pBlock, LPSTR lpSubBlock,
+    typedef BOOL(APIENTRY * VerQueryValueFunc)(const LPVOID pBlock, LPCSTR lpSubBlock,
                                                LPVOID* lplpBuffer, PUINT puLen);
 
     static GetFileVersionInfoSizeFunc aGetFileVersionInfoSizeFunc = NULL;
@@ -1046,9 +1052,9 @@ std::string SexyAppBase::GetProductVersionDLL(const std::string& thePath) {
         } else if (aVerQueryValueFunc(aVersionBuffer, "\\StringFileInfo\\040904E4\\ProductVersion",
                                       (void**)&aBuffer, &aSize)) {
             aProductVersion = aBuffer;
-        }
 
-        delete aVersionBuffer;
+            delete aVersionBuffer;
+        }
     }
 
     return aProductVersion;
