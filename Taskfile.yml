@@ -28,6 +28,12 @@ tasks:
   run:
     - cd target/lawn/debug/out && ./PlantsVsZombies.exe
 
+  build-run:
+    aliases: [br]
+    cmds:
+      - task: build
+      - task: run
+
   check:
     - task: lib:check
     - task: framework:check

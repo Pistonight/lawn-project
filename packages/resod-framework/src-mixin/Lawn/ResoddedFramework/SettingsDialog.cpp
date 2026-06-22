@@ -17,15 +17,6 @@ static int gDefaultWindowSizes[8][2] = {
     {800, 600},
     {1200, 900},
     {1600, 1200},
-
-    // 16:9
-    {1280, 720},
-    {1600, 900},
-    {1920, 1080},
-
-    // 16:10
-    {1280, 800},
-    {1680, 1050},
 };
 
 static const char* gTranslationFilterKeys[OutputFilteringMode::NUM_MODES] = {"[FILTER_NEAREST]",

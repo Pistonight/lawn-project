@@ -20,7 +20,8 @@ tasks:
     - task: fix
 
   build:
-    - python build.py {{.CLI_ARGS}}
+    - cmd: python build.py {{.CLI_ARGS}}
+      silent: true
 
   clean:
     - python build.py clean all

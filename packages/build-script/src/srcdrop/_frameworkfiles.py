@@ -23,6 +23,8 @@ def copy_files():
         framework_src_path / "SexyAppFramework" / "BuildInfo.h",
         # mixed-ins (see resod-framework/src-mixin)
         framework_src_path / "SexyAppFramework" / "BuildInfo.h.in",
+        framework_src_path / "Lawn" / "ResoddedFramework" / "SettingsDialog.cpp",
+        framework_src_path / "Lawn" / "ResoddedFramework" / "SettingsDialog.h",
     ])
 
     transformers = _get_transformers()

@@ -53,8 +53,7 @@ resource-groups:
         defaults: { path: images, id-prefix: IMAGE_ }
         items:
           - path: titlescreen.jpg
-            attrs: 
-              a8r8g8b8: true
+            attrs: { a8r8g8b8: true }
           - pattern: glob:LoadBar_*.png
           - path: PvZ_Logo.jpg
 
@@ -170,170 +169,147 @@ resource-groups:
 
   - name: LoadingImages
     contents:
+      # A8R8G8B8
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        attrs:
+          a8r8g8b8: true
+        items:
+          - path: Almanac_IndexBack.jpg
+          - path: aquarium1.jpg
+          - path: AwardScreen_Back.jpg
+          - pattern: glob:background*.jpg
+            attrs: { ddsurface: true }
+          - path: Challenge_Background.jpg
+      # minsubdivide
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        attrs:
+          minsubdivide: true
+        items:
+          - path: FlagMeter.png
+            attrs: { rows: 2 }
+          - pattern: glob:plantshadow*
+          - path: pool.jpg
+          - path: pool_base.jpg
+          - path: pool_base_night.jpg
+            attrs:
+              alphagrid: pool_base_.png
+          - path: pool_caustic_effect.jpg
+            attrs: { nopal: true }
+          - path: pool_night.jpg
+          - path: pool_shading.jpg
+          - path: pool_shading_night.jpg
+            attrs:
+              alphagrid: pool_shading_.jpg
+          - path: SeedBank.png
+      # external and ID mismatches
       - type: Image
         defaults: { path: images, id-prefix: IMAGE_ }
         items:
-          - { path: Achievements_pedestal.png, id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL }
-          - { path: Achievements_pedestal_press.png, id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL_PRESS }
-          - path: Almanac_IndexBack.jpg
-            attrs: 
-              a8r8g8b8: true
-          - path: aquarium1.jpg
-            attrs: 
-              a8r8g8b8: true
-          - path: AwardScreen_Back.jpg
-            attrs: 
-              a8r8g8b8: true
-          - pattern: glob:background*.jpg
-            attrs: 
-              ddsurface: true
-              a8r8g8b8: true
-          - path: Challenge_Background.jpg
-            attrs: 
-              a8r8g8b8: true
-          - path: Challenge_Thumbnails.jpg
-            attrs: 
-              cols: 22
-          - path: CobCannon_popcorn.png
-            attrs:
-              cols: 5
-          - path: ConveyorBelt.png
-            attrs:
-              rows: 6
-          - pattern: glob:crater*
-            attrs:
-              cols: 2
+          - path: Achievements_pedestal.png
+            id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL
+          - path: Achievements_pedestal_press.png
+            id: SELECTORSCREEN_ACHIEVEMENTS_PEDESTAL_PRESS
           - path: Credits_ZombieNoteBlack
             id: CREDITS_ZOMBIENOTE
             attrs:
               alphagrid: Credits_ZombieNote
             external: true
-          - path: dirtbig.png
-            attrs:
-              rows: 2
-              cols: 4
-          - path: dirtsmall.png
-            attrs:
-              rows: 2
-              cols: 8
-          - path: FlagMeter.png
-            attrs:
-              rows: 2
-              minsubdivide: true
-          - path: FlagMeterParts.png
-            attrs:
-              cols: 3
-          - path: fog.jpg
-            attrs: 
-              cols: 8
-          - path: fog_software.png
-            attrs: 
-              cols: 3
-          - path: ice_sparkles.png
-            attrs: 
-              cols: 3
-          - path: icetrap_particles.png
-            attrs: 
-              cols: 4
-          - path: Melonpult_particles.png
-            attrs:
-              cols: 9
-          - path: packet_plants.png
-            attrs:
-              cols: 13
-          - path: pea_shadows.png
-            attrs:
-              cols: 2
-          - pattern: glob:plantshadow*
-            attrs:
-              minsubdivide: true
-          - path: pool.jpg
-            attrs:
-              minsubdivide: true
-          - path: pool_base.jpg
-            attrs:
-              minsubdivide: true
-          - path: pool_base_night.jpg
-            attrs:
-              minsubdivide: true
-              alphagrid: pool_base_.png
-          - path: pool_caustic_effect.jpg
-            attrs:
-              minsubdivide: true
-              nopal: true
-          - path: pool_night.jpg
-            attrs:
-              minsubdivide: true
-          - path: pool_shading.jpg
-            attrs:
-              minsubdivide: true
-          - path: pool_shading_night.jpg
-            attrs:
-              minsubdivide: true
-              alphagrid: pool_shading_.jpg
-          - path: RockSmall.png
-            attrs:
-              rows: 2
-              cols: 8
-          - path: Scary_Pot.png
-            attrs:
-              rows: 2
-              cols: 3
-          - path: SeedBank.png
-            attrs:
-              minsubdivide: true
-          - path: seeds.png
-            attrs:
-              cols: 9
           - path: selector_morewaystoplay_background.png
             id: SELECTORSCREEN_MOREWAYSTOPLAY_BG
+          - id: ZOMBIE_NOTE
+            path: ZombieNote
+            external: true
+          - path: ZombieNoteSmall
+            id: ZOMBIE_NOTE_SMALL
+            external: true
+          - id: ZOMBIE_NOTE1
+            path: ZombieNoteBlack1
+            attrs: { alphagrid: ZombieNote1 }
+            external: true
+          - id: ZOMBIE_NOTE2
+            path: ZombieNoteBlack2
+            attrs: { alphagrid: ZombieNote2 }
+            external: true
+          - id: ZOMBIE_NOTE3
+            path: ZombieNoteBlack3
+            attrs: { alphagrid: ZombieNote3 }
+            external: true
+          - id: ZOMBIE_NOTE4
+            path: ZombieNoteBlack4
+            attrs: { alphagrid: ZombieNote4 }
+            external: true
+          - id: ZOMBIE_FINAL_NOTE
+            path: ZombieFinalNoteBlack
+            attrs: { alphagrid: Zombiefinalnote }
+            external: true
+          - id: ZOMBIE_NOTE_HELP
+            path: ZombieNoteHelpBlack
+            attrs: { alphagrid: ZombieNoteHelp }
+            external: true
+
+      - type: Image
+        defaults: { path: images, id-prefix: IMAGE_ }
+        items:
+          - path: Challenge_Thumbnails.jpg
+            attrs: { cols: 22 }
+          - path: CobCannon_popcorn.png
+            attrs: { cols: 5 }
+          - path: ConveyorBelt.png
+            attrs: { rows: 6 }
+          - pattern: glob:crater*
+            attrs: { cols: 2 }
+          - path: dirtbig.png
+            attrs: { rows: 2, cols: 4 }
+          - path: dirtsmall.png
+            attrs: { rows: 2, cols: 8 }
+          - path: FlagMeterParts.png
+            attrs: { cols: 3 }
+          - path: fog.jpg
+            attrs: { cols: 8 }
+          - path: fog_software.png
+            attrs: { cols: 3 }
+          - path: ice_sparkles.png
+            attrs: { cols: 3 }
+          - path: icetrap_particles.png
+            attrs: { cols: 4 }
+          - path: Melonpult_particles.png
+            attrs: { cols: 9 }
+          - path: packet_plants.png
+            attrs: { cols: 13 }
+          - path: pea_shadows.png
+            attrs: { cols: 2 }
+          - path: RockSmall.png
+            attrs: { rows: 2, cols: 8 }
+          - path: Scary_Pot.png
+            attrs: { rows: 2, cols: 3 }
+          - path: seeds.png
+            attrs: { cols: 9 }
           - path: SelectorScreen_LevelNumbers.png
-            attrs:
-              cols: 10
+            attrs: { cols: 10 }
           - pattern: regex:^sod\drow\.jpg$
-            attrs: 
-              ddsurface: true
+            attrs: { ddsurface: true }
           - path: Sunflower_trophy.png
-            attrs:
-              cols: 2
+            attrs: { cols: 2 }
           - path: Survival_Thumbnails.jpg
-            attrs: 
-              cols: 11
+            attrs: { cols: 11 }
           - path: Tombstone_mounds.png
-            attrs:
-              rows: 4
-              cols: 5
+            attrs: { rows: 4, cols: 5 }
           - path: Tombstones.jpg
-            attrs:
-              rows: 4
-              cols: 5
+            attrs: { rows: 4, cols: 5 }
           - path: waterparticle.png
-            attrs:
-              cols: 6
+            attrs: { cols: 6 }
           - path: wavecenter.gif
             attrs: { rows: 12 }
           - path: waveside.gif
             attrs: { rows: 12 }
           - path: whitewater.png
-            attrs:
-              cols: 3
+            attrs: { cols: 3 }
           - path: WinterMelon_particles.png
-            attrs:
-              cols: 9
+            attrs: { cols: 9 }
           - path: zen_need_icons.png
-            attrs:
-              cols: 3
-          - { id: ZOMBIE_NOTE, path: ZombieNote, external: true }
-          - path: ZombieNoteSmall
-            id: ZOMBIE_NOTE_SMALL
-            external: true
-          - { id: ZOMBIE_NOTE1, path: ZombieNoteBlack1, 
-            attrs: { alphagrid: ZombieNote1}, external: true }
-          - { id: ZOMBIE_NOTE2, path: ZombieNoteBlack2, attrs: { alphagrid: ZombieNote2}, external: true }
-          - { id: ZOMBIE_NOTE3, path: ZombieNoteBlack3, attrs: { alphagrid: ZombieNote3}, external: true }
-          - { id: ZOMBIE_NOTE4, path: ZombieNoteBlack4, attrs: { alphagrid: ZombieNote4}, external: true }
-          - { id: ZOMBIE_FINAL_NOTE, path: ZombieFinalNoteBlack, attrs: { alphagrid: Zombiefinalnote }, external: true }
-          - { id: ZOMBIE_NOTE_HELP, path: ZombieNoteHelpBlack, attrs: { alphagrid: ZombieNoteHelp }, external: true }
+            attrs: { cols: 3 }
           - pattern: glob:*
 
       - type: Image
@@ -347,8 +323,7 @@ resource-groups:
           - { path: ZombieBackupDancerHead_disco.png, id: ZOMBIEBACKUPDANCERHEAD }
           - path: ZombieBobsledHead.png
           - path: Zombie_boss_iceball_particles.png
-            attrs:
-              cols: 4
+            attrs: { cols: 4 }
           - { path: ZombieDancerHead_disco.png, id: ZOMBIEDANCERHEAD }
           - path: ZombieDiggerArm.png
           - path: ZombieDiggerHead.png
