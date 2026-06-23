@@ -140,12 +140,12 @@ public:
                       // definition or the number of "emitters" in a particle system definition.
                       // Define a combination of "array (pointer) + quantity" in the data class,
                       // which will be treated as a DefinitionArrayDef structure by DefField when
-                     // read. For example, *mEmitterDefs and mEmitterDefCount under
-                     // TodParticleDefinition, and *mParticleFields and mParticleFieldCount under
-                     // TodEmitterDefinition. During reading, data items in mArrayCount are always
-                     // correctly read on the first read (because they are integers), and therefore
-                     // will also serve as a verification reference during the subsequent repair
-                     // process of mArrayData.
+                      // read. For example, *mEmitterDefs and mEmitterDefCount under
+                      // TodParticleDefinition, and *mParticleFields and mParticleFieldCount under
+                      // TodEmitterDefinition. During reading, data items in mArrayCount are always
+                      // correctly read on the first read (because they are integers), and therefore
+                      // will also serve as a verification reference during the subsequent repair
+                      // process of mArrayData.
 };
 
 // ====================================================================================================

@@ -6,8 +6,8 @@
 #include <unordered_map>
 
 #ifdef PISTON_MIXIN
-#include <memory>
 #include <Piston/SysFont.h>
+#include <memory>
 #endif
 
 namespace Sexy {
