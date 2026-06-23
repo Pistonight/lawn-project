@@ -1,10 +1,5 @@
 version: '3'
 
-vars:
-  TARGET_DIR: ../../target/assets
-  EN_DIR: ../pvz-assets/main12en
-  ZH_DIR: ../pvz-assets/main11zh
-
 tasks:
   build:
     sources:
@@ -15,85 +10,74 @@ tasks:
       - 'mod/**/*'
       - 'framework/**/*'
     generates:
-      - ../../target/lawn/debug/out/mainen.pak
-      - ../../target/lawn/debug/out/mainzh.pak
-      - ../../target/lawn/debug/out/shared.pak
-      - ../../target/lawn/release/out/mainen.pak
-      - ../../target/lawn/release/out/mainzh.pak
-      - ../../target/lawn/release/out/shared.pak
+      - ../../target/run/mainen.pak
+      - ../../target/run/mainzh.pak
+      - ../../target/run/shared.pak
     cmds:
-      - silent: true
-        cmd: |
-          mkdir -p {{.TARGET_DIR}}/shared/properties
-          cp {{.EN_DIR}}/properties/default.xml {{.TARGET_DIR}}/shared/properties/default.xml
-          # sounds are identical
-          mkdir -p {{.TARGET_DIR}}/shared/sounds
-          $(which cp) {{.EN_DIR}}/sounds/* {{.TARGET_DIR}}/shared/sounds
-          # copying image fonts from EN, use sys fonts for ZH
-          mkdir -p {{.TARGET_DIR}}/shared/data
-          $(which cp) {{.EN_DIR}}/data/* {{.TARGET_DIR}}/shared/data
-          # copying image assets
-          python scripts/copypak.py '{{.TARGET_DIR}}' '{{.EN_DIR}}' '{{.ZH_DIR}}'
-      - silent: true
-        cmd: |
-          echo '==> copying game properties'
-          mkdir -p {{.TARGET_DIR}}/mainen/properties
-          python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainen/properties/ZombatarTOS.txt
-          python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainen/properties/LawnStrings.txt
-          mkdir -p {{.TARGET_DIR}}/mainzh/properties
-          python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainzh/properties/ZombatarTOS.txt --lang
-          python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainzh/properties/LawnStrings.txt --lang
-      - silent: true
-        cmd: |
-          echo '==> building shaders'
-          txtpp -rN shaders
-          rm -rf {{.TARGET_DIR}}/shared/shaders
-          mkdir -p {{.TARGET_DIR}}/shared/shaders
-          $(which cp) shaders/*.glsl {{.TARGET_DIR}}/shared/shaders
-          rm -f {{.TARGET_DIR}}/shared/shaders/*.txtpp.glsl
-      - silent: true
-        cmd: |
-          echo '==> copying mod assets'
-          mkdir -p {{.TARGET_DIR}}/shared
-          $(which cp) -R mod/shared/* {{.TARGET_DIR}}/shared
-          mkdir -p {{.TARGET_DIR}}/mainen
-          $(which cp) -R mod/mainen/* {{.TARGET_DIR}}/mainen
-          mkdir -p {{.TARGET_DIR}}/mainzh
-          $(which cp) -R mod/mainzh/* {{.TARGET_DIR}}/mainzh
-      - silent: true
-        cmd: |
-          echo '==> generating resource manifest'
-          pvz-bintools resc resources.yaml
-        # framework assets need to be after manifest so it doesn't get mangled into our manifest
-        # which causes symbol conflicts
-      - silent: true
-        cmd: |
-          echo '==> copying framework assets'
-          $(which cp) -R framework/* {{.TARGET_DIR}}/shared
-      - silent: true
-        cmd: |
-          echo '==> creating paks'
-          pvz-bintools pakc --pack {{.TARGET_DIR}}/shared.pak {{.TARGET_DIR}}/shared
-          pvz-bintools pakc --pack {{.TARGET_DIR}}/mainen.pak {{.TARGET_DIR}}/mainen
-          pvz-bintools pakc --pack {{.TARGET_DIR}}/mainzh.pak {{.TARGET_DIR}}/mainzh
-          mkdir -p ../../target/lawn/debug/out
-          $(which cp) {{.TARGET_DIR}}/*.pak ../../target/lawn/debug/out
-          mkdir -p ../../target/lawn/release/out
-          $(which cp) {{.TARGET_DIR}}/*.pak ../../target/lawn/release/out
-
+      - python build.py
+      # - silent: true
+      #   cmd: |
+      #     mkdir -p {{.TARGET_DIR}}/shared/properties
+      #     cp {{.EN_DIR}}/properties/default.xml {{.TARGET_DIR}}/shared/properties/default.xml
+      #     # sounds are identical
+      #     mkdir -p {{.TARGET_DIR}}/shared/sounds
+      #     $(which cp) {{.EN_DIR}}/sounds/* {{.TARGET_DIR}}/shared/sounds
+      #     # copying image fonts from EN, use sys fonts for ZH
+      #     mkdir -p {{.TARGET_DIR}}/shared/data
+      #     $(which cp) {{.EN_DIR}}/data/* {{.TARGET_DIR}}/shared/data
+      #     # copying image assets
+      #     python scripts/copypak.py '{{.TARGET_DIR}}' '{{.EN_DIR}}' '{{.ZH_DIR}}'
+      # - silent: true
+      #   cmd: |
+      #     echo '==> copying game properties'
+      #     mkdir -p {{.TARGET_DIR}}/mainen/properties
+      #     python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainen/properties/ZombatarTOS.txt
+      #     python scripts/cleantxt.py ansi {{.EN_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainen/properties/LawnStrings.txt
+      #     mkdir -p {{.TARGET_DIR}}/mainzh/properties
+      #     python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/ZombatarTOS.txt {{.TARGET_DIR}}/mainzh/properties/ZombatarTOS.txt --lang
+      #     python scripts/cleantxt.py auto {{.ZH_DIR}}/properties/LawnStrings.txt {{.TARGET_DIR}}/mainzh/properties/LawnStrings.txt --lang
+      # - silent: true
+      #   cmd: |
+      #     echo '==> building shaders'
+      #     txtpp -rN shaders
+      #     rm -rf {{.TARGET_DIR}}/shared/shaders
+      #     mkdir -p {{.TARGET_DIR}}/shared/shaders
+      #     $(which cp) shaders/*.glsl {{.TARGET_DIR}}/shared/shaders
+      #     rm -f {{.TARGET_DIR}}/shared/shaders/*.txtpp.glsl
+      # - silent: true
+      #   cmd: |
+      #     echo '==> copying mod assets'
+      #     mkdir -p {{.TARGET_DIR}}/shared
+      #     $(which cp) -R mod/shared/* {{.TARGET_DIR}}/shared
+      #     mkdir -p {{.TARGET_DIR}}/mainen
+      #     $(which cp) -R mod/mainen/* {{.TARGET_DIR}}/mainen
+      #     mkdir -p {{.TARGET_DIR}}/mainzh
+      #     $(which cp) -R mod/mainzh/* {{.TARGET_DIR}}/mainzh
+      # - silent: true
+      #   cmd: |
+      #     echo '==> generating resource manifest'
+      #     pvz-bintools resc resources.yaml
+      #   # framework assets need to be after manifest so it doesn't get mangled into our manifest
+      #   # which causes symbol conflicts
+      # - silent: true
+      #   cmd: |
+      #     echo '==> copying framework assets'
+      #     $(which cp) -R framework/* {{.TARGET_DIR}}/shared
+      # - silent: true
+      #   cmd: |
+      #     echo '==> creating paks'
+      #     pvz-bintools pakc --pack {{.TARGET_DIR}}/shared.pak {{.TARGET_DIR}}/shared
+      #     pvz-bintools pakc --pack {{.TARGET_DIR}}/mainen.pak {{.TARGET_DIR}}/mainen
+      #     pvz-bintools pakc --pack {{.TARGET_DIR}}/mainzh.pak {{.TARGET_DIR}}/mainzh
+      #     mkdir -p ../../target/lawn/debug/out
+      #     $(which cp) {{.TARGET_DIR}}/*.pak ../../target/lawn/debug/out
+      #     mkdir -p ../../target/lawn/release/out
+      #     $(which cp) {{.TARGET_DIR}}/*.pak ../../target/lawn/release/out
+      #
 
   clean:
-    - rm -rf {{.TARGET_DIR}}
-
-
-
-
-
-
-
-
-
-
+    - rm -rf ../../target/assets
+    - rm -f ../../target/run/*.pak
 
   fix-srcdrop:
-    - python scripts/cleantxt.py auto framework/properties/FrameworkStrings.txt
+    - python fix_srcdrop.py

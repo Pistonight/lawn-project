@@ -48,6 +48,7 @@ void SomeFunction(const char* aString)
 
 ### `PISTON_PATCH`
 A permanent patch/hook to the framework to patch-in functionality from our mod
+
 Example
 ```cpp
 void SomeFunction(const char* aString)

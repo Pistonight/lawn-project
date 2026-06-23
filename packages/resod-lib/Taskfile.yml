@@ -23,13 +23,10 @@ tasks:
     sources:
       - bass/bin/bass.dll
     generates:
-      - ../../target/lawn/debug/out/bass.dll
-      - ../../target/lawn/release/out/bass.dll
+      - ../../target/run/bass.dll
     cmds:
       - silent: true
         cmd: |
-          mkdir -p ../../target/lawn/debug/out;
-          mkdir -p ../../target/lawn/release/out;
-          cp bass/bin/bass.dll ../../target/lawn/debug/out/bass.dll;
-          cp bass/bin/bass.dll ../../target/lawn/release/out/bass.dll;
+          mkdir -p ../../target/run
+          cp bass/bin/bass.dll ../../target/run/bass.dll;
           echo '==> copied lib dlls';

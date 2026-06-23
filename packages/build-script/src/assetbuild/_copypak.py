@@ -2,15 +2,46 @@
 # usage: copypak.py TARGET_DIR EN_DIR ZH_DIR
 
 import os
-import sys
 import shutil
 from pathlib import Path
 
-def main():
-    if len(sys.argv) < 2:
-        print("BAD USAGE!")
-        exit(64)
-    TARGET_DIR, EN_DIR, ZH_DIR = sys.argv[1:]
+from .. import _common
+
+def copy_misc():
+    TARGET_DIR = _common.get_root_root() / "target" / "assets"
+    pvz_dir = _common.get_packages_root() / "pvz-assets"
+    EN_DIR = pvz_dir / "main12en"
+
+    target_properties = TARGET_DIR / "shared" / "properties"
+    remakedir(target_properties)
+    en_properties = EN_DIR / "properties"
+
+    (en_properties / "default.xml").copy_into(target_properties)
+
+    # sounds are identical between EN/ZH
+    target_sounds = TARGET_DIR / "shared" / "sounds"
+    remakedir(target_sounds)
+    en_sounds = EN_DIR / "sounds"
+    copy_tree(en_sounds, target_sounds)
+
+    # use image fonts from EN. ZH uses sys font
+    target_data = TARGET_DIR / "shared" / "data"
+    remakedir(target_data)
+    en_data = EN_DIR / "data"
+    copy_tree(en_data, target_data)
+
+def copy_tree(from_: Path, to: Path):
+    for file in os.listdir(from_):
+        full_file = from_ / file
+        if full_file.is_file():
+            _checked_cp(full_file, to)
+
+
+def copy_images():
+    TARGET_DIR = _common.get_root_root() / "target" / "assets"
+    pvz_dir = _common.get_packages_root() / "pvz-assets"
+    EN_DIR = pvz_dir / "main12en"
+    ZH_DIR = pvz_dir / "main11zh"
 
     PARTICLES_EXCLUDE = [
         "Sproing.png",
@@ -90,13 +121,12 @@ def main():
         "zenshopbutton_highlight.png",
     ])
 
-    target = Path(TARGET_DIR)
-    target_shared = target / "shared"
-    target_en = target / "mainen"
-    target_zh = target / "mainzh"
+    target_shared = TARGET_DIR / "shared"
+    target_en = TARGET_DIR / "mainen"
+    target_zh = TARGET_DIR / "mainzh"
 
-    en = Path(EN_DIR)
-    zh = Path(ZH_DIR)
+    en = EN_DIR
+    zh = ZH_DIR
 
     for (dir, excludes) in [
         ("particles", PARTICLES_EXCLUDE),
@@ -115,16 +145,16 @@ def main():
                 continue
             if not full_file.is_file():
                 continue
-            checked_cp(full_file, target_subdir)
+            _checked_cp(full_file, target_subdir)
 
         target_en_subdir = target_en / dir
         remakedir(target_en_subdir)
         for file in en_subdir_copyseparately:
-            checked_cp(file, target_en_subdir)
+            _checked_cp(file, target_en_subdir)
         target_zh_subdir = target_zh / dir
         remakedir(target_zh_subdir)
         for file in excludes:
-            checked_cp(zh / dir / file, target_zh_subdir)
+            _checked_cp(zh / dir / file, target_zh_subdir)
 
 
 
@@ -133,14 +163,9 @@ def remakedir(p):
         shutil.rmtree(p)
     p.mkdir(parents=True, exist_ok=True)
 
-def checked_cp(p: Path, t):
+def _checked_cp(p: Path, t):
     try:
         p.copy_into(t)
     except:
         print("copy failed: " + str(p))
         raise
-
-
-
-if __name__ == "__main__":
-    main()

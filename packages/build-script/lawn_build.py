@@ -1,10 +1,7 @@
 import sys
 import shutil
 
-from src import _version, _common, _build
-
-PINK = "\033[95m"
-RESET = "\033[0m"
+from src import _version, _common, _build, _fmt
 
 def main():
     args = _build.parse_args(sys.argv)
@@ -22,6 +19,7 @@ def main():
     lawn_root = _common.get_packages_root() / "lawn"
     build_root = repo_root / "target" / "lawn"
     build_dir = build_root / flavor
+    run_dir = repo_root / "target" / "run"
 
     target_flavors = ["debug", "release"]  if args.is_all else [ flavor ]
 
@@ -68,11 +66,21 @@ def main():
                 exit(status)
 
     for flavor in target_flavors:
-        print(f"{PINK}==> building lawn ({flavor}){RESET}")
+        print(f"{_fmt.PINK}==> building lawn ({flavor}){_fmt.RESET}")
         build_dir = build_root / flavor
         status = _build.cmake_build(build_dir, flavor == "release", args.is_raw)
         if status != 0:
             exit(status)
+
+    # if release then we copy the release exe to run dir, otherwise copy debug
+    run_dir.mkdir(parents=True, exist_ok=True)
+    flavor = "release" if args.is_release else "debug"
+    exe = build_root / flavor / "out" / "PlantsVsZombies.exe"
+    if not exe.exists():
+        print(f"{_fmt.RED}>>> error: cannot find EXE!{_fmt.RESET}")
+        print(f"{_fmt.RED}>>> {str(exe)}{_fmt.RESET}")
+        exit(1)
+    exe.copy_into(run_dir)
 
     if args.is_all:
         print("==> all build done!")

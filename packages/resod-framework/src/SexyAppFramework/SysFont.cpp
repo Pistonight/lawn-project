@@ -159,7 +159,6 @@ void SysFont::Reinit() {
 }
 #endif
 
-#ifndef PISTON_MIXIN
 SysFont::SysFont(const SysFont& theSysFont) {
     mApp = theSysFont.mApp;
     mHeight = theSysFont.mHeight;
@@ -170,7 +169,6 @@ SysFont::SysFont(const SysFont& theSysFont) {
 
     mDrawShadow = false;
 }
-#endif
 
 SysFont::~SysFont() {
     mApp->mRenderer->mSysFonts.erase(this);
@@ -200,7 +198,8 @@ void SysFont::DrawString(Graphics* g, int theX, int theY, const SexyString& theS
     int posX = theX;
     int posY = theY;
     int underlineY =
-        posY - ((mFontData->mFace->underline_position * mFontData->mFace->size->metrics.y_scale) >>
+        posY - ((mFontData->mFace->underline_position *
+        mFontData->mFace->size->metrics.y_scale) >>
                 16 >> 6);
 
     auto it = theString.begin();
@@ -334,7 +333,6 @@ void TrueTypeData::Init() {
     delete[] anAtlasPixels;
 }
 
-#ifndef PISTON_MIXIN
 TrueTypeData::~TrueTypeData() {
     if (mAtlas.mAtlas != nullptr) {
         mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
@@ -342,4 +340,3 @@ TrueTypeData::~TrueTypeData() {
     mAtlas.mGlyphs.clear();
     FT_Done_Face(mFace);
 }
-#endif

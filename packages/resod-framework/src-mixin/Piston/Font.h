@@ -2,7 +2,7 @@
 
 #include <LawnApp/Resources.h>
 
-#include <Piston/System.h>
+// #include <Piston/System.h>
 
 namespace Sexy { 
 class Font;
@@ -10,8 +10,14 @@ class Font;
 
 namespace Piston {
 
+namespace FontLoader {
+
 // initialize fonts after they are loaded
-void InitFont();
+void InitLoaderBarFonts();
+void InitLoadingFonts();
+
+}
+
 
 inline Sexy::Font* GetSettingsDialogFont() {
     // if (System::IsChinese()) {

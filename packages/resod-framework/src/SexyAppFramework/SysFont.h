@@ -6,10 +6,6 @@
 #include <memory>
 #include <unordered_map>
 
-#ifdef PISTON_MIXIN
-#include <Piston/SysFont.h>
-#endif
-
 namespace Sexy {
 
 class ImageFont;

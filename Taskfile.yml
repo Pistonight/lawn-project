@@ -26,7 +26,7 @@ tasks:
     - task: lib:build
 
   run:
-    - cd target/lawn/debug/out && ./PlantsVsZombies.exe
+    - cd target/run && ./PlantsVsZombies.exe
 
   build-run:
     aliases: [br]
@@ -45,6 +45,10 @@ tasks:
     - task: lawn:fix
 
   clean:
-    - rm -rf build target lawn-assets/.task .task
+    - rm -rf build target/assets target/lawn lawn-assets/.task .task
+
+  nuke:
+    - task: clean
+    - rm -rf target/run
 
 
