@@ -73,7 +73,7 @@ struct TrueTypeData {
     int mSize;
     bool mIsDirty;
 #ifdef PISTON_MIXIN
-    std::shared_ptr<Piston::SysFont::FontObj> mFontObj;
+    std::unique_ptr<Piston::SysFont::FontObj> mFontObj;
 #endif
 
     TrueTypeData(SysFont* theFontPtr, FT_Face& theFace, int theSize)
