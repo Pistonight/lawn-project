@@ -3,11 +3,11 @@
 
 #include <SexyAppFramework/Font.h>
 #include <freetype/freetype.h>
+#include <memory>
 #include <unordered_map>
 
 #ifdef PISTON_MIXIN
 #include <Piston/SysFont.h>
-#include <memory>
 #endif
 
 namespace Sexy {
@@ -32,11 +32,31 @@ struct GlyphAtlas {
     std::unordered_map<uint32_t, GlpyhAtlasEntry> mGlyphs;
 };
 
-class TrueTypeData;
+class TrueTypeData {
+public:
+    GlyphAtlas mAtlas;
+    SexyAppBase* mApp;
+    FT_Face mFace;
+    int mSize;
+    bool mBold;
+    bool mIsDirty;
+#ifdef PISTON_MIXIN
+    std::vector<unsigned char> mFontBytes;
+#endif
+
+    TrueTypeData(SexyAppBase* theApp, FT_Face theFace, int theSize, bool theBold)
+        : mApp(theApp), mFace(theFace), mSize(theSize), mBold(theBold) {
+        Init();
+    }
+
+    ~TrueTypeData();
+
+    void Init();
+};
 
 class SysFont : public Font {
 public:
-    TrueTypeData* mFontData;
+    std::shared_ptr<TrueTypeData> mFontData;
     SexyAppBase* mApp;
     std::string mFontName;
     bool mDrawShadow;
@@ -64,26 +84,6 @@ public:
                             const Color& theColor, const Rect& theClipRect);
 
     virtual Font* Duplicate();
-};
-
-struct TrueTypeData {
-    GlyphAtlas mAtlas;
-    SysFont* mFont;
-    FT_Face mFace;
-    int mSize;
-    bool mIsDirty;
-#ifdef PISTON_MIXIN
-    std::unique_ptr<Piston::SysFont::FontObj> mFontObj;
-#endif
-
-    TrueTypeData(SysFont* theFontPtr, FT_Face& theFace, int theSize)
-        : mFont(theFontPtr), mFace(theFace), mSize(theSize) {
-        Init();
-    }
-
-    ~TrueTypeData();
-
-    void Init();
 };
 
 } // namespace Sexy
