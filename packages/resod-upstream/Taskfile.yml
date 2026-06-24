@@ -48,6 +48,8 @@ tasks:
 
   run:
     - cd ResoddedFramework/Export && ./LawnProject.exe
+  devenv:
+    - python debugger.py
 
   build-run:
     aliases: [br]
