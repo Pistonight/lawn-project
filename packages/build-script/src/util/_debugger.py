@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 
-from . import _fmt
+from src.util import _fmt
 
 def launch_debugger_project(cmake_dir: Path, exe: Path) -> int:
     devenv = _find_devenv()

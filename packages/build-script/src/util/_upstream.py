@@ -1,6 +1,6 @@
 import subprocess
 
-from . import _common, _fmt
+from src.util import _common, _fmt
 
 def ensure_repo(commit: str):
     repo_path = _common.get_upstream_root();

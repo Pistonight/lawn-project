@@ -5,7 +5,7 @@ import os
 import shutil
 from pathlib import Path
 
-from ..util import _common
+from src.util import _common
 
 def copy_misc():
     TARGET_DIR = _common.get_root_root() / "target" / "assets"

@@ -1,8 +1,8 @@
 import subprocess
 import os
 
-from .util import _common
-from .assetbuild import _cleantxt, _copypak
+from src.util import _common
+from src.assetbuild import _cleantxt, _copypak, _cnfont
 
 def main(argv: list[str]) -> int:
     if len(argv) < 1:
@@ -10,21 +10,26 @@ def main(argv: list[str]) -> int:
         return 64
     match argv[0]:
         case "fix":
-            _run_fix()
-            return 0
+            return _run_fix()
         case "build":
             return _run_build()
+        case "cnfont":
+            return _run_cnfont_test()
     print(f">>> unknown task {argv[0]}")
     print(">>> usage: main.py assets <build|fix>")
     return 64
 
-def _run_fix():
+def _run_fix() -> int:
     assets_root = _common.get_packages_root() / "lawn-assets"
-    _cleantxt.clean(
+    return _cleantxt.clean(
         assets_root / "framework" / "properties" / "FrameworkStrings.txt",
         "auto",
         False
     )
+
+def _run_cnfont_test() -> int:
+    _cnfont.test()
+    return 0
 
 def _run_build() -> int:
     _copypak.copy_misc()
@@ -41,30 +46,34 @@ def _run_build() -> int:
     target_mainzh_properties = target_mainzh / "properties"
     target_mainen_properties.mkdir(parents=True, exist_ok=True)
     target_mainzh_properties.mkdir(parents=True, exist_ok=True)
-    _cleantxt.cp_cleaned(
+    status = _cleantxt.cp_cleaned(
         pvz_root / "main12en" / "properties" / "ZombatarTOS.txt",
         target_mainen_properties / "ZombatarTOS.txt",
         "ansi",
         False
     )
-    _cleantxt.cp_cleaned(
+    if status != 0: return status
+    status = _cleantxt.cp_cleaned(
         pvz_root / "main12en" / "properties" / "LawnStrings.txt",
         target_mainen_properties / "LawnStrings.txt",
         "ansi",
         False
     )
-    _cleantxt.cp_cleaned(
+    if status != 0: return status
+    status = _cleantxt.cp_cleaned(
         pvz_root / "main11zh" / "properties" / "ZombatarTOS.txt",
         target_mainzh_properties / "ZombatarTOS.txt",
         "auto",
         True
     )
-    _cleantxt.cp_cleaned(
+    if status != 0: return status
+    status = _cleantxt.cp_cleaned(
         pvz_root / "main11zh" / "properties" / "LawnStrings.txt",
         target_mainzh_properties / "LawnStrings.txt",
         "auto",
         True
     )
+    if status != 0: return status
 
     print("==> building shaders")
     subprocess.check_call(["txtpp", "-rN", "shaders"], cwd=assets_root)
@@ -94,12 +103,13 @@ def _run_build() -> int:
         target_cat_root = target / "shared" / category
         _copypak.copy_tree(cat_root, target_cat_root)
 
-    _cleantxt.cp_cleaned(
+    status = _cleantxt.cp_cleaned(
         framework_root / "properties" / "FrameworkStrings.txt",
         target / "shared" / "properties" / "FrameworkStrings.txt",
         "auto",
         False
     )
+    if status != 0: return status
 
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "shared.pak"), str(target / "shared")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainen.pak"), str(target / "mainen")])

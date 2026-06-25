@@ -1,22 +1,11 @@
-from ..util import _fmt
+from src.util import _fmt
 
 
-USAGE = """\
-usage: cleantxt.py <encoding> <file> [output] [--lang]
-  encoding can be:
-    ansi - Windows ANSI (cp1252)
-    auto - Automatic: UTF16 with BOM, UTF8 with BOM, UTF8
-  output defaults to <file> (in-place)
-  options:
-    --lang   Replace certain characters for better support with our fonts"""
+def clean(file, encoding: str, is_lang: bool) -> int:
+    return cp_cleaned(file, file, encoding, is_lang)
 
 
-
-def clean(file, encoding: str, is_lang: bool):
-    cp_cleaned(file, file, encoding, is_lang)
-
-
-def cp_cleaned(file_in, file_out, encoding: str, is_lang: bool):
+def cp_cleaned(file_in, file_out, encoding: str, is_lang: bool) -> int:
     with open(file_in, "rb") as f:
         data = f.read()
 
@@ -24,7 +13,7 @@ def cp_cleaned(file_in, file_out, encoding: str, is_lang: bool):
         text = _decode(data, encoding)
     except ValueError:
         print(f"{_fmt.RED}>>> error: cannot decode {file_in} using encoding '{encoding}'{_fmt.RESET}")
-        exit(1)
+        return 1
 
     if is_lang:
         text = _clean_lang(text)
@@ -33,6 +22,8 @@ def cp_cleaned(file_in, file_out, encoding: str, is_lang: bool):
 
     with open(file_out, "wb") as f:
         f.write(text.encode("utf-8"))
+
+    return 0
 
 def _decode(data: bytes, encoding: str) -> str:
     if encoding == "ansi":

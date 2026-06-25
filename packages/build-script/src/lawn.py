@@ -2,7 +2,7 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
-from util import _debugger, _common, _build, _fmt
+from src.util import _debugger, _common, _build, _fmt
 
 # ResoddedFramework has x86 presets but we only build x64
 PRESET = "windows-msvc-x64"

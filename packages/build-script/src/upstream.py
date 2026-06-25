@@ -1,5 +1,5 @@
 import shutil
-from util import _debugger, _common, _build, _fmt
+from src.util import _debugger, _common, _build, _fmt
 
 def main(argv: list[str]) -> int:
     if len(argv) < 1:

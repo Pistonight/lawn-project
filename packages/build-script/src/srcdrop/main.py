@@ -2,8 +2,8 @@ import subprocess
 import traceback
 from pathlib import Path
 
-from ..util import _upstream, _common, _fmt
-from . import _libfiles, _frameworkfiles, _buildfiles, _assetfiles
+from src.util import _upstream, _common, _fmt
+from src.srcdrop import _libfiles, _frameworkfiles, _buildfiles, _assetfiles
 
 def main(argv: list[str]) -> int:
     root = _common.get_root_root()
