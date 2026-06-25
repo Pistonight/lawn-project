@@ -14,7 +14,7 @@ def main(argv: list[str]) -> int:
         case "build":
             return _run_build()
         case "cnfont":
-            return _run_cnfont_test()
+            return _run_cnfont()
     print(f">>> unknown task {argv[0]}")
     print(">>> usage: main.py assets <build|fix>")
     return 64
@@ -27,9 +27,8 @@ def _run_fix() -> int:
         False
     )
 
-def _run_cnfont_test() -> int:
-    _cnfont.test()
-    return 0
+def _run_cnfont() -> int:
+    return _cnfont.main()
 
 def _run_build() -> int:
     _copypak.copy_misc()
@@ -93,6 +92,8 @@ def _run_build() -> int:
             cat_root = mod_dir_root / category # this is like mod/shared/images
             target_cat_root = target / dir / category
             _copypak.copy_tree(cat_root, target_cat_root)
+
+    _cnfont.main()
 
     # need to generate assets before copying framework resources
     subprocess.check_call(["pvz-bintools", "resc", "resources.yaml"], cwd=assets_root)

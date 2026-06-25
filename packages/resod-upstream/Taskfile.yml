@@ -23,20 +23,20 @@ tasks:
     - cmd /c start "" "https://github.com/LawnProject/ResoddedFramework"
 
   build:
-    - uv run ../build-script/src/main.py upstream build {{.CLI_ARGS}}
+    - cd ../build-script && uv run src/main.py upstream build {{.CLI_ARGS}}
 
   clean:
-    - uv run ../build-script/src/main.py upstream build clean all
+    - cd ../build-script && uv run src/main.py upstream build clean all
 
   nuke:
     - task: clean
     - rm -rf ResoddedFramework
 
   transform:
-    - uv run ../build-script/src/main.py upstream transform
+    - cd ../build-script && uv run src/main.py upstream transform
 
   upgrade:
-    - uv run ../build-script/src/main.py upstream upgrade
+    - cd ../build-script && uv run src/main.py upstream upgrade
 
   merge-upgrade:
     - git checkout {{.CLI_ARGS}}
@@ -49,7 +49,7 @@ tasks:
   run:
     - cd ResoddedFramework/Export && ./LawnProject.exe
   devenv:
-    - uv run ../build-script/src/main.py upstream devenv
+    - cd ../build-script && uv run src/main.py upstream devenv
 
   build-run:
     aliases: [br]

@@ -2,27 +2,27 @@ version: '3'
 
 tasks:
   build:
-    sources:
-      - Taskfile.yml
-      - resources.yaml
-      - 'shaders/**/*'
-      - 'scripts/**/*'
-      - 'mod/**/*'
-      - 'framework/**/*'
+    # sources:
+    #   - Taskfile.yml
+    #   - resources.yaml
+    #   - 'shaders/**/*'
+    #   - 'scripts/**/*'
+    #   - 'mod/**/*'
+    #   - 'framework/**/*'
     generates:
       - ../../target/run/mainen.pak
       - ../../target/run/mainzh.pak
       - ../../target/run/shared.pak
     cmds:
-      - uv run ../build-script/src/main.py assets build
+      - cd ../build-script && uv run src/main.py assets build
 
   clean:
     - rm -rf ../../target/assets
     - rm -f ../../target/run/*.pak
 
   fix-srcdrop:
-    - uv run ../build-script/src/main.py assets fix
+    - cd ../build-script && uv run src/main.py assets fix
 
-  test:
+  font:
     - cd ../build-script && uv run src/main.py assets cnfont
     
