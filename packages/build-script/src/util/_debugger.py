@@ -4,19 +4,20 @@ from pathlib import Path
 
 from . import _fmt
 
-def launch_debugger_project(cmake_dir: Path, exe: Path):
+def launch_debugger_project(cmake_dir: Path, exe: Path) -> int:
     devenv = _find_devenv()
     if not devenv:
-        exit(1)
+        return 1
     vcxproj = _make_vcxproj(cmake_dir, exe)
     if not vcxproj:
-        exit(2)
+        return 2
     vcxproj_path = cmake_dir / "debugger.vcxproj"
     vcxproj_path.write_bytes(vcxproj.encode("utf-8"))
     subprocess.check_call([
         "powershell", "-c",
         f'start-process \'{devenv}\' \'{str(vcxproj_path)}\''])
     print(f"==> launched generated debugger project")
+    return 0
 
 
 def _find_devenv() -> Path | None:

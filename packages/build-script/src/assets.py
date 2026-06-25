@@ -1,10 +1,32 @@
 import subprocess
 import os
 
-from src import _common
-from src.assetbuild import _cleantxt, _copypak
+from .util import _common
+from .assetbuild import _cleantxt, _copypak
 
-def main():
+def main(argv: list[str]) -> int:
+    if len(argv) < 1:
+        print(">>> usage: main.py assets <build|fix>")
+        return 64
+    match argv[0]:
+        case "fix":
+            _run_fix()
+            return 0
+        case "build":
+            return _run_build()
+    print(f">>> unknown task {argv[0]}")
+    print(">>> usage: main.py assets <build|fix>")
+    return 64
+
+def _run_fix():
+    assets_root = _common.get_packages_root() / "lawn-assets"
+    _cleantxt.clean(
+        assets_root / "framework" / "properties" / "FrameworkStrings.txt",
+        "auto",
+        False
+    )
+
+def _run_build() -> int:
     _copypak.copy_misc()
     _copypak.copy_images()
 
@@ -82,3 +104,5 @@ def main():
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "shared.pak"), str(target / "shared")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainen.pak"), str(target / "mainen")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainzh.pak"), str(target / "mainzh")])
+
+    return 0

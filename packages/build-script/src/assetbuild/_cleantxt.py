@@ -1,4 +1,4 @@
-from .. import _fmt
+from ..util import _fmt
 
 
 USAGE = """\

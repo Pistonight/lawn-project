@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable
 
-from .. import _common
+from ..util import _common
 
 SUBDIRS = [
     "ImageLib",

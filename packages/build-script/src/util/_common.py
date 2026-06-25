@@ -7,7 +7,7 @@ def get_root_root() -> Path:
     return get_packages_root().parent
 
 def get_packages_root() -> Path:
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent.parent
 
 def get_upstreampkg_root() -> Path:
     return get_packages_root() / "resod-upstream"
