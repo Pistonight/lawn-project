@@ -36,7 +36,7 @@ tasks:
     - cd ../build-script && uv run src/main.py upstream transform
 
   upgrade:
-    - cd ../build-script && uv run src/main.py upstream upgrade
+    - cd ../build-script && uv run src/main.py upstream upgrade {{.CLI_ARGS}}
 
   merge-upgrade:
     - git checkout {{.CLI_ARGS}}
