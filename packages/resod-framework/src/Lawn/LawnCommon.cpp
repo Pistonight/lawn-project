@@ -11,6 +11,10 @@
 #include <SexyAppFramework/SexyMatrix.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 int gLawnEditWidgetColors[][4] = {
     {0, 0, 0, 0}, {0, 0, 0, 0}, {240, 240, 255, 255}, {255, 255, 255, 255}, {0, 0, 0, 255},
 };
@@ -71,7 +75,11 @@ void LawnEditWidget::KeyChar(SexyChar theChar) {
 
 LawnEditWidget* CreateEditWidget(int theId, EditListener* theListener, Dialog* theDialog) {
     LawnEditWidget* aEditWidget = new LawnEditWidget(theId, theListener, theDialog);
+#ifdef PISTON_PATCH
+    aEditWidget->SetFont(Piston::MapZhFont(Sexy::FONT_BRIANNETOD16));
+#else
     aEditWidget->SetFont(Sexy::FONT_BRIANNETOD16);
+#endif
     aEditWidget->SetColors(gLawnEditWidgetColors, EditWidget::NUM_COLORS);
     aEditWidget->mBlinkDelay = 14;
 

@@ -27,6 +27,10 @@
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 static float gFlowerCenter[3][2] = {{765.0f, 483.0f}, {663.0f, 455.0f}, {701.0f, 439.0f}};
 
 int gSlideStartTime = 75;
@@ -516,11 +520,20 @@ void GameSelector::Draw(Graphics* g) {
         int aSignIdx = aSelectorReanim->FindTrackIndex("woodsign1");
         SexyTransform2D aOverlayMatrix;
         aSelectorReanim->GetAttachmentOverlayMatrix(aSignIdx, aOverlayMatrix);
+#ifdef PISTON_PATCH
+        float aStringWidth = Piston::MapZhFont(Sexy::FONT_BRIANNETOD16)->StringWidth(aWelcomeStr);
+#else
         float aStringWidth = Sexy::FONT_BRIANNETOD16->StringWidth(aWelcomeStr);
+#endif
         SexyTransform2D aOffsetMatrix;
         aOffsetMatrix.Translate(170.5f - (int)(aStringWidth * 0.5f) + mX, 102.5f + mY);
+#ifdef PISTON_PATCH
+        TodDrawStringMatrix(g, Piston::MapZhFont(Sexy::FONT_BRIANNETOD16),
+                            aOverlayMatrix * aOffsetMatrix, aWelcomeStr, Color(255, 245, 200));
+#else
         TodDrawStringMatrix(g, Sexy::FONT_BRIANNETOD16, aOverlayMatrix * aOffsetMatrix, aWelcomeStr,
                             Color(255, 245, 200));
+#endif
     }
 }
 

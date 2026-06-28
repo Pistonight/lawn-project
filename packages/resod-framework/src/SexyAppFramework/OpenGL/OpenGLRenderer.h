@@ -10,6 +10,10 @@
 #include <unordered_map>
 #include <vector>
 
+#ifdef PISTON_MIXIN
+#include <Piston/RendererMixinState.h>
+#endif
+
 namespace Sexy {
 struct GLBlendFunc {
     GLenum mSrcRGB;
@@ -86,6 +90,9 @@ public:
     GLShader* mDefaultShader;
     glm::mat4 mProjection;
     std::unordered_map<GLenum, WrappingSamplers> mSamplers;
+#ifdef PISTON_MIXIN
+    Piston::OpenGLRendererMixinState mPistonMixin;
+#endif
 
     static int gGLTextureCount;
     static uint64_t gGLUsedMemoryCount;

@@ -64,6 +64,8 @@
 #endif
 
 #ifdef PISTON_MIXIN
+#include <Piston/AppMixin.h>
+#include <Piston/Font.h>
 #include <Piston/Init.h>
 #endif
 
@@ -373,11 +375,18 @@ void LawnApp::WriteToRegistry() {
         mPlayerInfo->SaveDetails();
     }
 
+#ifdef PISTON_PATCH
+    Piston::LawnAppMixin(this).WriteToRegistry();
+#endif
+
     SexyAppBase::WriteToRegistry();
 }
 
 void LawnApp::ReadFromRegistry() {
     SexyApp::ReadFromRegistry();
+#ifdef PISTON_PATCH
+    Piston::LawnAppMixin(this).ReadFromRegistry();
+#endif
 }
 
 bool LawnApp::WriteCurrentUserConfig() {
@@ -2581,12 +2590,23 @@ void LawnApp::DrawCrazyDave(Graphics* g) {
             clickToContinue = false;
         }
 
+#ifdef PISTON_PATCH
+        TodDrawStringWrapped(g, aBubbleText, aRect, Piston::MapZhFont(FONT_BRIANNETOD16),
+                             Color::Black,
+                             DrawStringJustification::DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+        if (clickToContinue) {
+            TodDrawString(g, "[CLICK_TO_CONTINUE]", aPosX + 139, aPosY + 140,
+                          Piston::MapZhFont(FONT_PICO129), Color::Black,
+                          DrawStringJustification::DS_ALIGN_CENTER);
+        }
+#else
         TodDrawStringWrapped(g, aBubbleText, aRect, FONT_BRIANNETOD16, Color::Black,
                              DrawStringJustification::DS_ALIGN_CENTER_VERTICAL_MIDDLE);
         if (clickToContinue) {
             TodDrawString(g, "[CLICK_TO_CONTINUE]", aPosX + 139, aPosY + 140, FONT_PICO129,
                           Color::Black, DrawStringJustification::DS_ALIGN_CENTER);
         }
+#endif
     }
 
     aCrazyDaveReanim->Draw(g);

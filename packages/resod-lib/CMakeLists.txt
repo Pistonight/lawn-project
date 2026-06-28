@@ -36,4 +36,5 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     $<$<CONFIG:Debug>:DEBUG>
     $<$<CONFIG:Debug>:_DEBUG>
     $<$<CONFIG:Release>:NDEBUG>
+    $<$<CONFIG:Debug>:LAWN_DEBUG_TOOLS>
 )

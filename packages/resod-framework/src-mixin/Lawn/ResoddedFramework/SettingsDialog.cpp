@@ -10,6 +10,7 @@
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/Window.h>
 
+#include <Piston/AppMixin.h>
 #include <Piston/Font.h>
 #include <Piston/System.h>
 
@@ -32,6 +33,10 @@ SettingsDialog::SettingsDialog(LawnApp* theApp)
     mHighQualityCheckbox.reset(
         MakeNewCheckbox(SettingsDialog::SETTINGS_HIGHQUALITY, this, theApp->mIs3D));
 
+    auto appFilterMode = mApp->mScreenFiltering;
+    auto upscaleMode = mApp->mPistonMixin.mUpscaleMode;
+    mFilterModeButton.reset(MakeButton(SETTINGS_CYCLE_FILTER_MODE, this,
+                                       GetFilterModeText(appFilterMode, upscaleMode)));
     mWindowSizeButton.reset(
         MakeButton(SETTINGS_CYCLE_WINDOW_SIZE, this, GetWindowSizeText(GetCurrentWindowSize())));
     mLanguageButton.reset(MakeButton(SETTINGS_CYCLE_LANGUAGE, this,
@@ -85,7 +90,7 @@ void SettingsDialog::Draw(Graphics* g) {
     int buttonX = 220;
     constexpr int buttonGap = 50;
     int buttonY = 0;
-    // TODO - Filter button
+    UpdateButtonPosition(*mFilterModeButton, buttonX, buttonY);
     buttonY += buttonGap;
     UpdateButtonPosition(*mWindowSizeButton, buttonX, buttonY);
     buttonY += buttonGap;
@@ -202,7 +207,7 @@ void SettingsDialog::AddedToManager(WidgetManager* theWidgetManager) {
     AddWidget(mFullscreenCheckbox.get());
     AddWidget(mSaveFileButton.get());
     AddWidget(mHighQualityCheckbox.get());
-    // AddWidget(mFilterModeButton.get());
+    AddWidget(mFilterModeButton.get());
     AddWidget(mWindowSizeButton.get());
     AddWidget(mLanguageButton.get());
 }
@@ -215,7 +220,7 @@ void SettingsDialog::RemovedFromManager(WidgetManager* theWidgetManager) {
     RemoveWidget(mFullscreenCheckbox.get());
     RemoveWidget(mSaveFileButton.get());
     RemoveWidget(mHighQualityCheckbox.get());
-    // RemoveWidget(mFilterModeButton.get());
+    RemoveWidget(mFilterModeButton.get());
     RemoveWidget(mWindowSizeButton.get());
     RemoveWidget(mLanguageButton.get());
 }
@@ -256,6 +261,11 @@ void SettingsDialog::ButtonDepress(int theId) {
         mApp->DoDialog(Dialogs::DIALOG_INFO, true, "Failed", aFailString, "OK",
                        Dialog::BUTTONS_FOOTER);
 #endif
+        break;
+    }
+    case SettingsDialog::SETTINGS_CYCLE_FILTER_MODE: {
+        CycleFilterMode();
+        UpdateWidgets();
         break;
     }
     case SettingsDialog::SETTINGS_CYCLE_WINDOW_SIZE: {
@@ -368,11 +378,39 @@ void SettingsDialog::UpdateWidgets() {
     mFullscreenCheckbox->SetChecked(isFullScreen);
     // mVSyncCheckbox - can't check as app doesn't store the state
     mHighQualityCheckbox->SetChecked(mApp->mIs3D);
+    auto appFilterMode = mApp->mScreenFiltering;
+    auto upscaleMode = mApp->mPistonMixin.mUpscaleMode;
+    mFilterModeButton->SetLabel(GetFilterModeText(appFilterMode, upscaleMode));
     mWindowSizeButton->mDisabled = isFullScreen;
     // we don't update the size label here because setting the window size is async,
     // so it must be set when cycling the size
     mLanguageButton->SetLabel(GetLanguageText(Piston::System::Instance().GetNextLanguage()));
     mIsUpdatingWidgets = false;
+}
+
+void SettingsDialog::CycleFilterMode() {
+    switch (mApp->mPistonMixin.mUpscaleMode) {
+    case Piston::UpscaleMode::None: {
+        switch (mApp->mScreenFiltering) {
+        case Sexy::OutputFilteringMode::MODE_NEAREST: {
+            mApp->mScreenFiltering = OutputFilteringMode::MODE_LINEAR;
+            mApp->mPistonMixin.mUpscaleMode = Piston::UpscaleMode::None;
+            break;
+        }
+        default: {
+            mApp->mScreenFiltering = OutputFilteringMode::MODE_NEAREST;
+            mApp->mPistonMixin.mUpscaleMode = Piston::UpscaleMode::Fsr;
+            break;
+        }
+        }
+        break;
+    }
+    default: {
+        mApp->mScreenFiltering = OutputFilteringMode::MODE_NEAREST;
+        mApp->mPistonMixin.mUpscaleMode = Piston::UpscaleMode::None;
+        break;
+    }
+    }
 }
 
 SettingsDialog::WindowSize SettingsDialog::GetCurrentWindowSize() {
@@ -508,6 +546,24 @@ void SettingsDialog::UpdateButtonPosition(LawnStoneButton& theButton, int theX, 
         (theButton.mY + mY + theButton.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
         (theButton.mY + mY) >
             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
+}
+
+const char* SettingsDialog::GetFilterModeText(Sexy::OutputFilteringMode appMode,
+                                              Piston::UpscaleMode upscaleMode) {
+    switch (upscaleMode) {
+    case Piston::UpscaleMode::Fsr: {
+        return "[MOD_SETTINGS_FILTER_MODE_FSR]";
+    }
+    default: {
+        break;
+    }
+    }
+    switch (appMode) {
+    case OutputFilteringMode::MODE_LINEAR:
+        return "[MOD_SETTINGS_FILTER_MODE_LINEAR]";
+    default:
+        return "[MOD_SETTINGS_FILTER_MODE_NEAREST]";
+    }
 }
 
 const char* SettingsDialog::GetWindowSizeText(SettingsDialog::WindowSize size) {

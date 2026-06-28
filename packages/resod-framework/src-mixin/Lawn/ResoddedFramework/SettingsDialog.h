@@ -3,6 +3,7 @@
 #include <Lawn/Widget/GameButton.h>
 #include <Lawn/Widget/LawnDialog.h>
 #include <Piston/System.h>
+#include <Piston/Upscaler.h>
 #include <SexyAppFramework/CheckboxListener.h>
 #include <SexyAppFramework/ListListener.h>
 #include <memory>
@@ -62,7 +63,7 @@ public:
 
 private:
     void UpdateWidgets();
-    // bool IsCurrentWindowSizeInList();
+    void CycleFilterMode();
     WindowSize GetCurrentWindowSize();
     bool IsWindowSizeSupported(WindowSize size);
     void CycleWindowSize();
@@ -72,6 +73,8 @@ private:
                       int theX, int theY, Font& theFont);
     void UpdateButtonPosition(LawnStoneButton& theButton, int theX, int theY);
 
+    static const char* GetFilterModeText(Sexy::OutputFilteringMode appMode,
+                                         Piston::UpscaleMode upscaleMode);
     static const char* GetWindowSizeText(WindowSize size);
     static std::pair<int, int> GetWindowSize(WindowSize size);
     static const char* GetLanguageText(Piston::Language language);

@@ -4,6 +4,10 @@
 #include <LawnApp/Resources.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 NewUserDialog::NewUserDialog(LawnApp* theApp, bool isRename)
     : LawnDialog(theApp, isRename ? Dialogs::DIALOG_RENAMEUSER : Dialogs::DIALOG_CREATEUSER, true,
                  isRename ? "[RENAME_USER]" : "[NEW_USER]", "[PLEASE_ENTER_NAME]",
@@ -12,7 +16,11 @@ NewUserDialog::NewUserDialog(LawnApp* theApp, bool isRename)
     mVerticalCenterText = false;
     mNameEditWidget = CreateEditWidget(0, this, this);
     mNameEditWidget->mMaxChars = 12;
+#ifdef PISTON_PATCH
+    mNameEditWidget->AddWidthCheckFont(Piston::MapZhFont(FONT_BRIANNETOD16), 220);
+#else
     mNameEditWidget->AddWidthCheckFont(FONT_BRIANNETOD16, 220);
+#endif
     CalcSize(110, 40);
 }
 
