@@ -19,19 +19,19 @@ public:
         return gInstance;
     }
 
-    static bool IsChinese() {
-        return Instance().GetLanguage() == Language::ZH;
-    }
+    static bool IsChinese() { return Instance().GetLanguage() == Language::ZH; }
 
     Language GetLanguage() const { return mLanguage; }
-    void SetLanguageForNextTime(Language language) const;
+    Language GetNextLanguage() const { return mNextLanguage; }
+    void SetLanguageForNextTime(Language language);
     const std::string& GetCurrPath() const { return mCurrPath; }
+
 private:
     System();
 
     std::string mCurrPath;
     Language mLanguage;
-
+    Language mNextLanguage;
 };
 
-}
+} // namespace Piston

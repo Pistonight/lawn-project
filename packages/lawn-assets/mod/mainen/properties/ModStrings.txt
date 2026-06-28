@@ -7,7 +7,7 @@ Back
 [MOD_SETTINGS_BUTTON]
 Settings
 
-[SETTINGS_OPEN_SAVE_FOLDER]
+[MOD_SETTINGS_OPEN_SAVE_FOLDER]
 Open Save Folder
 
 [MOD_SETTINGS_VSYNC]
@@ -40,8 +40,11 @@ Window Size: Large
 [MOD_SETTINGS_WINDOW_SIZE_CUSTOM]
 Window Size: Custom
 
+[MOD_SETTINGS_NOTIF_TITLE]
+Warning
+
 [MOD_SETTINGS_RESTART_NOTIF]
-Restart the game for the change to take effect
+Restart the game for this change to take effect
 
 [MOD_SETTINGS_LANGUAGE_ENGLISH]
 Language: English

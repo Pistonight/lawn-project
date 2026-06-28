@@ -10,11 +10,11 @@ tasks:
   check:
     - task: ccpp:fmt-check
       vars:
-        SOURCE: src src-mixin
+        SOURCE: src
   fix:
     - task: ccpp:fmt-fix
       vars:
-        SOURCE: src src-mixin
+        SOURCE: src
 
   fix-srcdrop:
     - task: fix

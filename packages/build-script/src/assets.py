@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-from src.util import _common
+from src.util import _common, _fmt
 from src.assetbuild import _cleantxt, _copypak, _cnfont
 
 def main(argv: list[str]) -> int:
@@ -93,7 +93,10 @@ def _run_build() -> int:
             target_cat_root = target / dir / category
             _copypak.copy_tree(cat_root, target_cat_root)
 
-    _cnfont.main()
+    status = _cnfont.main()
+    if status != 0:
+        print(f"{_fmt.RED}>>> font building failed{_fmt.RESET}")
+        return status
 
     # need to generate assets before copying framework resources
     subprocess.check_call(["pvz-bintools", "resc", "resources.yaml"], cwd=assets_root)

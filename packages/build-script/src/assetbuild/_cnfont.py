@@ -2,12 +2,14 @@ from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor
+from typing import Literal
 
 import numpy as np
 
 from src.util import _fmt, _common
 
 TEST_NAME = ""
+TEST_LAYER = "Outline"
 
 DEFAULT_CHARS=" !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ —‘’“”•…、。"
 PUNCTS = "！（），．：；？"
@@ -28,7 +30,7 @@ def main()->int:
     # only ever read them (no locking needed). test runs use per-font chars.
     if TEST_NAME:
         _exec_make_fonts(None)
-        print(f"{_fmt.YELLOW}>>> exiting...")
+        print(f"{_fmt.CLEAR_LINE}{_fmt.YELLOW}>>> exiting...")
         return 8
     else:
         global LOADED_FONT_CHARS
@@ -49,9 +51,10 @@ def main()->int:
             futures = _exec_make_fonts(pool)
             all_status = 0
             for f in futures:
-                if not isinstance(f, int):
-                    status = f.result()
+                if not isinstance(f, tuple):
+                    name, status = f.result()
                     if status != 0:
+                        print(f"{_fmt.CLEAR_LINE}{_fmt.RED}>>> failed to render font {name}")
                         all_status = status
             print(f"{_fmt.CLEAR_LINE}",end="",flush=True)
             return all_status
@@ -86,21 +89,35 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
             ),
             name="BrianneTod16ZH", orig_name="BrianneTod16", orig_png="_BrianneTod16.png"
         ),
-        _exec_make_font(
+        _exec_make_font_multilayer(
             pool,
-            RenderArgs(
-                font_ttf="FZKaTong-M19S", font_pt=27,
-                box_offset=(10,8), bold_offsets=[(1,0)], strength=3
-            ),
-            name="BrianneTod32ZH", orig_name="BrianneTod32", orig_png="_BrianneTod32.png"
+            layers={
+                'Main': MultiLayerRenderArgs(
+                    args= RenderArgs(
+                        font_ttf="FZKaTong-M19S", font_pt=27,
+                        box_offset=(10,8), bold_offsets=[(1,0)], strength=3
+                    ),
+                    orig_png="_BrianneTod32.png",
+                    output_stem="BrianneTod32ZH"
+                )
+            },
+            desc_name="BrianneTod32BlackZH", orig_desc_name="BrianneTod32Black", 
         ),
-        _exec_make_font(
+        _exec_make_font_multilayer(
             pool,
-            RenderArgs(
-                font_ttf="FZKaTong-M19S", font_pt=27,
-                box_offset=(10,8), bold_offsets=[(1,0)], strength=2, stroke=2
-            ),
-            name="BrianneTod32OutlineZH", orig_name="BrianneTod32Outline", orig_png="_BrianneTod32Outline.png"
+            layers={
+                'Main': MultiLayerRenderArgs(
+                    args="REUSE_IMAGE", orig_png="", output_stem="BrianneTod32ZH"
+                ),
+                'Outline': MultiLayerRenderArgs(
+                    args=RenderArgs(
+                        font_ttf="FZKaTong-M19S", font_pt=27,
+                        box_offset=(10,8), bold_offsets=[(1,0)], strength=2, stroke=2
+                    ),
+                    orig_png="_BrianneTod32Outline.png", output_stem="BrianneTod32OutlineZH"
+                ),
+            },
+            desc_name="BrianneTod32ZH", orig_desc_name="BrianneTod32",
         ),
         _exec_make_font(
             pool,
@@ -194,21 +211,25 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
             ),
             name="ContinuumBold14ZH", orig_name="ContinuumBold14", orig_png="_ContinuumBold14.png"
         ),
-        _exec_make_font(
+        _exec_make_font_multilayer(
             pool,
-            RenderArgs(
-                font_ttf="FZYiHei-M20S", font_pt=15,
-                box_offset=(6,4), supersampling=4, sand_alpha=100
-            ),
-            name="HouseofTerror16ZH", orig_name="HouseofTerror16", orig_png="_HouseofTerror16.png"
-        ),
-        _exec_make_font(
-            pool,
-            RenderArgs(
-                font_ttf="FZYiHei-M20S", font_pt=15,
-                box_offset=(6,4), supersampling=4, color=BLACK[:3], stroke=8.5
-            ),
-            name="HouseofTerror16OutlineZH", orig_name="HouseofTerror16Outline", orig_png="HouseofTerror16Outline.png"
+            layers={
+                'Main': MultiLayerRenderArgs(
+                    args= RenderArgs(
+                        font_ttf="FZYiHei-M20S", font_pt=15,
+                        box_offset=(6,4), supersampling=4, sand_alpha=100
+                    ),
+                    orig_png="_HouseofTerror16.png", output_stem="HouseofTerror16ZH",
+                ),
+                'Outline': MultiLayerRenderArgs(
+                    args= RenderArgs(
+                        font_ttf="FZYiHei-M20S", font_pt=15,
+                        box_offset=(6,4), supersampling=4, color=BLACK[:3], stroke=8.5
+                    ),
+                    orig_png="HouseofTerror16Outline.png", output_stem="HouseofTerror16OutlineZH",
+                ),
+            },
+            desc_name="HouseofTerror16ZH", orig_desc_name="HouseofTerror16"
         ),
         _exec_make_font(
             pool,
@@ -284,6 +305,17 @@ def _exec_make_font(
         return _make_font(args, name=name, orig_name=orig_name, orig_png=orig_png)
     return pool.submit(_make_font, args, name=name, orig_name=orig_name, orig_png=orig_png)
 
+def _exec_make_font_multilayer(
+    pool: ThreadPoolExecutor | None,
+    *,
+    layers: dict[str, MultiLayerRenderArgs],
+    desc_name: str,
+    orig_desc_name: str,
+):
+    if not pool:
+        return _make_font_multilayer(layers=layers, desc_name=desc_name, orig_desc_name=orig_desc_name)
+    return pool.submit(_make_font_multilayer, layers=layers, desc_name=desc_name, orig_desc_name=orig_desc_name)
+
 def _create_chars(chars: str) -> tuple[str, str]:
     charset = set(chars)
     charset -= set(DEFAULT_CHARS)
@@ -301,23 +333,35 @@ def _make_font(
     name: str,
     orig_name: str,
     orig_png: str,
-) -> int:
-    is_test = bool(TEST_NAME and TEST_NAME == orig_name)
+) -> tuple[str, int]:
+    return _make_font_multilayer(
+        layers={
+            'Main': MultiLayerRenderArgs(
+                args=args,
+                orig_png=orig_png,
+                output_stem=name,
+            )
+        },
+        desc_name=name,
+        orig_desc_name=orig_name
+    )
+
+def _make_font_multilayer(
+    *,
+    layers: dict[str, MultiLayerRenderArgs],
+    desc_name: str,
+    orig_desc_name: str,
+) -> tuple[str,int]:
+    is_test = bool(TEST_NAME and TEST_NAME == orig_desc_name)
     if is_test:
         print(f"{_fmt.YELLOW}>>> testing: {TEST_NAME}{_fmt.RESET}")
     if TEST_NAME and not is_test:
-        return 0
-    alpha = not orig_png.startswith("_")
+        return desc_name, 0
     packages = _common.get_packages_root()
     data_dir = packages / "pvz-assets" / "main11zh" / "data"
-    desc_path = data_dir / (orig_name + ".txt")
-    atlas_path = data_dir / orig_png
+    desc_path = data_dir / (orig_desc_name + ".txt")
     target_data = _common.get_root_root() / "target" / "assets" / "shared" / "data"
-    target_desc_path = target_data / (name + ".txt")
-    # if the image has _ prefix then it's saved without alpha and alpha is calculated at runtime automatically
-    alpha_prefix = "" if alpha else "_"
-    target_atlas_path = target_data / (alpha_prefix + name + ".png")
-
+    target_desc_path = target_data / (desc_name + ".txt")
 
     desc = _parse_desc(desc_path)
     if is_test:
@@ -325,20 +369,39 @@ def _make_font(
     else:
         font_chars = LOADED_FONT_CHARS
         all_chars = LOADED_ALL_CHARS
-    target_desc_path.write_bytes(_create_desc(desc, name, all_chars).encode("utf-8"))
 
-    status = _create_atlas_png(
-        args,
-        target_png=target_atlas_path,
-        orig_png=atlas_path,
-        box_size=desc.box_size,
-        alpha=alpha,
-        chars=font_chars,
-        test=is_test
-    )
-    if not is_test:
-        print(f". {_fmt.CLEAR_LINE}Render: {name}" , end="", flush=True)
-    return status
+    layer_to_image = {}
+    for layer, args in layers.items():
+        orig_atlas_path = data_dir / args.orig_png
+        # if the image has _ prefix then it's saved without alpha and alpha is calculated at runtime automatically
+        alpha = not args.orig_png.startswith("_")
+        alpha_prefix = "" if alpha else "_"
+        target_atlas_path = target_data / (alpha_prefix + args.output_stem + ".png")
+        if not isinstance(args.args, str):
+            status = _create_atlas_png(
+                args.args,
+                target_png=target_atlas_path,
+                orig_png=orig_atlas_path,
+                box_size=desc.box_size,
+                alpha=alpha,
+                chars=font_chars,
+                test=is_test and layer == TEST_LAYER
+            )
+            if status != 0: return desc_name, status
+            print(f". {_fmt.CLEAR_LINE}Render: {desc_name} (Layer={layer})" , end="", flush=True)
+        layer_to_image[layer] = args.output_stem
+    serialized_desc, status = _create_desc(desc, layer_to_image, all_chars)
+    if status != 0: return desc_name, status
+
+    target_desc_path.write_bytes(serialized_desc.encode("utf-8"))
+    return desc_name, 0
+
+
+@dataclass
+class MultiLayerRenderArgs:
+    args: RenderArgs | Literal["REUSE_IMAGE"]
+    orig_png: str
+    output_stem: str
 
 
 def _create_atlas_png(
@@ -535,11 +598,11 @@ class MiniDesc:
     widthlist: list[int]
     box_size: int
     offsetlist: list[tuple[int,int]]
-    layer_name: str
-    commands: list[str]
+    defines: list[str]
+    layer_to_commands: dict[str, list[str]]
     raw: str
 
-def _create_desc(desc: MiniDesc, image_name: str, chars: str) -> str:
+def _create_desc(desc: MiniDesc, layer_to_image: dict[str, str], chars: str) -> tuple[str, int]:
     if len(chars) < 105:
         raise Exception("chars too short, probably a bug")
     if chars[0] != ' ':
@@ -557,12 +620,15 @@ def _create_desc(desc: MiniDesc, image_name: str, chars: str) -> str:
     lines.append("")
     lines.append(f"Define WidthList0")
     widthlist = []
-    max_chars = min(len(chars), len(desc.widthlist))
+    max_chars = len(chars)
     for i in range(max_chars):
         if i < len(desc.widthlist):
             widthlist.append(f"{desc.widthlist[i]:2}")
         else:
             widthlist.append(widthlist[-1])
+    if len(charlist) != len(widthlist):
+        print(f"{_fmt.CLEAR_LINE}{_fmt.RED}>>> error: charlist ({len(charlist)}) and widthlist ({len(widthlist)}) size mismatch!!!{_fmt.RESET}")
+        return "", 1
     lines += _create_desc_rows(widthlist)
     lines.append("")
     lines.append(f"Define RectList0")
@@ -586,7 +652,6 @@ def _create_desc(desc: MiniDesc, image_name: str, chars: str) -> str:
     lines.append("")
     lines.append(f"Define OffsetList0")
     offsetlist_n: list[tuple[int,int]] = []
-    max_chars = min(len(chars), len(desc.offsetlist))
     for i in range(max_chars):
         if i < len(desc.offsetlist):
             offsetlist_n.append(desc.offsetlist[i])
@@ -597,10 +662,18 @@ def _create_desc(desc: MiniDesc, image_name: str, chars: str) -> str:
         offsetlist.append(f"({x}, {y})")
     lines += _create_desc_rows(offsetlist)
     lines.append("")
-    lines.append(f"CreateLayer               {desc.layer_name};")
-    lines.append(f"LayerSetImage             {desc.layer_name} '{image_name}';")
-    lines += desc.commands
-    return "\n".join(lines)+'\n'
+    for d in desc.defines:
+        lines.append("Define "+d)
+        lines.append("")
+
+    for layer in desc.layer_to_commands.keys():
+        if layer not in layer_to_image:
+            print(f"{_fmt.CLEAR_LINE}{_fmt.RED}>>> error: image for layer '{layer}' not found{_fmt.RESET}")
+            return "", 1
+        lines.append(f"CreateLayer               {layer};")
+        lines.append(f"LayerSetImage             {layer} '{layer_to_image[layer]}';")
+        lines += desc.layer_to_commands[layer]
+    return "\n".join(lines)+'\n', 0
 
 
 def _create_desc_rows(item_strs: list[str]) -> list[str]:
@@ -641,8 +714,10 @@ def _parse_desc(path: Path) -> MiniDesc:
     CHARLIST_KEY = "Define CharList0,"
     CREATELAYER_KEY = "CreateLayer";
     LAYERSETIMAGE_KEY = "LayerSetImage "; # there's another LayerSetImageMap so space is important
-    layer_name = None
-    commands = []
+    DEFINE_KEY = "Define "
+    current_layer_name = None
+    layer_to_commands: dict[str, list[str]] = {}
+    defines = []
     txt = txt.replace("';'", "<<<QUOTE_SEMI>>>").replace(";<=>?@", "<<<SEMI_SPACESHIP_QUESTION_AT>>>")
     for command in txt.split(";"):
         command = (
@@ -701,26 +776,34 @@ def _parse_desc(path: Path) -> MiniDesc:
         if command.startswith(CHARLIST_KEY):
             continue # we use our own chars
         if command.startswith(CREATELAYER_KEY):
-            layer_name = command[len(CREATELAYER_KEY):].strip()
+            current_layer_name = command[len(CREATELAYER_KEY):].strip()
             continue
         if command.startswith(LAYERSETIMAGE_KEY):
             continue # we set a new image
-        commands.append(command+';')
+        if command.startswith(DEFINE_KEY):
+            # need to keep other defines
+            command = command[len(DEFINE_KEY):].strip()
+            defines.append(command.replace(",", "\n", 1) + ';')
+        if current_layer_name:
+            if current_layer_name not in layer_to_commands:
+                layer_to_commands[current_layer_name] = [command + ';']
+            else:
+                layer_to_commands[current_layer_name].append(command+';')
     if not widthlist:
         raise Exception(f"did not find WidthList0 in {path}")
     if not offsetlist:
         raise Exception(f"did not find OffsetList0 in {path}")
     if not box_size:
         raise Exception(f"did not find box_size (from RectList0) in {path}")
-    if not layer_name:
+    if len(layer_to_commands) == 0:
         raise Exception(f"did not find layer_name (from CreateLayer) in {path}")
     return MiniDesc(
         widthlist=widthlist,
         offsetlist=offsetlist,
-        commands=commands,
         box_size=box_size,
-        layer_name=layer_name,
-        raw=raw
+        layer_to_commands=layer_to_commands,
+        raw=raw,
+        defines=defines
     )
 
 

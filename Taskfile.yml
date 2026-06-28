@@ -28,6 +28,9 @@ tasks:
   run:
     - cd target/run && ./PlantsVsZombies.exe
 
+  devenv:
+    - task: lawn:devenv
+
   build-run:
     aliases: [br]
     cmds:
@@ -35,6 +38,7 @@ tasks:
       - task: run
 
   check:
+    - lfmt -c
     - task: lib:check
     - task: framework:check
     - task: lawn:check
@@ -43,6 +47,7 @@ tasks:
     - task: lib:fix
     - task: framework:fix
     - task: lawn:fix
+    - lfmt
 
   clean:
     - rm -rf build target/assets target/lawn lawn-assets/.task .task

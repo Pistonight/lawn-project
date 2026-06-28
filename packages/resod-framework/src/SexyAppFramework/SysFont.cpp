@@ -194,8 +194,7 @@ void SysFont::DrawString(Graphics* g, int theX, int theY, const SexyString& theS
     int posX = theX;
     int posY = theY;
     int underlineY =
-        posY - ((mFontData->mFace->underline_position *
-        mFontData->mFace->size->metrics.y_scale) >>
+        posY - ((mFontData->mFace->underline_position * mFontData->mFace->size->metrics.y_scale) >>
                 16 >> 6);
 
     auto it = theString.begin();

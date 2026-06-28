@@ -66,6 +66,7 @@ resource-groups:
         defaults: { path: data, id-prefix: FONT_ }
         items:
           - path: BrianneTod16.txt
+          - path: BrianneTod16ZH.txt
 
       - type: Sound
         defaults: { path: sounds, id-prefix: SOUND_ }
@@ -84,17 +85,6 @@ resource-groups:
           - path: slotmachine.ogg
             id: SLOT_MACHINE
           - pattern: glob:*
-
-  - name: LoadingFonts
-    # note: there aren't many non-delay fonts so we preload them all to save some headaches
-    #       we also removed IMAGE_HOUSEOFTERROR28 since that doesn't seem used
-    contents:
-      - type: Font
-        defaults: { path: data, id-prefix: FONT_ }
-        items:
-          - { path: Pix118Bold.txt, id: TINYBOLD }
-          - { path: ContinuumBold14outback.txt, id: CONTINUUMBOLD14OUTLINE }
-          - pattern: glob:*.txt
 
 
   - name: DelayLoad_Background1
@@ -153,6 +143,13 @@ resource-groups:
           - pattern: glob:SunFlower_head_*
           - path: Credits_DiscoLights.png
           - path: Credits_fogmachine.png
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - path: BrianneTod32.txt
+          - path: BrianneTod32ZH.txt
+          - path: BrianneTod32Black.txt
+          - path: BrianneTod32BlackZH.txt
 
   - name: DelayLoad_Zombatar
     contents:
@@ -166,6 +163,27 @@ resource-groups:
           - path: zombatar_fhair_button_over.png
             id: ZOMBATAR_FACIAL_HAIR_BUTTON_OVER
           - pattern: regex:zombatar_.*[^_]\.png
+
+
+  - name: LoadingFontsZH
+    contents:
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - pattern: glob:*ZH.txt
+
+
+  - name: LoadingFonts
+    # note: there aren't many non-delay fonts so we preload them all to save some headaches
+    #       we also removed IMAGE_HOUSEOFTERROR28 since that doesn't seem used
+    contents:
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - { path: Pix118Bold.txt, id: TINYBOLD }
+          - { path: ContinuumBold14outback.txt, id: CONTINUUMBOLD14OUTLINE }
+          - pattern: glob:*.txt
+
 
   - name: LoadingImages
     contents:

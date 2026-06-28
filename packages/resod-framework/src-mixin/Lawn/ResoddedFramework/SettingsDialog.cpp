@@ -11,6 +11,7 @@
 #include <SexyAppFramework/Window.h>
 
 #include <Piston/Font.h>
+#include <Piston/System.h>
 
 static const int gUserListWidgetColors[][3] = {
     {23, 24, 35}, {0, 0, 0}, {235, 225, 180}, {255, 255, 255}, {20, 180, 15}};
@@ -25,19 +26,19 @@ SettingsDialog::SettingsDialog(LawnApp* theApp)
     mOptionsSlider->Resize(500, 90, 8, 140);
 
     mFullscreenCheckbox.reset(
-        MakeNewCheckbox(SettingsDialog::SETTINGS_FULLSCREEN, this, !theApp->mIsWindowed)
-    );
-    mVSyncCheckbox.reset(MakeNewCheckbox(SettingsDialog::SETTINGS_VSYNC, this, theApp->mWaitForVSync));
+        MakeNewCheckbox(SettingsDialog::SETTINGS_FULLSCREEN, this, !theApp->mIsWindowed));
+    mVSyncCheckbox.reset(
+        MakeNewCheckbox(SettingsDialog::SETTINGS_VSYNC, this, theApp->mWaitForVSync));
     mHighQualityCheckbox.reset(
         MakeNewCheckbox(SettingsDialog::SETTINGS_HIGHQUALITY, this, theApp->mIs3D));
 
     mWindowSizeButton.reset(
-        MakeButton(SETTINGS_CYCLE_WINDOW_SIZE, this, GetWindowSizeText(GetCurrentWindowSize()))
-    );
+        MakeButton(SETTINGS_CYCLE_WINDOW_SIZE, this, GetWindowSizeText(GetCurrentWindowSize())));
+    mLanguageButton.reset(MakeButton(SETTINGS_CYCLE_LANGUAGE, this,
+                                     GetLanguageText(Piston::System::Instance().GetLanguage())));
 
     mSaveFileButton.reset(
-        MakeButton(SETTINGS_OPEN_SAVE_FOLDER, this, "[MOD_SETTINGS_OPEN_SAVE_FOLDER]")
-    );
+        MakeButton(SETTINGS_OPEN_SAVE_FOLDER, this, "[MOD_SETTINGS_OPEN_SAVE_FOLDER]"));
     mApplyButton.reset(MakeButton(SETTINGS_BACK, this, "[MOD_SETTINGS_BACK]"));
 
     CalcSize(211, 214);
@@ -70,116 +71,125 @@ void SettingsDialog::Draw(Graphics* g) {
 
     Sexy::Font* aFont = Piston::GetSettingsDialogFont();
 
-    int checkboxX = 20;
+    int checkboxX = 40;
+    constexpr int checkboxGap = 38;
     int checkboxY = 0;
-    DrawCheckbox(g, *mVSyncCheckbox, "[MOD_SETTINGS_FULLSCREEN]", checkboxX, checkboxY, *aFont);
-    checkboxY+= 20;
+    DrawCheckbox(g, *mFullscreenCheckbox, "[MOD_SETTINGS_FULLSCREEN]", checkboxX, checkboxY,
+                 *aFont);
+    checkboxY += checkboxGap;
     DrawCheckbox(g, *mVSyncCheckbox, "[MOD_SETTINGS_VSYNC]", checkboxX, checkboxY, *aFont);
-    checkboxY+= 20;
-    DrawCheckbox(g, *mVSyncCheckbox, "[MOD_SETTINGS_HIGHQUALITY]", checkboxX, checkboxY, *aFont);
+    checkboxY += checkboxGap;
+    DrawCheckbox(g, *mHighQualityCheckbox, "[MOD_SETTINGS_HIGHQUALITY]", checkboxX, checkboxY,
+                 *aFont);
 
-    int buttonX = 100;
+    int buttonX = 220;
+    constexpr int buttonGap = 50;
     int buttonY = 0;
-    mWindowSizeButton->Resize(buttonX, buttonY - aScrollOffset + GetTop(), 270, 46);
-    mWindowSizeButton->mDisabled =
-        (mWindowSizeButton->mY + mY + mWindowSizeButton->mHeight) <
-            mOptionsSlider->mAllowedMouseZone.mY ||
-        (mWindowSizeButton->mY + mY) >
-            (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
+    // TODO - Filter button
+    buttonY += buttonGap;
+    UpdateButtonPosition(*mWindowSizeButton, buttonX, buttonY);
+    buttonY += buttonGap;
+    UpdateButtonPosition(*mLanguageButton, buttonX, buttonY);
 
     int aY = 0;
-
 
     aY += 20;
 
     aY += 50;
 
     aY += 85;
-//
-//     TodDrawString(g, "[SETTINGS_RENDERER_BACKEND]", 20, aY, aFont, Color::White,
-//                   DrawStringJustification::DS_ALIGN_LEFT);
-//
-//     aY += 12;
-//
-//     mRendererList->Resize(40, aY - aScrollOffset + GetTop(), 130, 70);
-//
-//     mRendererList->mDisabled =
-//         (mRendererList->mY + mY + mRendererList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-//         (mRendererList->mY + mY) >
-//             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-//
-//     aY += mRendererList->mHeight + 30;
-//
-//     if (mApp->mRenderer->mCurrentBackend != mApp->mDesiredBackend) {
-//         TodDrawString(g, "[SETTINGS_RENDERER_RESTART_NOTIF]", 20, aY, aFont,
-//                       Color::White, DrawStringJustification::DS_ALIGN_LEFT);
-//
-//         aY += 20;
-//     } else
-//         aY += 12;
-//
-//     TodDrawString(g, "[SETTINGS_WINDOW_SIZE]", 20, aY, aFont, Color::White,
-//                   DrawStringJustification::DS_ALIGN_LEFT);
-//
-//     aY += 4;
-//
-//     mSizesList->Resize(40, aY - aScrollOffset + GetTop(), 130, 26 * (mValidSizes.size() + 1));
-//
-//     mSizesList->mDisabled =
-//         (mSizesList->mY + mY + mSizesList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-//         (mSizesList->mY + mY) >
-//             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-//
-//     aY += mSizesList->mHeight + 40;
-//
-//     TodDrawString(g, "[SETTINGS_FILTERING_MODE]", 20, aY, aFont, Color::White,
-//                   DrawStringJustification::DS_ALIGN_LEFT);
-//
-//     aY += 4;
-//     mFilterList->Resize(40, aY - aScrollOffset + GetTop(), 130,
-//                         26 * (mFilterList->mLines.size() + 1));
-//
-//     mFilterList->mDisabled =
-//         (mFilterList->mY + mY + mFilterList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
-//         (mFilterList->mY + mY) >
-//             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-//
-//     aY += mFilterList->mHeight + 40;
-//
-//     TodDrawString(g, "[SETTINGS_MISC]", 20, aY, aFont, Color::White,
-//                   DrawStringJustification::DS_ALIGN_LEFT);
-//
-//     aY += 20;
-//
-//     mSaveFileButton->Resize(40, aY - aScrollOffset + GetTop(), 270, 46);
-//
-//     mSaveFileButton->mDisabled =
-//         (mSaveFileButton->mY + mY + mSaveFileButton->mHeight) <
-//             mOptionsSlider->mAllowedMouseZone.mY ||
-//         (mSaveFileButton->mY + mY) >
-//             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
-//
-//     SexyString aVersionString = "ResoddedFramework Release " + LawnApp::gResoddedVersion.toString();
-//
-//     TodDrawString(g, aVersionString,
-//                   mOptionsSlider->mAllowedMouseZone.mWidth -
-//                       aFont->StringWidth(aVersionString) - 27,
-//                   aMaxContentHeight - aFont->GetHeight(), aFont,
-//                   Color::White, DrawStringJustification::DS_ALIGN_LEFT);
-//
-// #if GIT_AVAILABLE
-//
-//     SexyString aHash = GIT_HASH;
-//
-//     SexyString aGitString = "Git: Hash (" + aHash + ")" + (GIT_IS_DIRTY ? " WORK IN PROGRESS" : "");
-//
-//     TodDrawString(g, aGitString,
-//                   mOptionsSlider->mAllowedMouseZone.mWidth -
-//                       aFont->StringWidth(aGitString) - 27,
-//                   aMaxContentHeight, aFont, Color::White,
-//                   DrawStringJustification::DS_ALIGN_LEFT);
-//
-// #endif
+    //
+    //     TodDrawString(g, "[SETTINGS_RENDERER_BACKEND]", 20, aY, aFont, Color::White,
+    //                   DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    //     aY += 12;
+    //
+    //     mRendererList->Resize(40, aY - aScrollOffset + GetTop(), 130, 70);
+    //
+    //     mRendererList->mDisabled =
+    //         (mRendererList->mY + mY + mRendererList->mHeight) <
+    //         mOptionsSlider->mAllowedMouseZone.mY || (mRendererList->mY + mY) >
+    //             (mOptionsSlider->mAllowedMouseZone.mY +
+    //             mOptionsSlider->mAllowedMouseZone.mHeight);
+    //
+    //     aY += mRendererList->mHeight + 30;
+    //
+    //     if (mApp->mRenderer->mCurrentBackend != mApp->mDesiredBackend) {
+    //         TodDrawString(g, "[SETTINGS_RENDERER_RESTART_NOTIF]", 20, aY, aFont,
+    //                       Color::White, DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    //         aY += 20;
+    //     } else
+    //         aY += 12;
+    //
+    //     TodDrawString(g, "[SETTINGS_WINDOW_SIZE]", 20, aY, aFont, Color::White,
+    //                   DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    //     aY += 4;
+    //
+    //     mSizesList->Resize(40, aY - aScrollOffset + GetTop(), 130, 26 * (mValidSizes.size() +
+    //     1));
+    //
+    //     mSizesList->mDisabled =
+    //         (mSizesList->mY + mY + mSizesList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
+    //         (mSizesList->mY + mY) >
+    //             (mOptionsSlider->mAllowedMouseZone.mY +
+    //             mOptionsSlider->mAllowedMouseZone.mHeight);
+    //
+    //     aY += mSizesList->mHeight + 40;
+    //
+    //     TodDrawString(g, "[SETTINGS_FILTERING_MODE]", 20, aY, aFont, Color::White,
+    //                   DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    //     aY += 4;
+    //     mFilterList->Resize(40, aY - aScrollOffset + GetTop(), 130,
+    //                         26 * (mFilterList->mLines.size() + 1));
+    //
+    //     mFilterList->mDisabled =
+    //         (mFilterList->mY + mY + mFilterList->mHeight) < mOptionsSlider->mAllowedMouseZone.mY
+    //         || (mFilterList->mY + mY) >
+    //             (mOptionsSlider->mAllowedMouseZone.mY +
+    //             mOptionsSlider->mAllowedMouseZone.mHeight);
+    //
+    //     aY += mFilterList->mHeight + 40;
+    //
+    //     TodDrawString(g, "[SETTINGS_MISC]", 20, aY, aFont, Color::White,
+    //                   DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    //     aY += 20;
+    //
+    //     mSaveFileButton->Resize(40, aY - aScrollOffset + GetTop(), 270, 46);
+    //
+    //     mSaveFileButton->mDisabled =
+    //         (mSaveFileButton->mY + mY + mSaveFileButton->mHeight) <
+    //             mOptionsSlider->mAllowedMouseZone.mY ||
+    //         (mSaveFileButton->mY + mY) >
+    //             (mOptionsSlider->mAllowedMouseZone.mY +
+    //             mOptionsSlider->mAllowedMouseZone.mHeight);
+    //
+    //     SexyString aVersionString = "ResoddedFramework Release " +
+    //     LawnApp::gResoddedVersion.toString();
+    //
+    //     TodDrawString(g, aVersionString,
+    //                   mOptionsSlider->mAllowedMouseZone.mWidth -
+    //                       aFont->StringWidth(aVersionString) - 27,
+    //                   aMaxContentHeight - aFont->GetHeight(), aFont,
+    //                   Color::White, DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    // #if GIT_AVAILABLE
+    //
+    //     SexyString aHash = GIT_HASH;
+    //
+    //     SexyString aGitString = "Git: Hash (" + aHash + ")" + (GIT_IS_DIRTY ? " WORK IN PROGRESS"
+    //     : "");
+    //
+    //     TodDrawString(g, aGitString,
+    //                   mOptionsSlider->mAllowedMouseZone.mWidth -
+    //                       aFont->StringWidth(aGitString) - 27,
+    //                   aMaxContentHeight, aFont, Color::White,
+    //                   DrawStringJustification::DS_ALIGN_LEFT);
+    //
+    // #endif
 
     g->PopState();
 }
@@ -194,7 +204,7 @@ void SettingsDialog::AddedToManager(WidgetManager* theWidgetManager) {
     AddWidget(mHighQualityCheckbox.get());
     // AddWidget(mFilterModeButton.get());
     AddWidget(mWindowSizeButton.get());
-    // AddWidget(mLanguageButton.get());
+    AddWidget(mLanguageButton.get());
 }
 
 void SettingsDialog::RemovedFromManager(WidgetManager* theWidgetManager) {
@@ -207,7 +217,7 @@ void SettingsDialog::RemovedFromManager(WidgetManager* theWidgetManager) {
     RemoveWidget(mHighQualityCheckbox.get());
     // RemoveWidget(mFilterModeButton.get());
     RemoveWidget(mWindowSizeButton.get());
-    // RemoveWidget(mLanguageButton.get());
+    RemoveWidget(mLanguageButton.get());
 }
 
 void SettingsDialog::Resize(int theX, int theY, int theWidth, int theHeight) {
@@ -215,7 +225,7 @@ void SettingsDialog::Resize(int theX, int theY, int theWidth, int theHeight) {
     mOptionsSlider->Resize(mWidth - 60, 110, 8, 200);
     mOptionsSlider->mAllowedMouseZone = Rect(mX + 35, mY + 120, mWidth - 70, mHeight - 240);
     mApplyButton->Resize(350, 331, 209, 46);
-    mSaveFileButton->Resize(35, 331, 209, 46);
+    mSaveFileButton->Resize(35, 331, 309, 46);
     SetWidgetClipping(Rect(35, 120, mWidth - 70, mHeight - 240));
 }
 
@@ -248,101 +258,121 @@ void SettingsDialog::ButtonDepress(int theId) {
 #endif
         break;
     }
-        case SettingsDialog::SETTINGS_CYCLE_WINDOW_SIZE: {
-            CycleWindowSize();
-            UpdateWidgets();
-            break;
+    case SettingsDialog::SETTINGS_CYCLE_WINDOW_SIZE: {
+        CycleWindowSize();
+        UpdateWidgets();
+        break;
+    }
+    case SettingsDialog::SETTINGS_CYCLE_LANGUAGE: {
+        auto& system = Piston::System::Instance();
+        if (system.GetNextLanguage() == Piston::Language::ZH) {
+            system.SetLanguageForNextTime(Piston::Language::EN);
+        } else {
+            system.SetLanguageForNextTime(Piston::Language::ZH);
         }
+        if (system.GetNextLanguage() != system.GetLanguage()) {
+            mApp->DoDialog(Dialogs::DIALOG_INFO, true, "[MOD_SETTINGS_NOTIF_TITLE]",
+                           "[MOD_SETTINGS_RESTART_NOTIF]", "OK", Dialog::BUTTONS_FOOTER);
+        }
+        UpdateWidgets();
+        break;
+    }
     }
 }
 void SettingsDialog::CheckboxChecked(int theId, bool checked) {
+    if (mIsUpdatingWidgets) {
+        return; // prevent recursive updates
+    }
     switch (theId) {
-        case SettingsDialog::SETTINGS_VSYNC: {
-            mApp->mWaitForVSync = checked;
-            RendererError anError = mApp->mRenderer->UpdateVSync();
-            if (anError == RendererError::ERROR_VSYNC) {
-                mVSyncCheckbox->SetChecked(!checked, false);
-                SexyString aFailString =
-                    StrFormat("V-Sync couldn't be toggled %s\n\nYour video card does not\nmeet the "
-                              "minimum requirements\nfor this feature.",
-                              (checked ? "on" : "off"));
-                mApp->DoDialog(Dialogs::DIALOG_INFO, true, "Failed", aFailString, "OK",
-                               Dialog::BUTTONS_FOOTER);
-            }
-            break;
+    case SettingsDialog::SETTINGS_VSYNC: {
+        mApp->mWaitForVSync = checked;
+        RendererError anError = mApp->mRenderer->UpdateVSync();
+        if (anError == RendererError::ERROR_VSYNC) {
+            mVSyncCheckbox->SetChecked(!checked, false);
+            SexyString aFailString =
+                StrFormat("V-Sync couldn't be toggled %s\n\nYour video card does not\nmeet the "
+                          "minimum requirements\nfor this feature.",
+                          (checked ? "on" : "off"));
+            mApp->DoDialog(Dialogs::DIALOG_INFO, true, "Failed", aFailString, "OK",
+                           Dialog::BUTTONS_FOOTER);
         }
-        case SettingsDialog::SETTINGS_FULLSCREEN: {
-            if (!checked && mApp->mForceFullscreen) {
-                mApp->DoDialog(Dialogs::DIALOG_COLORDEPTH_EXP, true, "No Windowed Mode",
-                               "Windowed mode is only available if your desktop was running in either\n"
-                               "16 bit or 32 bit color mode when you started the game.\n\n"
-                               "If you'd like to run in Windowed mode then you need to quit the game "
-                               "and switch your "
-                               "desktop to 16 or 32 bit color mode.",
-                               "OK", Dialog::BUTTONS_FOOTER);
+        break;
+    }
+    case SettingsDialog::SETTINGS_FULLSCREEN: {
+        if (!checked && mApp->mForceFullscreen) {
+            mApp->DoDialog(Dialogs::DIALOG_COLORDEPTH_EXP, true, "No Windowed Mode",
+                           "Windowed mode is only available if your desktop was running in either\n"
+                           "16 bit or 32 bit color mode when you started the game.\n\n"
+                           "If you'd like to run in Windowed mode then you need to quit the game "
+                           "and switch your "
+                           "desktop to 16 or 32 bit color mode.",
+                           "OK", Dialog::BUTTONS_FOOTER);
 
-                mFullscreenCheckbox->SetChecked(true, false);
-            } else {
-                mApp->SwitchScreenMode(!mFullscreenCheckbox->IsChecked(), mApp->mIs3D, false);
-            }
-            UpdateWidgets();
-            break;
+            mFullscreenCheckbox->SetChecked(true, false);
+        } else {
+            mApp->SwitchScreenMode(!mFullscreenCheckbox->IsChecked(), mApp->mIs3D, false);
         }
+        UpdateWidgets();
+        break;
+    }
 
-        case SettingsDialog::SETTINGS_HIGHQUALITY: {
-            mApp->mIs3D = mHighQualityCheckbox->IsChecked();
-            UpdateWidgets();
-            break;
-        }
+    case SettingsDialog::SETTINGS_HIGHQUALITY: {
+        mApp->mIs3D = mHighQualityCheckbox->IsChecked();
+        UpdateWidgets();
+        break;
+    }
     }
 }
 
 // void SettingsDialog::ListClicked(int theId, int theIdx, int theClickCount) {
-    // if (theId == SETTINGS_RENDER_LIST) {
-    //     if (theIdx != mApp->mDesiredBackend - 1) {
-    //         mRendererList->SetSelect(theIdx);
-    //         mApp->mDesiredBackend = (RenderingBackend)(theIdx + 1);
-    //         SexyString aBackendName = "";
-    //         for (int i = RenderingBackend::BACKEND_NONE + 1; i < RenderingBackend::NUM_BACKENDS;
-    //              i++) {
-    //             for (auto backend : gRenderBackends) {
-    //                 if (backend.first == mApp->mDesiredBackend)
-    //                     aBackendName = backend.second;
-    //             }
-    //         }
-    //         mApp->RegistryWriteInteger("DesiredBackend", mApp->mDesiredBackend);
-    //         mApp->WriteToRegistry();
-    //
-    //         if (mApp->mDesiredBackend != mApp->mRenderer->mCurrentBackend) {
-    //             SexyString anInfoString = StrFormat("Rendering Backend has been changed to "
-    //                                                 "%s\nRestart the game to apply the changes",
-    //                                                 aBackendName.c_str());
-    //             mApp->DoDialog(Dialogs::DIALOG_INFO, true, "", anInfoString, "OK",
-    //                            Dialog::BUTTONS_FOOTER);
-    //         }
-    //     }
-    // } else if (theId == SETTINGS_FILTER_LIST) {
-    //     if (theIdx != mApp->mScreenFiltering) {
-    //         mFilterList->SetSelect(theIdx);
-    //         mApp->mScreenFiltering = (OutputFilteringMode)(theIdx);
-    //     }
-    // } else if (theId == SETTINGS_WINDOW_SIZES) {
-    //
-    //     if (theIdx < mValidSizes.size()) {
-    //     }
-    //     mSizesList->SetSelect(theIdx);
-    // }
+// if (theId == SETTINGS_RENDER_LIST) {
+//     if (theIdx != mApp->mDesiredBackend - 1) {
+//         mRendererList->SetSelect(theIdx);
+//         mApp->mDesiredBackend = (RenderingBackend)(theIdx + 1);
+//         SexyString aBackendName = "";
+//         for (int i = RenderingBackend::BACKEND_NONE + 1; i < RenderingBackend::NUM_BACKENDS;
+//              i++) {
+//             for (auto backend : gRenderBackends) {
+//                 if (backend.first == mApp->mDesiredBackend)
+//                     aBackendName = backend.second;
+//             }
+//         }
+//         mApp->RegistryWriteInteger("DesiredBackend", mApp->mDesiredBackend);
+//         mApp->WriteToRegistry();
+//
+//         if (mApp->mDesiredBackend != mApp->mRenderer->mCurrentBackend) {
+//             SexyString anInfoString = StrFormat("Rendering Backend has been changed to "
+//                                                 "%s\nRestart the game to apply the changes",
+//                                                 aBackendName.c_str());
+//             mApp->DoDialog(Dialogs::DIALOG_INFO, true, "", anInfoString, "OK",
+//                            Dialog::BUTTONS_FOOTER);
+//         }
+//     }
+// } else if (theId == SETTINGS_FILTER_LIST) {
+//     if (theIdx != mApp->mScreenFiltering) {
+//         mFilterList->SetSelect(theIdx);
+//         mApp->mScreenFiltering = (OutputFilteringMode)(theIdx);
+//     }
+// } else if (theId == SETTINGS_WINDOW_SIZES) {
+//
+//     if (theIdx < mValidSizes.size()) {
+//     }
+//     mSizesList->SetSelect(theIdx);
+// }
 // }
 //
 void SettingsDialog::UpdateWidgets() {
+    mIsUpdatingWidgets = true;
     auto windowSize = GetCurrentWindowSize();
     bool isFullScreen = windowSize == WindowSize::Fullscreen;
     mFullscreenCheckbox->SetChecked(isFullScreen);
     // mVSyncCheckbox - can't check as app doesn't store the state
     mHighQualityCheckbox->SetChecked(mApp->mIs3D);
     mWindowSizeButton->mDisabled = isFullScreen;
-    mWindowSizeButton->SetLabel(GetWindowSizeText(windowSize));
-
+    // we don't update the size label here because setting the window size is async,
+    // so it must be set when cycling the size
+    mLanguageButton->SetLabel(GetLanguageText(Piston::System::Instance().GetNextLanguage()));
+    mIsUpdatingWidgets = false;
 }
 
 SettingsDialog::WindowSize SettingsDialog::GetCurrentWindowSize() {
@@ -393,25 +423,28 @@ void SettingsDialog::CycleWindowSize() {
         return;
     }
     auto nextWindowSize = WindowSize::Small;
-    switch(currentSize) {
-        case WindowSize::Small: {
-            if (IsWindowSizeSupported(WindowSize::Medium)) {
-                nextWindowSize = WindowSize::Medium;
-            } else {
-                return;
-            }
+    switch (currentSize) {
+    case WindowSize::Small: {
+        if (IsWindowSizeSupported(WindowSize::Medium)) {
+            nextWindowSize = WindowSize::Medium;
+        } else {
+            return;
         }
-        case WindowSize::Medium: {
-            if (IsWindowSizeSupported(WindowSize::Large)) {
-                nextWindowSize = WindowSize::Large;
-            } else {
-                nextWindowSize = WindowSize::Small;
-            }
-        }
-        default: {
+        break;
+    }
+    case WindowSize::Medium: {
+        if (IsWindowSizeSupported(WindowSize::Large)) {
+            nextWindowSize = WindowSize::Large;
+        } else {
             nextWindowSize = WindowSize::Small;
         }
+        break;
     }
+    default: {
+        nextWindowSize = WindowSize::Small;
+    }
+    }
+    mWindowSizeButton->SetLabel(GetWindowSizeText(nextWindowSize));
     auto [nextWidth, nextHeight] = GetWindowSize(nextWindowSize);
     if (nextWidth == 0 || nextHeight == 0) {
         return;
@@ -419,25 +452,27 @@ void SettingsDialog::CycleWindowSize() {
     auto* window = mApp->mWindow->mInternalWindow;
     SDL_RestoreWindow(window);
     SDL_SetWindowSize(window, nextWidth, nextHeight);
-    int aCurrentX=0;
-    int aCurrentY=0;
+    int aCurrentX = 0;
+    int aCurrentY = 0;
     SDL_GetWindowPosition(window, &aCurrentX, &aCurrentY);
-    int aNewX =
-        aCurrentX -
-        ((nextWidth - mApp->mRenderer->mPresentationRect.mWidth) / 2);
-    int aNewY =
-        aCurrentY -
-        ((nextHeight - mApp->mRenderer->mPresentationRect.mHeight) / 2);
+    int aNewX = aCurrentX - ((nextWidth - mApp->mRenderer->mPresentationRect.mWidth) / 2);
+    int aNewY = aCurrentY - ((nextHeight - mApp->mRenderer->mPresentationRect.mHeight) / 2);
     SDL_Rect aUsableBounds{};
     SDL_GetDisplayUsableBounds(SDL_GetDisplayForWindow(window), &aUsableBounds);
-            if (aNewX <= aUsableBounds.x + 50) {
-        aNewX = aUsableBounds.x + 50;
+    if (aNewX <= aUsableBounds.x + 32) {
+        aNewX = aUsableBounds.x + 32;
     }
-            if (aNewY <= aUsableBounds.y + 50) {
-        aNewY = aUsableBounds.y + 50;
+    if (aNewX + nextWidth > aUsableBounds.w - 32) {
+        aNewX = aUsableBounds.w - 32 - nextWidth;
+    }
+    if (aNewY <= aUsableBounds.y + 32) {
+        aNewY = aUsableBounds.y + 32;
+    }
+    if (aNewY + nextHeight > aUsableBounds.h - 32) {
+        aNewY = aUsableBounds.h - 32 - nextHeight;
     }
     SDL_SetWindowPosition(window, aNewX, aNewY);
-    
+
     // Send events to the app to update the engine as a whole
     SDL_Event aSizeEvent = {SDL_EVENT_WINDOW_RESIZED};
     aSizeEvent.window.data1 = nextWidth;
@@ -449,51 +484,63 @@ void SettingsDialog::CycleWindowSize() {
     aPosEvent.window.windowID = SDL_GetWindowID(mApp->mWindow->mInternalWindow);
     SDL_PushEvent(&aPosEvent);
     SDL_PushEvent(&aSizeEvent);
-    
-
 }
 
-void SettingsDialog::DrawCheckbox(
-        Graphics* g,
-        Sexy::Checkbox& theCheckbox, 
-        const std::string& theTitle,
-        int theX,
-        int theY,
-        Font& theFont
-) {
+void SettingsDialog::DrawCheckbox(Graphics* g, Sexy::Checkbox& theCheckbox,
+                                  const std::string& theTitle, int theX, int theY, Font& theFont) {
     float aScrollOffset = mOptionsSlider->GetValue();
     theCheckbox.Resize(theX, theY - aScrollOffset + GetTop(), 46, 45);
 
     theCheckbox.mDisabled =
-        (theCheckbox.mY + mY + theCheckbox.mHeight) <
-            mOptionsSlider->mAllowedMouseZone.mY ||
+        (theCheckbox.mY + mY + theCheckbox.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
         (theCheckbox.mY + mY) >
             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
 
-    TodDrawString(g, theTitle, theCheckbox.mX + 20, theY + 30, &theFont,
-                  Color::White, DrawStringJustification::DS_ALIGN_LEFT);
+    Sexy::Color aTextColor(107, 109, 145);
+    TodDrawString(g, theTitle, theCheckbox.mX + 10, theY + 35, &theFont, aTextColor,
+                  DrawStringJustification::DS_ALIGN_LEFT);
 }
+
+void SettingsDialog::UpdateButtonPosition(LawnStoneButton& theButton, int theX, int theY) {
+    float aScrollOffset = mOptionsSlider->GetValue();
+    theButton.Resize(theX, theY - aScrollOffset + GetTop(), 275, 46);
+    theButton.mDisabled =
+        (theButton.mY + mY + theButton.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
+        (theButton.mY + mY) >
+            (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
+}
+
 const char* SettingsDialog::GetWindowSizeText(SettingsDialog::WindowSize size) {
-    switch(size) {
-        case WindowSize::Small:
+    switch (size) {
+    case WindowSize::Small:
         return "[MOD_SETTINGS_WINDOW_SIZE_SMALL]";
-        case WindowSize::Medium:
-            return "[MOD_SETTINGS_WINDOW_SIZE_MEDIUM]";
-        case WindowSize::Large:
-            return "[MOD_SETTINGS_WINDOW_SIZE_LARGE]";
-        default:
-            return "[MOD_SETTINGS_WINDOW_SIZE_CUSTOM]";
-        }
+    case WindowSize::Medium:
+        return "[MOD_SETTINGS_WINDOW_SIZE_MEDIUM]";
+    case WindowSize::Large:
+        return "[MOD_SETTINGS_WINDOW_SIZE_LARGE]";
+    default:
+        return "[MOD_SETTINGS_WINDOW_SIZE_CUSTOM]";
+    }
 }
-std::pair<int,int> SettingsDialog::GetWindowSize(SettingsDialog::WindowSize size) {
-    switch(size) {
-        case WindowSize::Small:
-        return { 800, 600 };
-        case WindowSize::Medium:
-        return { 1200, 900 };
-        case WindowSize::Large:
-        return { 1600, 1200 };
-        default:
-            return {0,0};
-        }
+
+std::pair<int, int> SettingsDialog::GetWindowSize(SettingsDialog::WindowSize size) {
+    switch (size) {
+    case WindowSize::Small:
+        return {800, 600};
+    case WindowSize::Medium:
+        return {1200, 900};
+    case WindowSize::Large:
+        return {1600, 1200};
+    default:
+        return {0, 0};
+    }
+}
+
+const char* SettingsDialog::GetLanguageText(Piston::Language language) {
+    switch (language) {
+    case Piston::Language::ZH:
+        return "[MOD_SETTINGS_LANGUAGE_CHINESE]";
+    default:
+        return "[MOD_SETTINGS_LANGUAGE_ENGLISH]";
+    }
 }

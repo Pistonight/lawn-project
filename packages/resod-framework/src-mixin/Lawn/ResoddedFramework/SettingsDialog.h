@@ -2,6 +2,7 @@
 
 #include <Lawn/Widget/GameButton.h>
 #include <Lawn/Widget/LawnDialog.h>
+#include <Piston/System.h>
 #include <SexyAppFramework/CheckboxListener.h>
 #include <SexyAppFramework/ListListener.h>
 #include <memory>
@@ -32,17 +33,21 @@ protected:
         SETTINGS_OPEN_SAVE_FOLDER,
     };
 
-public:
+private:
     LawnApp* mApp;
     std::unique_ptr<LawnStoneButton> mApplyButton;
     std::unique_ptr<LawnStoneButton> mSaveFileButton;
-    std::unique_ptr<Sexy::Checkbox> mFullscreenCheckbox;
     std::unique_ptr<Sexy::Checkbox> mVSyncCheckbox;
     std::unique_ptr<Sexy::Checkbox> mHighQualityCheckbox;
     std::unique_ptr<LawnStoneButton> mFilterModeButton;
     std::unique_ptr<LawnStoneButton> mWindowSizeButton;
     std::unique_ptr<LawnStoneButton> mLanguageButton;
     std::unique_ptr<LawnScrollbar> mOptionsSlider;
+    bool mIsUpdatingWidgets{};
+
+public:
+    // LawnApp accesses it for some reason
+    std::unique_ptr<Sexy::Checkbox> mFullscreenCheckbox;
 
 public:
     SettingsDialog(LawnApp* theApp);
@@ -63,15 +68,11 @@ private:
     void CycleWindowSize();
 
     void CheckboxChecked(int theId, bool checked);
-    void DrawCheckbox(
-        Graphics* g,
-        Sexy::Checkbox& theCheckbox, 
-        const std::string& theTitle,
-        int theX,
-        int theY,
-        Font& theFont
-    );
-    
+    void DrawCheckbox(Graphics* g, Sexy::Checkbox& theCheckbox, const std::string& theTitle,
+                      int theX, int theY, Font& theFont);
+    void UpdateButtonPosition(LawnStoneButton& theButton, int theX, int theY);
+
     static const char* GetWindowSizeText(WindowSize size);
-    static std::pair<int,int> GetWindowSize(WindowSize size);
+    static std::pair<int, int> GetWindowSize(WindowSize size);
+    static const char* GetLanguageText(Piston::Language language);
 };
