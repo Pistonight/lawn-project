@@ -112,7 +112,7 @@ void SysFont::Init(SexyAppBase* theApp, const std::string& theFace, int thePoint
         FT_Set_Transform(aFontFace, &matrix, nullptr);
     }
 
-    mFontData = new TrueTypeData(this, aFontFace, thePointSize);
+    mFontData = std::make_shared<TrueTypeData>(mApp, aFontFace, thePointSize, mBold);
 
     if (aFontFace->size) {
         mAscent = aFontFace->size->metrics.ascender >> 6;
@@ -147,9 +147,7 @@ void SysFont::Reinit() {
     aFontFace->style_flags = aPrevFlags;
 
     int aOldSize = mFontData->mSize;
-    delete mFontData;
-    mFontData = nullptr;
-    mFontData = new TrueTypeData(this, aFontFace, aOldSize);
+    mFontData = std::make_shared<TrueTypeData>(mApp, aFontFace, aOldSize, mBold);
 
     if (aFontFace->size) {
         mAscent = aFontFace->size->metrics.ascender >> 6;
@@ -162,16 +160,14 @@ SysFont::SysFont(const SysFont& theSysFont) {
     mHeight = theSysFont.mHeight;
     mAscent = theSysFont.mAscent;
     mFontData = theSysFont.mFontData;
-    mFontData->mFont = this;
     mBold = theSysFont.mBold;
     mItalic = theSysFont.mItalic;
+    mUnderlined = theSysFont.mUnderlined;
 
     mDrawShadow = false;
 }
 
 SysFont::~SysFont() {
-    if (mFontData)
-        delete mFontData;
     mApp->mRenderer->mSysFonts.erase(this);
 }
 
@@ -194,7 +190,7 @@ int SysFont::StringWidth(const SexyString& theString) {
 
 void SysFont::DrawString(Graphics* g, int theX, int theY, const SexyString& theString,
                          const Color& theColor, const Rect& theClipRect) {
-    if (mFontData == nullptr)
+    if (mFontData == nullptr || !mFontData->mFace)
         return;
     int posX = theX;
     int posY = theY;
@@ -223,10 +219,10 @@ void SysFont::DrawString(Graphics* g, int theX, int theY, const SexyString& theS
 
             g->mDestImage->BltRawTexture(mFontData->mAtlas.mAtlas, mFontData->mAtlas.mWidth,
                                          mFontData->mAtlas.mHeight,
-                                         Rect(aDrawX, aDrawY, aGlyph.mWidth, aGlyph.mHeight),
+                                         Rect(aDrawX + g->mTransX, aDrawY - mAscent + g->mTransY,
+                                              aGlyph.mWidth, aGlyph.mHeight),
                                          Rect(aGlyph.mX, aGlyph.mY, aGlyph.mWidth, aGlyph.mHeight),
                                          theClipRect, theColor, 0);
-
         } else {
             if (mDrawShadow) {
                 Color aShadowColor = Color(0, 0, 0, 0);
@@ -269,7 +265,7 @@ void TrueTypeData::Init() {
     }
     FT_Set_Pixel_Sizes(mFace, 0, mSize);
     if (mAtlas.mAtlas != nullptr) {
-        mFont->mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
+        mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
     }
     mAtlas.mGlyphs.clear();
 
@@ -288,7 +284,7 @@ void TrueTypeData::Init() {
         GlpyhAtlasEntry aGlyph;
         FT_Load_Char(mFace, aSetupChar, FT_LOAD_RENDER);
 
-        if (mFont->mBold) {
+        if (mBold) {
             FT_GlyphSlot_Embolden(mFace->glyph);
         }
 
@@ -328,15 +324,15 @@ void TrueTypeData::Init() {
 
         mAtlas.mGlyphs[aSetupChar] = aGlyph;
     }
-    mAtlas.mAtlas = mFont->mApp->mRenderer->CreateTexture(
-        anAtlasPixels, mAtlas.mWidth, mAtlas.mHeight, RawPixelFormat::RAW_FORMAT_RGBA, 1);
+    mAtlas.mAtlas = mApp->mRenderer->CreateTexture(anAtlasPixels, mAtlas.mWidth, mAtlas.mHeight,
+                                                   RawPixelFormat::RAW_FORMAT_RGBA, 1);
 
     delete[] anAtlasPixels;
 }
 
 TrueTypeData::~TrueTypeData() {
     if (mAtlas.mAtlas != nullptr) {
-        mFont->mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
+        mApp->mRenderer->DeleteTexture(mAtlas.mAtlas);
     }
     mAtlas.mGlyphs.clear();
     FT_Done_Face(mFace);

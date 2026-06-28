@@ -111,7 +111,7 @@ bool TodIsPointInPolygon(const SexyVector2* thePolygonPoint, int theNumberPolygo
 
 void TodDrawString(Graphics* g, const SexyString& theText, int thePosX, int thePosY, Font* theFont,
                    const Color& theColor, DrawStringJustification theJustification);
-void TodDrawStringMatrix(Graphics* g, const Font* theFont, const SexyMatrix3& theMatrix,
+void TodDrawStringMatrix(Graphics* g, Font* theFont, const SexyMatrix3& theMatrix,
                          const SexyString& theString, const Color& theColor);
 void TodDrawImageScaledF(Graphics* g, Image* theImage, float thePosX, float thePosY,
                          float theScaleX, float theScaleY);

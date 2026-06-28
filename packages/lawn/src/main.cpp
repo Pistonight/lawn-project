@@ -3,7 +3,7 @@
 #include <LawnApp/LawnApp.h>
 #include <Sexy.TodLib/TodStringFile.h>
 
-#ifdef PISTON_PATCH
+#ifdef PISTON_MIXIN
 #include <Piston/Init.h>
 #endif
 
@@ -27,7 +27,7 @@ int LawnMain() {
                                  : ".";
 
 #ifdef PISTON_PATCH
-    Piston::InitMod(*gLawnApp);
+    Piston::InitMain(*gLawnApp);
 #endif
 
     gLawnApp->Init();

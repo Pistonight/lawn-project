@@ -11,6 +11,7 @@
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/ImageFont.h>
 #include <SexyAppFramework/PerfTimer.h>
+#include <SexyAppFramework/RenderCommand.h>
 #include <SexyAppFramework/Renderer.h>
 #include <SexyAppFramework/SexyMatrix.h>
 
@@ -485,27 +486,20 @@ void TodDrawImageCelScaled(Graphics* g, Image* theImageStrip, int thePosX, int t
     g->DrawImage(theImageStrip, aDestRect, aSrcRect);
 }
 
-static const int POOL_SIZE = 4096;
-static RenderCommand gRenderCommandPool[POOL_SIZE];
-static RenderCommand* gRenderTail[256];
-static RenderCommand* gRenderHead[256];
-
-void TodDrawStringMatrix(Graphics* g, const Font* theFont, const SexyMatrix3& theMatrix,
+static RenderCommandList gDrawStringMatrixRenderCommandList;
+void TodDrawStringMatrix(Graphics* g, Font* theFont, const SexyMatrix3& theMatrix,
                          const SexyString& theString, const Color& theColor) {
     SexyString aFinalString = TodStringTranslate(theString);
+    gDrawStringMatrixRenderCommandList.Clear();
 
-    memset(gRenderTail, 0, sizeof(gRenderTail));
-    memset(gRenderHead, 0, sizeof(gRenderHead));
     ImageFont* aFont = (ImageFont*)theFont;
     if (!aFont->mFontData->mInitialized)
         return;
 
     aFont->Prepare();
     int aCurXPos = 0;
-    int aCurPoolIdx = 0;
     auto it = theString.begin();
     auto end = theString.end();
-
     while (it != end) {
         uint32_t aCodepoint = utf8::next(it, end);
 
@@ -568,37 +562,18 @@ void TodDrawStringMatrix(Graphics* g, const Font* theFont, const SexyMatrix3& th
                 aLayer->mColorAdd.mAlpha + theColor.mAlpha * aLayer->mColorMult.mAlpha / 255, 255);
             int anOrder = aCharData->mOrder + aLayer->mBaseOrder;
 
-            if (aCurPoolIdx >= POOL_SIZE)
+            RenderCommand* aRenderCommand =
+                gDrawStringMatrixRenderCommandList.PushWithOrder(anOrder);
+            if (!aRenderCommand) {
                 break;
-
-            RenderCommand* aRenderCommand = &gRenderCommandPool[aCurPoolIdx++];
+            }
             aRenderCommand->mImage = aKernItr->mScaledImage;
             aRenderCommand->mColor = aColor;
-            aRenderCommand->mDest[0] = anImageX;
-            aRenderCommand->mDest[1] = anImageY;
-            aRenderCommand->mSrc[0] = aKernItr->mScaledCharImageRects[aChar].mX;
-            aRenderCommand->mSrc[1] = aKernItr->mScaledCharImageRects[aChar].mY;
-            aRenderCommand->mSrc[2] = aKernItr->mScaledCharImageRects[aChar].mWidth;
-            aRenderCommand->mSrc[3] = aKernItr->mScaledCharImageRects[aChar].mHeight;
-
+            aRenderCommand->mDestX = anImageX;
+            aRenderCommand->mDestY = anImageY;
+            aRenderCommand->mSrc = aKernItr->mScaledCharImageRects[aChar];
             aRenderCommand->mMode = aLayer->mDrawMode;
-            // aRenderCommand->mUseAlphaCorrection = aLayer->mUseAlphaCorrection;
-            aRenderCommand->mNext = nullptr;
 
-            int anOrderIdx = std::min(std::max(anOrder + 128, 0), 255);
-            if (gRenderTail[anOrderIdx]) {
-                gRenderTail[anOrderIdx]->mNext = aRenderCommand;
-                gRenderTail[anOrderIdx] = aRenderCommand;
-            } else {
-                gRenderHead[anOrderIdx] = aRenderCommand;
-                gRenderTail[anOrderIdx] = aRenderCommand;
-            }
-
-            // aCurXPos += aSpacing + aCharWidth;
-            // if (aCurXPos > aMaxXPos)
-            //{
-            //	aMaxXPos = aCurXPos;
-            // }
             if (aMaxXPos < aCurXPos + aSpacing + aCharWidth) {
                 aMaxXPos = aCurXPos + aSpacing + aCharWidth;
             }
@@ -607,28 +582,17 @@ void TodDrawStringMatrix(Graphics* g, const Font* theFont, const SexyMatrix3& th
         aCurXPos = aMaxXPos;
     }
 
-    for (int aPoolIdx = 0; aPoolIdx < 256; aPoolIdx++) {
-        RenderCommand* aRenderCommand = gRenderHead[aPoolIdx];
-
-        while (aRenderCommand) {
-            int aDrawMode = g->GetDrawMode();
-            if (aRenderCommand->mMode != -1) {
-                aDrawMode = aRenderCommand->mMode;
-            }
-
-            if (aRenderCommand->mImage) {
-                Rect aSrcRect(aRenderCommand->mSrc[0], aRenderCommand->mSrc[1],
-                              aRenderCommand->mSrc[2], aRenderCommand->mSrc[3]);
-                SexyTransform2D aTransform;
-                float aPosX = aSrcRect.mWidth * 0.5f + aRenderCommand->mDest[0];
-                float aPosY = aSrcRect.mHeight * 0.5f + aRenderCommand->mDest[1];
-                SexyMatrix3Translation(aTransform, aPosX, aPosY);
-                SexyMatrix3Multiply(aTransform, theMatrix, aTransform);
-                TodBltMatrix(g, aRenderCommand->mImage, aTransform, g->mClipRect,
-                             aRenderCommand->mColor, aDrawMode, aSrcRect);
-            }
-
-            aRenderCommand = aRenderCommand->mNext;
+    for (const auto& command : gDrawStringMatrixRenderCommandList) {
+        int aDrawMode = command.mMode == -1 ? g->GetDrawMode() : command.mMode;
+        if (command.mImage) {
+            const Rect& aSrcRect = command.mSrc;
+            SexyTransform2D aTransform;
+            float aPosX = aSrcRect.mWidth * 0.5f + command.mDestX;
+            float aPosY = aSrcRect.mHeight * 0.5f + command.mDestY;
+            SexyMatrix3Translation(aTransform, aPosX, aPosY);
+            SexyMatrix3Multiply(aTransform, theMatrix, aTransform);
+            TodBltMatrix(g, command.mImage, aTransform, g->mClipRect, command.mColor, aDrawMode,
+                         aSrcRect);
         }
     }
 }

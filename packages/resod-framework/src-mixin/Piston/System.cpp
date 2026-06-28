@@ -1,8 +1,9 @@
 #include "System.h"
+#include <SDL3/SDL_filesystem.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <SDL3/SDL_filesystem.h>
+#include <print>
 #include <sstream>
 
 namespace Piston {
@@ -25,16 +26,32 @@ Language LoadCurrentLanguage(const std::string& currPath) {
 
         return Language::EN;
     } catch (...) {
-        std::cout << "Failed to read language, assuming English" << std::endl;
+        std::println("Failed to read language, assuming English");
         return Language::EN;
     }
 }
 
-}
+} // namespace
 
 System::System() {
     mCurrPath = SDL_GetBasePath();
+    std::println("Curr path is {}", mCurrPath);
     mLanguage = LoadCurrentLanguage(mCurrPath);
+    mNextLanguage = mLanguage;
 }
 
+void System::SetLanguageForNextTime(Language language) {
+    mNextLanguage = language;
+    try {
+        auto langPath = std::filesystem::path(mCurrPath) / ".language";
+        std::ofstream langFile(langPath, std::ios::trunc);
+        if (!langFile) {
+            return;
+        }
+        langFile << (language == Language::ZH ? "zh" : "en") << "\n";
+    } catch (...) {
+        std::println("Failed to write language");
+    }
 }
+
+} // namespace Piston

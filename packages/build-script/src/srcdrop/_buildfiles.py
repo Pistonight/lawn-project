@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-from .. import _common, _fmt
-from . import _transformer
+from src.util import _common, _fmt
+from src.srcdrop import _transformer
 
 def copy_files():
     print(f"{_fmt.GREEN}==> copying build files{_fmt.RESET}")

@@ -8,7 +8,7 @@ from pathlib import Path
 from threading import Thread
 from typing import IO
 
-from . import _fmt
+from src.util import _fmt
 
 @dataclass
 class BuildArgs:

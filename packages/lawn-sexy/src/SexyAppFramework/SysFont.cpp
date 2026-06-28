@@ -465,7 +465,8 @@ void TrueTypeData::EnsureGlyph(uint32_t c)
 		for (int x = 0; x < aEntry.mWidth; x++)
 		{
 			uint8_t anAlpha = aBitmap.buffer[y * aBitmap.pitch + x];
-			mAtlas.mPixels[(aEntry.mY + y) * mAtlas.mWidth + (aEntry.mX + x)] = (anAlpha << 24) | 0x00FFFFFF;
+			mAtlas.mPixels[(aEntry.mY + y) * mAtlas.mWidth + (aEntry.mX + x)] =
+                (anAlpha << 24) | 0x00FFFFFF;
 		}
 	}
 

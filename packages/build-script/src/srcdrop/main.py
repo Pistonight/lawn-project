@@ -1,40 +1,38 @@
-
-import sys
 import subprocess
 import traceback
 from pathlib import Path
 
-from src import _upstream, _common, _fmt
+from src.util import _upstream, _common, _fmt
 from src.srcdrop import _libfiles, _frameworkfiles, _buildfiles, _assetfiles
 
-def main():
+def main(argv: list[str]) -> int:
     root = _common.get_root_root()
 
-    is_continue = "--continue" in sys.argv
+    is_continue = "--continue" in argv
 
     if not is_continue:
-        _cherry_pick_update(root)
-        return
+        return _cherry_pick_update(root)
 
     subprocess.check_call(["git", "-C", root, "cherry-pick", "--continue", "--no-edit"])
     run_transform()
     _after_resolve_update(root)
+    return 0
 
-def _cherry_pick_update(root: Path):
+def _cherry_pick_update(root: Path) -> int:
     if not _common.is_repo_clean(root):
         print(f"{_fmt.YELLOW}>>> repo contains changes, must be clean to take src drop{_fmt.RESET}")
-        exit(1)
+        return 1
     run_transform()
     if not _common.is_repo_clean(root):
         print(f"{_fmt.YELLOW}>>> repo contains transformation changes, code must be formatted to take src drop{_fmt.RESET}")
-        exit(1)
+        return 1
 
     config = _common.get_upstream_config()
     current_commit = config["current"]
     update_commit = config["update"]
     if current_commit == update_commit:
         print(f"{_fmt.YELLOW}>>> update commit is the same as current commit, please update config.json{_fmt.RESET}")
-        exit(2)
+        return 2
 
     good_commit = _common.git_head_hash(root);
 
@@ -74,19 +72,19 @@ def _cherry_pick_update(root: Path):
         print(f"{_fmt.RED}>>> operation failed, reverting changes{_fmt.RESET}")
         _common.git_reset_repo(root)
         subprocess.check_call(["git", "-C", root, "reset", "--hard", good_commit])
-        exit(1)
+        return 1
     # apply our patch
     print(f"{_fmt.PINK}==> applying our patch{_fmt.RESET}")
     cherry_pick_result = subprocess.call(["git", "-C", root, "cherry-pick", our_patch_commit])
     if cherry_pick_result == 0:
         print(f"{_fmt.GREEN}>>> no conflicts!{_fmt.RESET}")
         _after_resolve_update(root)
-        return
+        return 0
     print(f"{_fmt.YELLOW}>>> there are conflicts with our patch")
     print(">>> run `git status` and resolve each conflict, use `git add` to mark the file as resolved")
     print(">>> then run the script again (when stil in cherry-picking state)")
     print(f">>>   DON'T RUN cherry-pick --continue manually!{_fmt.RESET}")
-    exit(1)
+    return 1
 
 def _after_resolve_update(root: Path):
     _common.git_commit_all(root, "framework: apply our patches");

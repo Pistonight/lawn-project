@@ -4,8 +4,8 @@ project(ResoddedFramework)
 add_library(${PROJECT_NAME} STATIC)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    C_STANDARD 17
-    CXX_STANDARD 20
+    C_STANDARD 23
+    CXX_STANDARD 23
     CXX_EXTENSIONS NO
 )
 
@@ -143,7 +143,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     # SAF specific
     USE_OGG_LIB
     SEXY_USE_OPENGL
-    SEXY_USE_SDL3_RENDERER
+    # SEXY_USE_SDL3_RENDERER
 
     # FSR
     A_CPU

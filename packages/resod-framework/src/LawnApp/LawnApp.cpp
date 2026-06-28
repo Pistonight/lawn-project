@@ -63,6 +63,10 @@
 #include <Lawn/ResoddedFramework/DebuggerWindow.h>
 #endif
 
+#ifdef PISTON_MIXIN
+#include <Piston/Init.h>
+#endif
+
 // Do not edit this. - Electr0Gunner
 Version LawnApp::gResoddedVersion(1, 1, 0, 1033);
 
@@ -1447,6 +1451,10 @@ void LawnApp::LoadingThreadProc() {
     if (!TodLoadResources("LoaderBar"))
         return;
 
+#ifdef PISTON_PATCH
+    Piston::InitLoadingScreen(*this);
+#endif
+
     TodStringListLoad("properties/LawnStrings.txt");
     TodStringListLoad("properties/ZombatarTOS.txt");
     TodStringListLoad("properties/FrameworkStrings.txt");
@@ -1474,6 +1482,9 @@ void LawnApp::LoadingThreadProc() {
 
     LoadGroup("LoadingImages", 9);
     LoadGroup("LoadingFonts", 54);
+#ifdef PISTON_PATCH
+    Piston::InitLoadingMain(*this);
+#endif
     if (mLoadingFailed || mShutdown || mCloseRequest)
         return;
 
@@ -1512,6 +1523,7 @@ void LawnApp::LoadingThreadProc() {
 
     GetNumPreloadingTasks();
     LoadGroup("LoadingSounds", 54);
+
     TodHesitationTrace("finished loading");
 }
 

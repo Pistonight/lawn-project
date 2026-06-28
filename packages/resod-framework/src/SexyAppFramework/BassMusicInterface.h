@@ -5,7 +5,7 @@
 // IWYU pragma: begin_exports <- this suppresses clangd warning
 #include <SexyAppFramework/Platform.h>
 // IWYU pragma: end_exports
-// this comment exists to prevent formatter from reording this include
+// this comment exists to prevent formatter from reordering this include
 
 #include <SexyAppFramework/MusicInterface.h>
 #include <SexyAppFramework/Window.h>

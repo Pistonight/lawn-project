@@ -8,6 +8,10 @@
 #include <SexyAppFramework/SysFont.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 static Color gGameButtonColors[6] = {Color(0, 0, 0),       Color(0, 0, 0),
                                      Color(0, 0, 0),       Color(255, 255, 255),
                                      Color(132, 132, 132), Color(212, 212, 212)};
@@ -29,23 +33,28 @@ void DrawStoneButton(Graphics* g, int x, int y, int theWidth, int theHeight, boo
         aImageX++;
     }
 
-    int aRepeat = (theWidth - aLeftImage->mWidth - aRightImage->mWidth) / aMiddleImage->mWidth;
     g->DrawImage(aLeftImage, aImageX, y);
     aImageX += aLeftImage->mWidth;
-    while (aRepeat > 0) {
-        g->DrawImage(aMiddleImage, aImageX, y);
-        aImageX += aMiddleImage->mWidth;
-        --aRepeat;
+    int aRightImageDstX = x + theWidth - aRightImage->mWidth;
+    while (aImageX < aRightImageDstX) {
+        int aMiddleWidth = std::min(aRightImageDstX - aImageX, aMiddleImage->mWidth);
+        g->DrawImage(aMiddleImage, aImageX, y, {0, 0, aMiddleWidth, aMiddleImage->mHeight});
+        aImageX += aMiddleWidth;
     }
-    g->DrawImage(aRightImage, aImageX, y);
+    g->DrawImage(aRightImage, aRightImageDstX, y);
 
-    g->SetFont(isHighLighted ? Sexy::FONT_DWARVENTODCRAFT18BRIGHTGREENINSET
-                             : Sexy::FONT_DWARVENTODCRAFT18GREENINSET);
-    aFontX += (theWidth - Sexy::FONT_DWARVENTODCRAFT18GREENINSET->StringWidth(theLabel)) / 2 + 1;
-    aFontY += (theHeight - Sexy::FONT_DWARVENTODCRAFT18GREENINSET->GetAscent() / 6 - 1 +
-               Sexy::FONT_DWARVENTODCRAFT18GREENINSET->GetAscent()) /
-                  2 -
-              4;
+#ifdef PISTON_PATCH
+    auto* aFont = Piston::MapZhFont(isHighLighted ? Sexy::FONT_DWARVENTODCRAFT18BRIGHTGREENINSET
+                                                  : Sexy::FONT_DWARVENTODCRAFT18GREENINSET);
+#else
+    auto* aFont = isHighLighted ? Sexy::FONT_DWARVENTODCRAFT18BRIGHTGREENINSET
+                                : Sexy::FONT_DWARVENTODCRAFT18GREENINSET;
+#endif
+
+    g->SetFont(aFont);
+    aFontX += (theWidth - aFont->StringWidth(theLabel)) / 2 + 1;
+    int aAscent = aFont->GetAscent();
+    aFontY += (theHeight - aAscent / 6 - 1 + aAscent) / 2 - 4;
     g->SetColor(Color::White);
     g->DrawString(theLabel, aFontX, aFontY);
 }

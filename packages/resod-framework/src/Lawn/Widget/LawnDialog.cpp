@@ -11,6 +11,10 @@
 #include <Sexy.TodLib/TodStringFile.h>
 #include <SexyAppFramework/ImageFont.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 LawnDialog::LawnDialog(LawnApp* theApp, int theId, bool isModal, const SexyString& theDialogHeader,
                        const SexyString& theDialogLines, const SexyString& theDialogFooter,
                        int theButtonMode)
@@ -26,8 +30,13 @@ LawnDialog::LawnDialog(LawnApp* theApp, int theId, bool isModal, const SexyStrin
     mDialogLines = TodStringTranslate(theDialogLines);
     SetColor(0, {0xE0, 0xBB, 0x62});
     SetColor(1, {0xE0, 0xBB, 0x62});
+#ifdef PISTON_PATCH
+    SetHeaderFont(Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24));
+    SetLinesFont(Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT15));
+#else
     SetHeaderFont(Sexy::FONT_DWARVENTODCRAFT24);
     SetLinesFont(Sexy::FONT_DWARVENTODCRAFT15);
+#endif
     mContentInsets = Insets(36, 35, 46, 36);
 
     if (theButtonMode == 1) {
