@@ -31,6 +31,10 @@
 #include <SexyAppFramework/MTRand.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 // clang-format off
 
 int gZombieWaves[NUM_LEVELS] = {
@@ -4653,9 +4657,15 @@ void Challenge::TreeOfWisdomDraw(Graphics* g) {
 
         g->DrawImage(Sexy::IMAGE_STORE_SPEECHBUBBLE2, aPosX, aPosY);
         SexyString aText = StrFormat("[TREE_OF_WISDOM_%d]", mTreeOfWisdomTalkIndex);
+#ifdef PISTON_PATCH
+        TodDrawStringWrapped(g, aText, Rect(aPosX + 25, aPosY + 6, 233, 144),
+                             Piston::MapZhFont(Sexy::FONT_BRIANNETOD16), Color::Black,
+                             DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#else
         TodDrawStringWrapped(g, aText, Rect(aPosX + 25, aPosY + 6, 233, 144),
                              Sexy::FONT_BRIANNETOD16, Color::Black,
                              DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#endif
     }
 
     int aCurSize = aHeight;

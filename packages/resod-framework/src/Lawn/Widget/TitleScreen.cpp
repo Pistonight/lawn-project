@@ -12,6 +12,10 @@
 #include <SexyAppFramework/SexyMatrix.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 TitleScreen::TitleScreen(LawnApp* theApp) {
     mCurBarWidth = 0.0f;
     mTotalBarWidth = 314.0f;
@@ -237,7 +241,11 @@ void TitleScreen::Update() {
         mNeedToInit = false;
 
         mStartButton->mLabel = TodStringTranslate("[LOADING]");
+#ifdef PISTON_PATCH
+        mStartButton->SetFont(Piston::MapZhFont(FONT_BRIANNETOD16));
+#else
         mStartButton->SetFont(FONT_BRIANNETOD16);
+#endif
         mStartButton->Resize(mWidth / 2 - IMAGE_LOADBAR_DIRT->mWidth / 2, 650, mTotalBarWidth, 50);
         mStartButton->mVisible = true;
 

@@ -133,6 +133,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     PISTON_PATCH_UPSTREAM
     PISTON_PATCH
     PISTON_MIXIN
+    $<$<CONFIG:Debug>:LAWN_DEBUG_TOOLS>
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC
@@ -144,9 +145,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     USE_OGG_LIB
     SEXY_USE_OPENGL
     # SEXY_USE_SDL3_RENDERER
-
-    # FSR
-    A_CPU
 )
 
 if(SEXY_USE_CONTROLLER)

@@ -9,7 +9,7 @@ import numpy as np
 from src.util import _fmt, _common
 
 TEST_NAME = ""
-TEST_LAYER = "Outline"
+TEST_LAYER = "Main"
 
 DEFAULT_CHARS=" !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ —‘’“”•…、。"
 PUNCTS = "！（），．：；？"
@@ -278,7 +278,7 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
         _exec_make_font(
             pool,
             RenderArgs(
-                font_ttf="DouyinSansBold", font_pt=12,
+                font_ttf="ZhanKuCangErYuYangTi-W02", font_pt=12,
                 box_offset=(6,4), supersampling=4, gamma=1.9, sand_alpha=100
             ),
             name="Pix118BoldZH", orig_name="Pix118Bold", orig_png="_Pix118Bold.png"
@@ -286,7 +286,7 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
         _exec_make_font(
             pool,
             RenderArgs(
-                font_ttf="DouyinSansBold", font_pt=12,
+                font_ttf="ZhanKuCangErYuYangTi-W02", font_pt=12,
                 box_offset=(6,4), supersampling=4, gamma=1.9, sand_alpha=100
             ),
             name="Pico129ZH", orig_name="Pico129", orig_png="_Pico129.png"

@@ -27,6 +27,10 @@
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 static float gFlowerCenter[3][2] = {{765.0f, 483.0f}, {663.0f, 455.0f}, {701.0f, 439.0f}};
 
 int gSlideStartTime = 75;
@@ -127,6 +131,11 @@ GameSelector::GameSelector(LawnApp* theApp) {
                             Sexy::IMAGE_REANIM_SELECTORSCREEN_WOODSIGN3_PRESS->mHeight);
     mZombatarButton->mMouseVisible = false;
     mZombatarButton->mClip = false;
+
+#ifdef PISTON_PATCH
+    mZombatarButton->mDisabled = true;
+    mZombatarButton->mBtnNoDraw = true;
+#endif
 
     mZenGardenButton = MakeNewButton(GameSelector::GameSelector_ZenGarden, this, "", nullptr,
                                      Sexy::IMAGE_SELECTORSCREEN_ZENGARDEN,
@@ -1122,6 +1131,15 @@ void GameSelector::ClickedAdventure() {
     }
 
     mApp->mMusic->StopAllMusic();
+
+#ifdef PISTON_PATCH
+#ifdef DEBUG // save time in debugging
+    mApp->KillGameSelector();
+    mApp->PreNewGame(GameMode::GAMEMODE_ADVENTURE, true);
+    return;
+#endif
+#endif
+
     mApp->PlaySample(Sexy::SOUND_LOSEMUSIC);
     mStartingGame = true;
     mAdventureButton->SetDisabled(true);

@@ -11,6 +11,10 @@
 #include <SexyAppFramework/ImGui/ImGuiManager.h>
 #endif
 
+#ifdef PISTON_MIXIN
+#include <Piston/RendererMixin.h>
+#endif
+
 using namespace Sexy;
 
 const char* gVertexShaderSrc = R"glsl(
@@ -206,6 +210,10 @@ void OpenGLRenderer::Cleanup() {
 
     gGLTextureCount = 0;
     gGLTextureCount = 0;
+
+#ifdef PISTON_PATCH
+    Piston::OpenGLRendererMixin(this).Cleanup();
+#endif
 }
 
 void OpenGLRenderer::SetVideoOnlyDraw(bool videoOnly) {
@@ -353,6 +361,10 @@ bool OpenGLRenderer::InitBuffers() {
         glSamplerParameteri(mSamplers[aFilter].mClamp, GL_TEXTURE_MAG_FILTER, aFilter);
     }
 
+#ifdef PISTON_PATCH
+    Piston::OpenGLRendererMixin(this).Init();
+#endif
+
     return true;
 }
 
@@ -425,19 +437,26 @@ bool OpenGLRenderer::Redraw(Rect* theClipRect) {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-    // Draw to screen here:
-    if (mApp->mHighResolution) {
-        glBlitFramebuffer(0, 0, mPresentationRect.mWidth, mPresentationRect.mHeight,
-                          mPresentationRect.mX, mPresentationRect.mY,
-                          mPresentationRect.mX + mPresentationRect.mWidth,
-                          mPresentationRect.mY + mPresentationRect.mHeight, GL_COLOR_BUFFER_BIT,
-                          mApp->mScreenFiltering == MODE_LINEAR ? GL_LINEAR : GL_NEAREST);
-    } else {
-        glBlitFramebuffer(0, 0, mWidth, mHeight, mPresentationRect.mX, mPresentationRect.mY,
-                          mPresentationRect.mX + mPresentationRect.mWidth,
-                          mPresentationRect.mY + mPresentationRect.mHeight, GL_COLOR_BUFFER_BIT,
-                          mApp->mScreenFiltering == MODE_LINEAR ? GL_LINEAR : GL_NEAREST);
+#ifdef PISTON_PATCH
+    if (!Piston::OpenGLRendererMixin(this).Redraw()) {
+#endif
+
+        // Draw to screen here:
+        if (mApp->mHighResolution) {
+            glBlitFramebuffer(0, 0, mPresentationRect.mWidth, mPresentationRect.mHeight,
+                              mPresentationRect.mX, mPresentationRect.mY,
+                              mPresentationRect.mX + mPresentationRect.mWidth,
+                              mPresentationRect.mY + mPresentationRect.mHeight, GL_COLOR_BUFFER_BIT,
+                              mApp->mScreenFiltering == MODE_LINEAR ? GL_LINEAR : GL_NEAREST);
+        } else {
+            glBlitFramebuffer(0, 0, mWidth, mHeight, mPresentationRect.mX, mPresentationRect.mY,
+                              mPresentationRect.mX + mPresentationRect.mWidth,
+                              mPresentationRect.mY + mPresentationRect.mHeight, GL_COLOR_BUFFER_BIT,
+                              mApp->mScreenFiltering == MODE_LINEAR ? GL_LINEAR : GL_NEAREST);
+        }
+#ifdef PISTON_PATCH
     }
+#endif
 
 #if SEXY_USE_IMGUI
     mApp->mImGuiManager->Flush();
@@ -524,6 +543,10 @@ void OpenGLRenderer::UpdateViewport() {
 
     mProjection =
         glm::ortho(0.0f, (float)mWidth, (float)mHeight, 0.0f, -1.0f, 1.0f) * glm::mat4(1.0f);
+
+#ifdef PISTON_PATCH
+    Piston::OpenGLRendererMixin(this).UpdateViewport(vpW, vpH);
+#endif
 }
 
 bool OpenGLRenderer::CreateImageTexture(MemoryImage* theImage) {

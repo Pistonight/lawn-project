@@ -72,6 +72,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     PISTON_PATCH_UPSTREAM
     PISTON_PATCH
     PISTON_MIXIN
+    $<$<CONFIG:Debug>:LAWN_DEBUG_TOOLS>
 )
 
 if (MSVC)

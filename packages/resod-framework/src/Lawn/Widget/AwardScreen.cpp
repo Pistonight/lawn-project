@@ -16,6 +16,10 @@
 #include <Sexy.TodLib/TodFoley.h>
 #include <Sexy.TodLib/TodStringFile.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 AwardScreen::AwardScreen(LawnApp* theApp, AwardType theAwardType) {
     mApp = theApp;
     mClip = false;
@@ -111,7 +115,11 @@ AwardScreen::AwardScreen(LawnApp* theApp, AwardType theAwardType) {
     mStartButton->mDownImage = nullptr;
     mStartButton->mDisabledImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON_DISABLED;
     mStartButton->mOverOverlayImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON_GLOW;
+#ifdef PISTON_PATCH
+    mStartButton->SetFont(Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT15));
+#else
     mStartButton->SetFont(Sexy::FONT_DWARVENTODCRAFT15);
+#endif
     mStartButton->mColors[ButtonWidget::COLOR_LABEL] = Color(213, 159, 43);
     mStartButton->mColors[ButtonWidget::COLOR_LABEL_HILITE] = Color(213, 159, 43);
     mStartButton->Resize(324, 500, 156, 42);
@@ -135,7 +143,11 @@ AwardScreen::AwardScreen(LawnApp* theApp, AwardType theAwardType) {
     mAchievementButton->mDownImage = nullptr;
     mAchievementButton->mDisabledImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON_DISABLED;
     mAchievementButton->mOverOverlayImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON_GLOW;
+#ifdef PISTON_PATCH
+    mAchievementButton->SetFont(Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT15));
+#else
     mAchievementButton->SetFont(Sexy::FONT_DWARVENTODCRAFT15);
+#endif
     mAchievementButton->mColors[ButtonWidget::COLOR_LABEL] = Color(213, 159, 43);
     mAchievementButton->mColors[ButtonWidget::COLOR_LABEL_HILITE] = Color(213, 159, 43);
     mAchievementButton->Resize(324, 515, 156, 42);
@@ -236,12 +248,23 @@ bool AwardScreen::IsPaperNote() {
 void AwardScreen::DrawBottom(Graphics* g, const SexyString& theTitle, const SexyString& theAward,
                              const SexyString& theMessage) {
     g->DrawImage(Sexy::IMAGE_AWARDSCREEN_BACK, 0, 0);
+#ifdef PISTON_PATCH
+    TodDrawString(g, theTitle, BOARD_WIDTH / 2, 58, Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                  Color(213, 159, 43), DS_ALIGN_CENTER);
+    TodDrawString(g, theAward, BOARD_WIDTH / 2, 326,
+                  Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT18YELLOW), Color::White,
+                  DS_ALIGN_CENTER);
+    TodDrawStringWrapped(g, theMessage, Rect(285, 360, 230, 90),
+                         Piston::MapZhFont(Sexy::FONT_BRIANNETOD16), Color(40, 50, 90),
+                         DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#else
     TodDrawString(g, theTitle, BOARD_WIDTH / 2, 58, Sexy::FONT_DWARVENTODCRAFT24,
                   Color(213, 159, 43), DS_ALIGN_CENTER);
     TodDrawString(g, theAward, BOARD_WIDTH / 2, 326, Sexy::FONT_DWARVENTODCRAFT18YELLOW,
                   Color::White, DS_ALIGN_CENTER);
     TodDrawStringWrapped(g, theMessage, Rect(285, 360, 230, 90), Sexy::FONT_BRIANNETOD16,
                          Color(40, 50, 90), DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#endif
 }
 
 void AwardScreen::DrawAwardSeed(Graphics* g) {

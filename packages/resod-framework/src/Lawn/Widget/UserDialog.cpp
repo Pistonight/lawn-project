@@ -8,6 +8,10 @@
 #include <SexyAppFramework/ListWidget.h>
 #include <SexyAppFramework/Slider.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 static int gUserListWidgetColors[][3] = {
     {23, 24, 35}, {0, 0, 0}, {235, 225, 180}, {255, 255, 255}, {20, 180, 15}};
 
@@ -15,7 +19,11 @@ UserDialog::UserDialog(LawnApp* theApp)
     : LawnDialog(theApp, Dialogs::DIALOG_USERDIALOG, true, "[WHO_ARE_YOU]", "", "",
                  Dialog::BUTTONS_OK_CANCEL) {
     mVerticalCenterText = false;
+#ifdef PISTON_PATCH
+    mUserList = new ListWidget(0, Piston::MapZhFont(FONT_BRIANNETOD16), this);
+#else
     mUserList = new ListWidget(0, FONT_BRIANNETOD16, this);
+#endif
     mUserList->SetColors(gUserListWidgetColors, LENGTH(gUserListWidgetColors));
     mUserList->mDrawOutline = true;
     mUserList->mJustify = ListWidget::JUSTIFY_CENTER;

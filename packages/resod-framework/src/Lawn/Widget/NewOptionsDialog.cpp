@@ -15,6 +15,10 @@
 #include <SexyAppFramework/Slider.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 using namespace Sexy;
 
 NewOptionsDialog::NewOptionsDialog(LawnApp* theApp, bool theFromGameSelector)
@@ -32,10 +36,15 @@ NewOptionsDialog::NewOptionsDialog(LawnApp* theApp, bool theFromGameSelector)
         MakeButton(NewOptionsDialog::NewOptionsDialog_Restart, this, "[RESTART_LEVEL_BUTTON]");
     mBackToMainButton =
         MakeButton(NewOptionsDialog::NewOptionsDialog_MainMenu, this, "[MAIN_MENU_BUTTON]");
+#ifdef PISTON_PATCH
+    mSettingsButton =
+        MakeButton(NewOptionsDialog::NewOptionsDialog_Settings, this, "[MOD_SETTINGS_BUTTON]");
+#else
     mSettingsButton =
         MakeNewButton(NewOptionsDialog::NewOptionsDialog_Settings, this, "[SETTINGS_BUTTON]",
                       Sexy::FONT_DWARVENTODCRAFT18GREENINSET, nullptr, nullptr, nullptr);
     mSettingsButton->mHiliteFont = Sexy::FONT_DWARVENTODCRAFT18BRIGHTGREENINSET;
+#endif
     mSettingsButton->mWidth = 70;
     mSettingsButton->mHeight = 33;
 
@@ -48,10 +57,18 @@ NewOptionsDialog::NewOptionsDialog(LawnApp* theApp, bool theFromGameSelector)
     mBackToGameButton->mTextOffsetY = -5;
     mBackToGameButton->mTextDownOffsetX = 0;
     mBackToGameButton->mTextDownOffsetY = 1;
+#ifdef PISTON_PATCH
+    mBackToGameButton->SetFont(Piston::MapZhFont(FONT_DWARVENTODCRAFT36GREENINSET));
+#else
     mBackToGameButton->SetFont(FONT_DWARVENTODCRAFT36GREENINSET);
+#endif
     mBackToGameButton->SetColor(ButtonWidget::COLOR_LABEL, Color::White);
     mBackToGameButton->SetColor(ButtonWidget::COLOR_LABEL_HILITE, Color::White);
+#ifdef PISTON_PATCH
+    mBackToGameButton->mHiliteFont = Piston::MapZhFont(FONT_DWARVENTODCRAFT36BRIGHTGREENINSET);
+#else
     mBackToGameButton->mHiliteFont = FONT_DWARVENTODCRAFT36BRIGHTGREENINSET;
+#endif
 
     mMusicVolumeSlider = new Slider(IMAGE_OPTIONS_SLIDERSLOT, IMAGE_OPTIONS_SLIDERKNOB2,
                                     NewOptionsDialog::NewOptionsDialog_MusicVolume, this);
@@ -158,6 +175,10 @@ void NewOptionsDialog::Draw(Sexy::Graphics* g) {
         aFullScreenOffset = 15;
     }
     Sexy::Color aTextColor(107, 109, 145);
+
+#ifdef PISTON_PATCH
+    auto* FONT_DWARVENTODCRAFT18 = Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT18);
+#endif
 
     TodDrawString(g,
                   "[OPTIONS_MUSIC_LABEL]", // "Music"

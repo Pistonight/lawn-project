@@ -11,6 +11,10 @@
 #include <SexyAppFramework/SexyMatrix.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 int gLawnEditWidgetColors[][4] = {
     {0, 0, 0, 0}, {0, 0, 0, 0}, {240, 240, 255, 255}, {255, 255, 255, 255}, {0, 0, 0, 255},
 };

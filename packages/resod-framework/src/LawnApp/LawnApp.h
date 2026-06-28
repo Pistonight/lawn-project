@@ -4,6 +4,10 @@
 #include <LawnApp/ConstEnums.h>
 #include <SexyAppFramework/SexyApp.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/AppMixinState.h>
+#endif
+
 class Achievements;
 class Board;
 class GameSelector;
@@ -131,6 +135,10 @@ public:
     TrialType mTrialType;
     bool mDebugTrialLocked;
     bool mMuteSoundsForCutscene;
+
+#ifdef PISTON_MIXIN
+    Piston::LawnAppMixinState mPistonMixin;
+#endif
 
     static Version gResoddedVersion;
 
