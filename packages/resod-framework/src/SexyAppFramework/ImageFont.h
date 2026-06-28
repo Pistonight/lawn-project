@@ -1,11 +1,11 @@
 #ifndef __IMAGEFONT_H__
 #define __IMAGEFONT_H__
 
+#include <unordered_map>
+
 #include <SexyAppFramework/DescParser.h>
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/SharedImage.h>
-
-#include <unordered_map>
 
 namespace Sexy {
 
@@ -107,18 +107,6 @@ public:
 };
 
 typedef std::list<ActiveFontLayer> ActiveFontLayerList;
-
-class RenderCommand {
-public:
-    Image* mImage;
-    int mDest[2];
-    int mSrc[4];
-    int mMode;
-    Color mColor;
-    RenderCommand* mNext;
-};
-
-typedef std::multimap<int, RenderCommand> RenderCommandMap;
 
 class ImageFont : public Font {
 public:

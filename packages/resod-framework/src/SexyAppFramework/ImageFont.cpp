@@ -2,6 +2,7 @@
 #include <SexyAppFramework/Image.h>
 #include <SexyAppFramework/ImageFont.h>
 #include <SexyAppFramework/MemoryImage.h>
+#include <SexyAppFramework/RenderCommand.h>
 #include <SexyAppFramework/SexyAppBase.h>
 
 using namespace Sexy;
@@ -1170,30 +1171,18 @@ int ImageFont::CharWidth(uint32_t theChar) {
 }
 
 std::mutex gRenderCritSec;
-static const int POOL_SIZE = 4096;
-static RenderCommand gRenderCommandPool[POOL_SIZE];
-static RenderCommand* gRenderTail[256];
-static RenderCommand* gRenderHead[256];
+static RenderCommandList gRenderCommandList;
 
 void ImageFont::DrawStringEx(Graphics* g, int theX, int theY, const SexyString& theString,
                              const Color& theColor, const Rect* theClipRect,
                              RectList* theDrawnAreas, int* theWidth) {
     auto aLock = std::scoped_lock(gRenderCritSec);
-
-    int aPoolIdx;
-
-    for (aPoolIdx = 0; aPoolIdx < 256; aPoolIdx++) {
-        gRenderHead[aPoolIdx] = NULL;
-        gRenderTail[aPoolIdx] = NULL;
-    }
+    gRenderCommandList.Clear();
 
     int aXPos = theX;
 
     if (theDrawnAreas != NULL)
         theDrawnAreas->clear();
-
-    /*if (theDrawnArea != NULL)
-     *theDrawnArea = Rect(0, 0, 0, 0);*/
 
     if (!mFontData->mInitialized) {
         if (theWidth != NULL)
@@ -1301,33 +1290,17 @@ void ImageFont::DrawStringEx(Graphics* g, int theX, int theY, const SexyString& 
             int anOrder = anActiveFontLayer->mBaseFontLayer->mBaseOrder +
                           anActiveFontLayer->mBaseFontLayer->GetCharData(aChar)->mOrder;
 
-            if (aCurPoolIdx >= POOL_SIZE)
+            RenderCommand* aRenderCommand = gRenderCommandList.PushWithOrder(anOrder);
+            if (!aRenderCommand) {
                 break;
-
-            RenderCommand* aRenderCommand = &gRenderCommandPool[aCurPoolIdx++];
+            }
 
             aRenderCommand->mImage = anActiveFontLayer->mScaledImage;
             aRenderCommand->mColor = aColor;
-            aRenderCommand->mDest[0] = anImageX;
-            aRenderCommand->mDest[1] = anImageY;
-            aRenderCommand->mSrc[0] = anActiveFontLayer->mScaledCharImageRects[aChar].mX;
-            aRenderCommand->mSrc[1] = anActiveFontLayer->mScaledCharImageRects[aChar].mY;
-            aRenderCommand->mSrc[2] = anActiveFontLayer->mScaledCharImageRects[aChar].mWidth;
-            aRenderCommand->mSrc[3] = anActiveFontLayer->mScaledCharImageRects[aChar].mHeight;
+            aRenderCommand->mDestX = anImageX;
+            aRenderCommand->mDestY = anImageY;
+            aRenderCommand->mSrc = anActiveFontLayer->mScaledCharImageRects[aChar];
             aRenderCommand->mMode = anActiveFontLayer->mBaseFontLayer->mDrawMode;
-            aRenderCommand->mNext = NULL;
-
-            int anOrderIdx = std::min(std::max(anOrder + 128, 0), 255);
-
-            if (gRenderTail[anOrderIdx] == NULL) {
-                gRenderTail[anOrderIdx] = aRenderCommand;
-                gRenderHead[anOrderIdx] = aRenderCommand;
-            } else {
-                gRenderTail[anOrderIdx]->mNext = aRenderCommand;
-                gRenderTail[anOrderIdx] = aRenderCommand;
-            }
-
-            // aRenderCommandMap.insert(RenderCommandMap::value_type(aPriority, aRenderCommand));
 
             /*int anOldDrawMode = g->GetDrawMode();
             if (anActiveFontLayer->mBaseFontLayer->mDrawMode != -1)
@@ -1389,46 +1362,19 @@ void ImageFont::DrawStringEx(Graphics* g, int theX, int theY, const SexyString& 
         *theWidth = aCurXPos - theX;
 
     Color anOrigColor = g->GetColor();
-
-    for (aPoolIdx = 0; aPoolIdx < 256; aPoolIdx++) {
-        RenderCommand* aRenderCommand = gRenderHead[aPoolIdx];
-
-        while (aRenderCommand != NULL) {
-            int anOldDrawMode = g->GetDrawMode();
-            if (aRenderCommand->mMode != -1)
-                g->SetDrawMode(aRenderCommand->mMode);
-            g->SetColor(Color(aRenderCommand->mColor));
-            if (aRenderCommand->mImage != NULL)
-                g->DrawImage(aRenderCommand->mImage, aRenderCommand->mDest[0],
-                             aRenderCommand->mDest[1],
-                             Rect(aRenderCommand->mSrc[0], aRenderCommand->mSrc[1],
-                                  aRenderCommand->mSrc[2], aRenderCommand->mSrc[3]));
-            g->SetDrawMode(anOldDrawMode);
-
-            aRenderCommand = aRenderCommand->mNext;
+    for (const auto& command : gRenderCommandList) {
+        int anOldDrawMode = g->GetDrawMode();
+        if (command.mMode != -1) {
+            g->SetDrawMode(command.mMode);
         }
+        g->SetColor(command.mColor);
+        if (command.mImage) {
+            g->DrawImage(command.mImage, command.mDestX, command.mDestY, command.mSrc);
+        }
+        g->SetDrawMode(anOldDrawMode);
     }
 
     g->SetColor(anOrigColor);
-
-    /*RenderCommandMap::iterator anItr = aRenderCommandMap.begin();
-    while (anItr != aRenderCommandMap.end())
-    {
-            RenderCommand* aRenderCommand = &anItr->second;
-
-            int anOldDrawMode = g->GetDrawMode();
-            if (aRenderCommand->mMode != -1)
-                    g->SetDrawMode(aRenderCommand->mMode);
-            Color anOrigColor = g->GetColor();
-            g->SetColor(aRenderCommand->mColor);
-            if (aRenderCommand->mImage != NULL)
-                    g->DrawImage(aRenderCommand->mImage, aRenderCommand->mDest.mX,
-    aRenderCommand->mDest.mY, aRenderCommand->mSrc); g->SetColor(anOrigColor);
-            g->SetDrawMode(anOldDrawMode);
-
-            ++anItr;
-    }*/
-
     g->SetColorizeImages(colorizeImages);
 }
 
