@@ -2,13 +2,14 @@ version: '3'
 
 tasks:
   build:
-    # sources:
-    #   - Taskfile.yml
-    #   - resources.yaml
-    #   - 'shaders/**/*'
-    #   - 'scripts/**/*'
-    #   - 'mod/**/*'
-    #   - 'framework/**/*'
+    sources:
+      - Taskfile.yml
+      - resources.yaml
+      - 'shaders/**/*'
+      - 'scripts/**/*'
+      - 'mod/**/*'
+      - 'framework/**/*'
+      - ../build-script/src/assetbuild/_cnfont.py
     generates:
       - ../../target/run/mainen.pak
       - ../../target/run/mainzh.pak
@@ -22,6 +23,9 @@ tasks:
 
   fix-srcdrop:
     - cd ../build-script && uv run src/main.py assets fix
+
+  pak:
+    - cd ../build-script && uv run src/main.py assets pak
 
   font:
     - cd ../build-script && uv run src/main.py assets cnfont

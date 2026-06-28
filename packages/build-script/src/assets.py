@@ -6,7 +6,7 @@ from src.assetbuild import _cleantxt, _copypak, _cnfont
 
 def main(argv: list[str]) -> int:
     if len(argv) < 1:
-        print(">>> usage: main.py assets <build|fix>")
+        print(">>> usage: main.py assets TASK")
         return 64
     match argv[0]:
         case "fix":
@@ -15,8 +15,9 @@ def main(argv: list[str]) -> int:
             return _run_build()
         case "cnfont":
             return _run_cnfont()
+        case "pak":
+            return _run_pak()
     print(f">>> unknown task {argv[0]}")
-    print(">>> usage: main.py assets <build|fix>")
     return 64
 
 def _run_fix() -> int:
@@ -36,7 +37,6 @@ def _run_build() -> int:
 
     assets_root = _common.get_packages_root() / "lawn-assets"
     target = _common.get_root_root() / "target" / "assets"
-    run_dir = _common.get_root_root() / "target" / "run"
     pvz_root = _common.get_packages_root() / "pvz-assets"
     target_mainen = target / "mainen"
     target_mainzh = target / "mainzh"
@@ -112,8 +112,12 @@ def _run_build() -> int:
     )
     if status != 0: return status
 
+    return _run_pak()
+
+def _run_pak() -> int:
+    target = _common.get_root_root() / "target" / "assets"
+    run_dir = _common.get_root_root() / "target" / "run"
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "shared.pak"), str(target / "shared")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainen.pak"), str(target / "mainen")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainzh.pak"), str(target / "mainzh")])
-
     return 0

@@ -25,14 +25,4 @@ void InitMain(LawnApp& app) {
     }
 }
 
-void InitLoaderScreen(LawnApp&) {
-    std::println("Piston::InitLoaderScreen");
-    FontLoader::InitLoaderBarFonts();
-}
-
-void InitPostLoad(LawnApp&) {
-    std::println("Piston::PostLoad");
-    FontLoader::InitLoadingFonts();
-}
-
 }

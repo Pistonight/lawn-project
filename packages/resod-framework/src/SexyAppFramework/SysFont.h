@@ -36,9 +36,6 @@ public:
     int mSize;
     bool mBold;
     bool mIsDirty;
-#ifdef PISTON_MIXIN
-    std::vector<unsigned char> mFontBytes;
-#endif
 
     TrueTypeData(SexyAppBase* theApp, FT_Face theFace, int theSize, bool theBold)
         : mApp(theApp), mFace(theFace), mSize(theSize), mBold(theBold) {

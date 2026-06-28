@@ -25,7 +25,7 @@ def _run_devenv(argv: list[str]) -> int:
     repo_root = _common.get_root_root()
     flavor = "release" if is_release else "debug"
     cmake_dir = repo_root / "target" / "lawn" / flavor
-    exe = cmake_dir / "out" / "PlantsVsZombies.exe"
+    exe = repo_root / "target" / "run" / "PlantsVsZombies.exe"
     return _debugger.launch_debugger_project(cmake_dir, exe)
 
 

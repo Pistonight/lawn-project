@@ -143,7 +143,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
     # SAF specific
     USE_OGG_LIB
     SEXY_USE_OPENGL
-    SEXY_USE_SDL3_RENDERER
+    # SEXY_USE_SDL3_RENDERER
 
     # FSR
     A_CPU

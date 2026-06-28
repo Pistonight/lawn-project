@@ -40,7 +40,7 @@ def _clean_lang(input: str):
     lines = []
     for l in input.splitlines():
         l = l.strip()
-        # replace chinese punctuations since some fonts don't support them
-        l = l.replace("？", "? ").replace("！", "! ").replace("。", ". ").replace("，", ", ")
+        # replace chinese punctuations since some fonts don't support them (no longer needed)
+        # l = l.replace("？", "? ").replace("！", "! ").replace("。", ". ").replace("，", ", ")
         lines.append(l.strip())
     return "\n".join(lines)

@@ -77,7 +77,6 @@ SysFont::SysFont(SexyAppBase* theApp, const std::string& theFace, int thePointSi
     Init(theApp, theFace, thePointSize, bold, italics, underline, true);
 }
 
-#ifndef PISTON_MIXIN
 void SysFont::Init(SexyAppBase* theApp, const std::string& theFace, int thePointSize, bool bold,
                    bool italics, bool underline, bool useDevCaps) {
     mApp = theApp;
@@ -126,9 +125,7 @@ void SysFont::Init(SexyAppBase* theApp, const std::string& theFace, int thePoint
     mDrawShadow = false;
     mFontName = theFace;
 }
-#endif
 
-#ifndef PISTON_MIXIN
 void SysFont::Reinit() {
     if (!mFontData || !mFontData->mFace)
         return;
@@ -157,7 +154,6 @@ void SysFont::Reinit() {
         mHeight = (aFontFace->size->metrics.ascender - aFontFace->size->metrics.descender) >> 6;
     }
 }
-#endif
 
 SysFont::SysFont(const SysFont& theSysFont) {
     mApp = theSysFont.mApp;
