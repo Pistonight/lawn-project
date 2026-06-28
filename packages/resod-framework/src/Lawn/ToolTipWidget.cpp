@@ -5,6 +5,13 @@
 #include <Sexy.TodLib/TodStringFile.h>
 #include <SexyAppFramework/Font.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+// bad programming
+#define FONT_PICO129 Piston::GetTooltipPicoFont()
+#define FONT_TINYBOLD Piston::GetTooltipBoldFont()
+#endif
+
 using namespace Sexy;
 
 ToolTipWidget::ToolTipWidget() {

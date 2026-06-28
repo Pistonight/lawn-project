@@ -75,11 +75,7 @@ void LawnEditWidget::KeyChar(SexyChar theChar) {
 
 LawnEditWidget* CreateEditWidget(int theId, EditListener* theListener, Dialog* theDialog) {
     LawnEditWidget* aEditWidget = new LawnEditWidget(theId, theListener, theDialog);
-#ifdef PISTON_PATCH
-    aEditWidget->SetFont(Piston::MapZhFont(Sexy::FONT_BRIANNETOD16));
-#else
     aEditWidget->SetFont(Sexy::FONT_BRIANNETOD16);
-#endif
     aEditWidget->SetColors(gLawnEditWidgetColors, EditWidget::NUM_COLORS);
     aEditWidget->mBlinkDelay = 14;
 

@@ -36,7 +36,11 @@ public:
     LawnStoneButton* mBackToMainButton;
     LawnStoneButton* mRestartButton;
     NewLawnButton* mBackToGameButton;
+#ifdef PISTON_PATCH
+    LawnStoneButton* mSettingsButton;
+#else
     NewLawnButton* mSettingsButton;
+#endif
     bool mFromGameSelector;
 #if LAWN_USE_UNFINISHED_GAMEPAD_SUPPORT
     bool mAwaitRelease;

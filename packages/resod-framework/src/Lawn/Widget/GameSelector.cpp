@@ -132,6 +132,11 @@ GameSelector::GameSelector(LawnApp* theApp) {
     mZombatarButton->mMouseVisible = false;
     mZombatarButton->mClip = false;
 
+#ifdef PISTON_PATCH
+    mZombatarButton->mDisabled = true;
+    mZombatarButton->mBtnNoDraw = true;
+#endif
+
     mZenGardenButton = MakeNewButton(GameSelector::GameSelector_ZenGarden, this, "", nullptr,
                                      Sexy::IMAGE_SELECTORSCREEN_ZENGARDEN,
                                      Sexy::IMAGE_SELECTORSCREEN_ZENGARDENHIGHLIGHT,
@@ -520,20 +525,11 @@ void GameSelector::Draw(Graphics* g) {
         int aSignIdx = aSelectorReanim->FindTrackIndex("woodsign1");
         SexyTransform2D aOverlayMatrix;
         aSelectorReanim->GetAttachmentOverlayMatrix(aSignIdx, aOverlayMatrix);
-#ifdef PISTON_PATCH
-        float aStringWidth = Piston::MapZhFont(Sexy::FONT_BRIANNETOD16)->StringWidth(aWelcomeStr);
-#else
         float aStringWidth = Sexy::FONT_BRIANNETOD16->StringWidth(aWelcomeStr);
-#endif
         SexyTransform2D aOffsetMatrix;
         aOffsetMatrix.Translate(170.5f - (int)(aStringWidth * 0.5f) + mX, 102.5f + mY);
-#ifdef PISTON_PATCH
-        TodDrawStringMatrix(g, Piston::MapZhFont(Sexy::FONT_BRIANNETOD16),
-                            aOverlayMatrix * aOffsetMatrix, aWelcomeStr, Color(255, 245, 200));
-#else
         TodDrawStringMatrix(g, Sexy::FONT_BRIANNETOD16, aOverlayMatrix * aOffsetMatrix, aWelcomeStr,
                             Color(255, 245, 200));
-#endif
     }
 }
 
@@ -1135,6 +1131,15 @@ void GameSelector::ClickedAdventure() {
     }
 
     mApp->mMusic->StopAllMusic();
+
+#ifdef PISTON_PATCH
+#ifdef DEBUG // save time in debugging
+    mApp->KillGameSelector();
+    mApp->PreNewGame(GameMode::GAMEMODE_ADVENTURE, true);
+    return;
+#endif
+#endif
+
     mApp->PlaySample(Sexy::SOUND_LOSEMUSIC);
     mStartingGame = true;
     mAdventureButton->SetDisabled(true);

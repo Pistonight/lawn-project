@@ -8,6 +8,10 @@
 #include <Sexy.TodLib/TodStringFile.h>
 #include <SexyAppFramework/Font.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 MessageWidget::MessageWidget(LawnApp* theApp) {
     mApp = theApp;
     mDuration = 0;
@@ -296,10 +300,18 @@ Font* MessageWidget::GetFont() {
     case MessageStyle::MESSAGE_STYLE_HUGE_WAVE:
     case MessageStyle::MESSAGE_STYLE_ZEN_GARDEN_LONG:
     case MessageStyle::MESSAGE_STYLE_ACHIEVEMENT:
+#ifdef PISTON_PATCH
+        return Piston::MapZhFont(Sexy::FONT_HOUSEOFTERROR28);
+#else
         return Sexy::FONT_HOUSEOFTERROR28;
+#endif
 
     case MessageStyle::MESSAGE_STYLE_SLOT_MACHINE:
+#ifdef PISTON_PATCH
+        return Piston::MapZhFont(Sexy::FONT_HOUSEOFTERROR16);
+#else
         return Sexy::FONT_HOUSEOFTERROR16;
+#endif
     }
 
     TOD_ASSERT(false);

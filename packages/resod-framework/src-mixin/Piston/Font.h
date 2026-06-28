@@ -25,6 +25,9 @@ inline Sexy::Font* MapZhFont(Sexy::Font* input) {
     if (input == Sexy::FONT_BRIANNETOD12) {
         return Sexy::FONT_BRIANNETOD12ZH;
     }
+    if (input == Sexy::FONT_BRIANNETOD16) {
+        return Sexy::FONT_BRIANNETOD16ZH;
+    }
     if (input == Sexy::FONT_BRIANNETOD32) {
         return Sexy::FONT_BRIANNETOD32ZH;
     }
@@ -84,6 +87,14 @@ inline Sexy::Font* MapZhFont(Sexy::Font* input) {
 
 inline Sexy::Font* GetSettingsDialogFont() {
     return MapZhFont(Sexy::FONT_DWARVENTODCRAFT18);
+}
+
+inline Sexy::Font* GetTooltipPicoFont() {
+    return MapZhFont(Sexy::FONT_PICO129);
+}
+
+inline Sexy::Font* GetTooltipBoldFont() {
+    return MapZhFont(Sexy::FONT_TINYBOLD);
 }
 
 } // namespace Piston
