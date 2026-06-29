@@ -68,7 +68,15 @@ def _run_build(argv: list[str]) -> int:
             print("==> all cleaned!")
             return 0
 
-    if args.is_clean or args.do_ninja or not _build.is_dir_configured(ninja_dir):
+    ninja_dirty = False
+    if not args.is_release:
+        for dir in target_dirs:
+            build_dir = upstreampkg_root / dir
+            if _build.is_ninja_dirty_in_build_dir(build_dir):
+                ninja_dirty = True
+                break
+
+    if ninja_dirty or args.is_clean or args.do_ninja or not _build.is_dir_configured(ninja_dir):
         status = _build.cmake_configure_ninja(
             upstream_root,
             f"windows-{arch}-{flavor}-msvc",

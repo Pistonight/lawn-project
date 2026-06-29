@@ -19,7 +19,6 @@ void InitMain(LawnApp& app) {
     auto& system = Piston::System::Instance();
     Sexy::SetAppDataFolder(system.GetCurrPath());
     // load our multi-lang pak files
-    gPakInterface->AddPakFile("shared.pak");
     if (system.IsChinese()) {
         gPakInterface->AddPakFile("mainzh.pak");
     } else {

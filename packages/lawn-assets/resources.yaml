@@ -351,24 +351,24 @@ resource-groups:
             attrs: { cols: 2 }
           - path: ImitaterPuffs.png
             attrs: { cols: 8 }
-          - path: pea_particles.png
+          - path: Pea_particles.png
             attrs: { cols: 3 }
           - path: pea_splats.png
             attrs: { cols: 4 }
-          - path: pinata.png
+          - path: Pinata.png
             attrs: { cols: 5 }
-          - path: potatomine_particles.png
+          - path: PotatoMine_particles.png
             attrs: { cols: 6 }
           - path: PuffShroom_puff1.png
           - path: Rain.png
           - path: SeedPacketFlash.png
-          - path: snowflakes.png
+          - path: SnowFlakes.png
             attrs: { cols: 3 }
-          - path: snowpea_particles.png
+          - path: SnowPea_particles.png
             attrs: { cols: 3 }
-          - path: snowpea_puff.png
+          - path: SnowPea_puff.png
             attrs: { cols: 6 }
-          - path: snowpea_splats.png
+          - path: SnowPea_splats.png
             attrs: { cols: 4 }
           - path: Star_particles.png
             attrs: { cols: 3 }
@@ -376,9 +376,9 @@ resource-groups:
             attrs: { cols: 4 }
           - path: vase_chunks.png
             attrs: { rows: 3, cols: 9 }
-          - path: wallnutparticleslarge.png
+          - path: WallnutParticlesLarge.png
             attrs: { cols: 5 }
-          - path: wallnutparticlessmall.png
+          - path: WallnutParticlesSmall.png
             attrs: { cols: 5 }
           - path: ZamboniSmoke.png
             attrs: { cols: 3 }

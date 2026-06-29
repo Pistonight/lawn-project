@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 import os
 
@@ -17,6 +18,8 @@ def main(argv: list[str]) -> int:
             return _run_cnfont()
         case "pak":
             return _run_pak()
+        case "compile":
+            return _run_compile()
     print(f">>> unknown task {argv[0]}")
     return 64
 
@@ -40,6 +43,7 @@ def _run_build() -> int:
     pvz_root = _common.get_packages_root() / "pvz-assets"
     target_mainen = target / "mainen"
     target_mainzh = target / "mainzh"
+    target_shared = target / "shared"
 
     target_mainen_properties = target_mainen / "properties"
     target_mainzh_properties = target_mainzh / "properties"
@@ -74,6 +78,23 @@ def _run_build() -> int:
     )
     if status != 0: return status
 
+
+    print("==> copying override assets")
+    main10en = pvz_root / "main10en"
+    main10en_copys: list[list[str]] = [
+        ["reanim/SelectorScreen_WoodSign3.png"],
+        ["reanim/SelectorScreen_WoodSign3.png", "reanim/SelectorScreen_WoodSign3_press.png"],
+    ]
+    for main10en_copy_task in main10en_copys:
+        if len(main10en_copy_task) == 1:
+            path_from = main10en / main10en_copy_task[0]
+            path_to = target_shared / main10en_copy_task[0]
+        else:
+            path_from = main10en / main10en_copy_task[0]
+            path_to = target_shared / main10en_copy_task[1]
+        path_to.parent.mkdir(parents=True, exist_ok=True)
+        path_from.copy(path_to)
+
     print("==> building shaders")
     subprocess.check_call(["txtpp", "-rN", "shaders"], cwd=assets_root)
     target_shaders = target / "shared" / "shaders"
@@ -86,11 +107,14 @@ def _run_build() -> int:
 
     print("==> building assets")
     mod_root = assets_root / "mod"
-    for dir in os.listdir(mod_root):
+    for dir in ["mainen", "mainzh", "shared", "override"]:
         mod_dir_root = mod_root / dir
+        if not mod_dir_root.exists():
+            continue
         for category in os.listdir(mod_dir_root):
             cat_root = mod_dir_root / category # this is like mod/shared/images
-            target_cat_root = target / dir / category
+            target_dir_seg = "shared" if dir == "override" else dir
+            target_cat_root = target / target_dir_seg / category
             _copypak.copy_tree(cat_root, target_cat_root)
 
     status = _cnfont.main()
@@ -117,10 +141,25 @@ def _run_build() -> int:
 
     return _run_pak()
 
+def _run_compile() -> int:
+    target = _common.get_root_root() / "target" / "assets" / "shared" / "compiled"
+    run_dir = _common.get_root_root() / "target" / "run"
+    _common.rm_rf(run_dir / "fresh_compiled")
+    _common.rm_rf(run_dir / "compiled")
+    print(f"{_fmt.PINK}==> compiling definitions >_>{_fmt.RESET}")
+    subprocess.check_call(
+        [run_dir / "PlantsVsZombies.exe", "-compile"], cwd=run_dir
+    );
+    _common.rm_rf(target)
+    shutil.copytree(run_dir / "compiled", target)
+    _common.rm_rf(run_dir / "compiled")
+    
+    return _run_pak()
+
 def _run_pak() -> int:
     target = _common.get_root_root() / "target" / "assets"
     run_dir = _common.get_root_root() / "target" / "run"
-    subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "shared.pak"), str(target / "shared")])
+    subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "main.pak"), str(target / "shared")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainen.pak"), str(target / "mainen")])
     subprocess.check_call(["pvz-bintools", "pakc", "--pack", str(run_dir / "mainzh.pak"), str(target / "mainzh")])
     return 0

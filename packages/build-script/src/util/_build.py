@@ -48,6 +48,14 @@ def is_dir_configured(dir):
     build_cache = Path(dir) / "CMakeCache.txt"
     return build_cache.exists()
 
+def is_ninja_dirty_in_build_dir(dir):
+    build_cache = Path(dir) / ".ninja-dirty"
+    return build_cache.exists()
+
+def clear_ninja_dirty_in_build_dir(dir):
+    build_cache = Path(dir) / ".ninja-dirty"
+    build_cache.unlink(missing_ok=True)
+
 def cmake_configure_ninja(project_dir, preset, build_dir, is_release, is_raw) -> int:
     if not is_dir_configured(build_dir):
         if Path(build_dir).exists():
@@ -90,47 +98,7 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
             print(f"{_fmt.RED}==> cmake configure failed{_fmt.RESET}")
             return 1
 
-    # make an 8-line window that prints the last 8 lines of the output
-    # (scrolling as the output goes) in yellow. when it's done it's cleared
-    proc = subprocess.Popen(
-        command,
-        cwd=project_dir,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        bufsize=1
-    )
-
-    lines: collections.deque[str] = collections.deque(maxlen=8)
-    drawn = 0
-
-    def redraw():
-        nonlocal drawn
-        width = shutil.get_terminal_size().columns
-        # move the cursor back up to the top of the window we last drew
-        if drawn:
-            sys.stdout.write(f"\033[{drawn}A")
-        for line in lines:
-            # truncate so long lines don't wrap and desync the cursor math
-            sys.stdout.write(f"{_fmt.CLEAR_LINE}{_fmt.YELLOW}{line[:width]}{_fmt.RESET}\n")
-        drawn = len(lines)
-        sys.stdout.flush()
-
-    stdout: IO[str] = proc.stdout # type: ignore
-
-    for raw in iter(stdout.readline, ""):
-        lines.append(raw.rstrip())
-        redraw()
-
-    status = proc.wait()
-
-    # clear the window: go back to the top, wipe each line, return to the top
-    if drawn:
-        sys.stdout.write(f"\033[{drawn}A")
-        for _ in range(drawn):
-            sys.stdout.write(f"{_fmt.CLEAR_LINE}\n")
-        sys.stdout.write(f"\033[{drawn}A")
-        sys.stdout.flush()
+    status = _fmt.subprocess_call_rolling_window(command, cwd=project_dir);
 
     if status:
         print(f"{_fmt.CLEAR_LINE}==> {_fmt.RED}configure failed{_fmt.RESET}")
@@ -139,7 +107,7 @@ def _drive_cmake_configure(command, project_dir, is_raw) -> int:
 
     return status
 
-def cmake_build(build_dir, is_release, is_raw) -> int:
+def cmake_build(build_dir: Path, is_release, is_raw) -> int:
     command = [
         "cmake", "--build", build_dir,
         "--config", "Release" if is_release else "Debug",
@@ -160,12 +128,12 @@ def cmake_build(build_dir, is_release, is_raw) -> int:
     if is_raw:
         stdout = Thread(
             target=_drive_stdout_raw,
-            args=[proc.stdout]
+            args=[proc.stdout, build_dir]
         )
     else:
         stdout = Thread(
             target=_drive_stdout,
-            args=[proc.stdout]
+            args=[proc.stdout, build_dir]
         )
 
     stdout.start()
@@ -185,17 +153,24 @@ def _drive_stderr(stream):
     for line in iter(stream.readline, ""):
         print(f"[err] {line}", end="")
 
-def _drive_stdout_raw(stream):
+def _drive_stdout_raw(stream, build_dir: Path):
+    was_configured = False
     for line in iter(stream.readline, ""):
+        if line.lstrip().startswith("CMake is re-running"):
+            was_configured = True
         print(f"[out] {line}", end="")
+    if was_configured:
+        (build_dir / ".ninja-dirty").write_text("yes");
 
-def _drive_stdout(stream: IO[str]):
+def _drive_stdout(stream: IO[str], build_dir: Path):
+    was_configured = False
     is_in_cmake_configure = False
     width = shutil.get_terminal_size().columns
     for line in iter(stream.readline, ""):
         line_lstrip = line.lstrip()
         if line_lstrip.startswith("CMake is re-running"):
             is_in_cmake_configure = True
+            was_configured = True
             print(f"{_fmt.CYAN}==> rerunning cmake config...{_fmt.RESET}{_fmt.YELLOW}")
             continue
         if "Build files have been written to" in line_lstrip:
@@ -238,6 +213,8 @@ def _drive_stdout(stream: IO[str]):
                 continue
 
             print(f"{_fmt.CLEAR_LINE}. {line}")
+    if was_configured:
+        (build_dir / ".ninja-dirty").write_text("yes");
 
 def _try_parse_compiler_error(line: str):
     if "): error C" not in line:
