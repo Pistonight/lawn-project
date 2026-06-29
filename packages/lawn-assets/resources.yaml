@@ -165,6 +165,14 @@ resource-groups:
           - pattern: regex:zombatar_.*[^_]\.png
 
 
+  - name: LoadingFontsZHShare
+    contents:
+      - type: Font
+        defaults: { path: data, id-prefix: FONT_ }
+        items:
+          - path: DwarvenTodcraft12ZH.txt
+          - path: HouseofTerror16ZH.txt
+
   - name: LoadingFontsZH
     contents:
       - type: Font
@@ -331,28 +339,77 @@ resource-groups:
           - pattern: glob:*
 
       - type: Image
-        # --- particle images that are also called in code
+        # --- particle images that are also called in code or have special properties
         defaults: { path: particles, id-prefix: IMAGE_ }
         items:
           - path: AwardPickupGlow.png
+          - path: DoomShroom_Explosion_Base.png
+            attrs: { cols: 3 }
+          - path: Dust_puffs.png
+            attrs: { cols: 3 }
+          - path: ImitaterClouds.png
+            attrs: { cols: 2 }
+          - path: ImitaterPuffs.png
+            attrs: { cols: 8 }
+          - path: Pea_particles.png
+            attrs: { cols: 3 }
+          - path: pea_splats.png
+            attrs: { cols: 4 }
+          - path: Pinata.png
+            attrs: { cols: 5 }
+          - path: PotatoMine_particles.png
+            attrs: { cols: 6 }
           - path: PuffShroom_puff1.png
           - path: Rain.png
           - path: SeedPacketFlash.png
+          - path: SnowFlakes.png
+            attrs: { cols: 3 }
+          - path: SnowPea_particles.png
+            attrs: { cols: 3 }
+          - path: SnowPea_puff.png
+            attrs: { cols: 6 }
+          - path: SnowPea_splats.png
+            attrs: { cols: 4 }
+          - path: Star_particles.png
+            attrs: { cols: 3 }
+          - path: Star_splats.png
+            attrs: { cols: 4 }
+          - path: vase_chunks.png
+            attrs: { rows: 3, cols: 9 }
+          - path: WallnutParticlesLarge.png
+            attrs: { cols: 5 }
+          - path: WallnutParticlesSmall.png
+            attrs: { cols: 5 }
+          - path: ZamboniSmoke.png
+            attrs: { cols: 3 }
           - { path: ZombieBackupDancerHead_disco.png, id: ZOMBIEBACKUPDANCERHEAD }
           - path: ZombieBobsledHead.png
+          - path: Zombie_boss_fireball_groundparticles.png
+            attrs: { cols: 4 }
+          - path: Zombie_boss_fireball_particles.png
+            attrs: { cols: 4 }
+          - path: Zombie_boss_iceball_groundparticles.png
+            attrs: { cols: 4 }
           - path: Zombie_boss_iceball_particles.png
             attrs: { cols: 4 }
           - { path: ZombieDancerHead_disco.png, id: ZOMBIEDANCERHEAD }
+          - path: Zombie_seaweed.png
+            attrs: { cols: 4 }
           - path: ZombieDiggerArm.png
           - path: ZombieDiggerHead.png
           - path: ZombieDolphinRiderHead.png
           - path: ZombieFootballHead.png
+          - path: ZombieFutureGlasses.png
+            attrs: { cols: 4 }
           - path: ZombieImpHead.png
           - path: ZombieJackboxArm.png
           - path: ZombieLadderHead.png
           - path: ZombiePogo.png
+            attrs: { cols: 3 }
           - path: ZombiePoleVaulterHead.png
           - path: ZombieYetiHead.png
+          - path: Zomboss_particles.png
+            attrs: { cols: 5 }
 
       - type: Image
         # --- reanim images that are also called in code

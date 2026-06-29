@@ -130,7 +130,11 @@ AwardScreen::AwardScreen(LawnApp* theApp, AwardType theAwardType) {
     mMenuButton->mButtonImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON2;
     mMenuButton->mOverImage = Sexy::IMAGE_SEEDCHOOSER_BUTTON2_GLOW;
     mMenuButton->mDownImage = nullptr;
+#ifdef PISTON_PATCH
+    mMenuButton->SetFont(Piston::MapZhFont(Sexy::FONT_BRIANNETOD12));
+#else
     mMenuButton->SetFont(Sexy::FONT_BRIANNETOD12);
+#endif
     mMenuButton->mColors[ButtonWidget::COLOR_LABEL] = Color(42, 42, 90);
     mMenuButton->mColors[ButtonWidget::COLOR_LABEL_HILITE] = Color(42, 42, 90);
     mMenuButton->mParentWidget = this;
@@ -174,7 +178,11 @@ AwardScreen::AwardScreen(LawnApp* theApp, AwardType theAwardType) {
         mStartButton->mDownImage = nullptr;
         mStartButton->mDisabledImage = nullptr;
         mStartButton->mOverOverlayImage = nullptr;
+#ifdef PISTON_PATCH
+        mStartButton->SetFont(Piston::MapZhFont(Sexy::FONT_HOUSEOFTERROR20));
+#else
         mStartButton->SetFont(Sexy::FONT_HOUSEOFTERROR20);
+#endif
         mStartButton->mColors[ButtonWidget::COLOR_LABEL] = Color(255, 255, 255);
         mStartButton->mColors[ButtonWidget::COLOR_LABEL_HILITE] = Color(213, 159, 43);
         mStartButton->Resize(325, 505, 190, 73);
@@ -286,8 +294,14 @@ void AwardScreen::Draw(Graphics* g) {
     g->SetLinearBlend(true);
     if (mHasAchievementsToShow) {
         g->DrawImage(Sexy::IMAGE_CHALLENGE_BACKGROUND, 0, 0);
+#ifdef PISTON_PATCH
+        TodDrawString(g, "[ACHIEVEMENTS_TITLE]", 400, 58,
+                      Piston::MapZhFont(Sexy::FONT_HOUSEOFTERROR28), Color(220, 220, 220),
+                      DS_ALIGN_CENTER);
+#else
         TodDrawString(g, "[ACHIEVEMENTS_TITLE]", 400, 58, Sexy::FONT_HOUSEOFTERROR28,
                       Color(220, 220, 220), DS_ALIGN_CENTER);
+#endif
         g->SetClipRect(Rect(20, 90, 780, 420));
 
         if (mScrollBar) {
@@ -306,11 +320,20 @@ void AwardScreen::Draw(Graphics* g) {
 
             g->DrawImage(IMAGE_ACHEESEMENTS_ICONS, 219, mAchievementItems[i].mY, aSrcRect);
 
+#ifdef PISTON_PATCH
+            TodDrawString(g, aAchievementText, BOARD_WIDTH / 2 + 50, mAchievementItems[i].mY + 20,
+                          Piston::MapZhFont(FONT_DWARVENTODCRAFT15), Color(224, 187, 98),
+                          DS_ALIGN_CENTER);
+            TodDrawStringWrapped(g, TodStringTranslate(aDefinition.mDescription), aTextRect,
+                                 Piston::MapZhFont(FONT_DWARVENTODCRAFT12), Color(255, 255, 255),
+                                 DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#else
             TodDrawString(g, aAchievementText, BOARD_WIDTH / 2 + 50, mAchievementItems[i].mY + 20,
                           FONT_DWARVENTODCRAFT15, Color(224, 187, 98), DS_ALIGN_CENTER);
             TodDrawStringWrapped(g, TodStringTranslate(aDefinition.mDescription), aTextRect,
                                  FONT_DWARVENTODCRAFT12, Color(255, 255, 255),
                                  DS_ALIGN_CENTER_VERTICAL_MIDDLE);
+#endif
         }
         g->ClearClipRect();
 
@@ -373,8 +396,14 @@ void AwardScreen::Draw(Graphics* g) {
                 g->DrawImage(Sexy::IMAGE_BACKGROUND1, -700, -300, 2800, 1200);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE, 80, 80);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE1, 131, 132);
+#ifdef PISTON_PATCH
+                TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70,
+                              Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                              Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#else
                 TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70, Sexy::FONT_DWARVENTODCRAFT24,
                               Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#endif
             } else if (aLevel == 15) {
                 DrawBottom(g, "[FOUND_SUBURBAN_ALMANAC]", "[SUBURBAN_ALMANAC]",
                            "[SUBURBAN_ALMANAC_DESCRIPTION]");
@@ -384,8 +413,14 @@ void AwardScreen::Draw(Graphics* g) {
                 g->DrawImage(Sexy::IMAGE_BACKGROUND2, -700, -300, 2800, 1200);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE, 80, 80);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE2, 133, 127);
+#ifdef PISTON_PATCH
+                TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70,
+                              Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                              Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#else
                 TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70, Sexy::FONT_DWARVENTODCRAFT24,
                               Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#endif
             } else if (aLevel == 25) {
                 DrawBottom(g, "[FOUND_KEYS]", "[KEYS]", "[KEYS_DESCRIPTION]");
                 g->DrawImage(Sexy::IMAGE_CARKEYS, BOARD_WIDTH / 2 - Sexy::IMAGE_CARKEYS->mWidth / 2,
@@ -394,8 +429,14 @@ void AwardScreen::Draw(Graphics* g) {
                 g->DrawImage(Sexy::IMAGE_BACKGROUND1, -700, -300, 2800, 1200);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE, 80, 80);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE3, 120, 117);
+#ifdef PISTON_PATCH
+                TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70,
+                              Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                              Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#else
                 TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70, Sexy::FONT_DWARVENTODCRAFT24,
                               Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#endif
             } else if (aLevel == 35) {
                 DrawBottom(g, "[FOUND_TACO]", "[TACO]", "[TACO_DESCRIPTION]");
                 g->DrawImage(Sexy::IMAGE_TACO, BOARD_WIDTH / 2 - Sexy::IMAGE_TACO->mWidth / 2, 160);
@@ -403,8 +444,14 @@ void AwardScreen::Draw(Graphics* g) {
                 g->DrawImage(Sexy::IMAGE_BACKGROUND2, -700, -300, 2800, 1200);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE, 80, 80);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE4, 102, 117);
+#ifdef PISTON_PATCH
+                TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70,
+                              Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                              Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#else
                 TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70, Sexy::FONT_DWARVENTODCRAFT24,
                               Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#endif
             } else if (aLevel == 45) {
                 DrawBottom(g, "[FOUND_WATERING_CAN]", "[WATERING_CAN]",
                            "[WATERING_CAN_DESCRIPTION]");
@@ -414,8 +461,14 @@ void AwardScreen::Draw(Graphics* g) {
                 g->DrawImage(Sexy::IMAGE_BACKGROUND1, -700, -300, 2800, 1200);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_NOTE, 80, 80);
                 g->DrawImage(Sexy::IMAGE_ZOMBIE_FINAL_NOTE, 114, 138);
+#ifdef PISTON_PATCH
+                TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70,
+                              Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT24),
+                              Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#else
                 TodDrawString(g, "[FOUND_NOTE]", BOARD_WIDTH / 2, 70, Sexy::FONT_DWARVENTODCRAFT24,
                               Color(255, 200, 0, 255), DS_ALIGN_CENTER);
+#endif
             } else if (aLevel == 1 && mApp->HasFinishedAdventure()) {
                 DrawBottom(g, "[WIN_MESSAGE1]", "[SILVER_SUNFLOWER_TROPHY]", "[WIN_MESSAGE2]");
                 TodDrawImageCelCenterScaledF(g, Sexy::IMAGE_SUNFLOWER_TROPHY, 325, 65, 0, 0, 0.7f,

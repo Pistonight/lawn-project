@@ -31,6 +31,9 @@ int LawnMain() {
 #endif
 
     gLawnApp->Init();
+    if (gLawnApp->mRunInCompileMode) {
+        return 0;
+    }
     gLawnApp->Start();
 
     gLawnApp->Shutdown();

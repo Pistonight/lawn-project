@@ -210,7 +210,7 @@ void ReanimAtlas::ReanimAtlasCreate(ReanimatorDefinition* theReanimDef) {
                 // aImageIndex is clearly an invalid pointer so not entirely sure what the intention
                 // is (assigning to nullptr should have the same effect, but keeping this just in
                 // case)
-                aImage = (Image*)(aImageIndex + 1);
+                // aImage = (Image*)(aImageIndex + 1);
 #pragma clang diagnostic pop
 #pragma warning(pop)
             }

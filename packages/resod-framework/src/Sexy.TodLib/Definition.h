@@ -218,11 +218,12 @@ void DefWriteToCacheFloatTrack(DefinitionCompiler* theReadPtr, FloatParameterTra
 void DefMapWriteToCache(DefinitionCompiler* theReadPtr, DefMap* theDefMap, void* theDefinition);
 
 bool DefinitionCompileAndLoad(const SexyString& theXMLFilePath, DefMap* theDefMap,
-                              void* theDefinition);
+                              void* theDefinition, bool recompile);
 bool DefinitionLoadMap(XMLParser* theXmlParser, DefMap* theDefMap, void* theDefinition);
 bool DefinitionLoadImage(Image** theImage, const SexyString& theName);
 bool DefinitionLoadFont(Font** theFont, const SexyString& theName);
-bool DefinitionLoadXML(const SexyString& theFilename, DefMap* theDefMap, void* theDefinition);
+bool DefinitionLoadXML(const SexyString& theFilename, DefMap* theDefMap, void* theDefinition,
+                       bool recompile);
 void DefinitionFreeArrayField(DefinitionArrayDef* theArray, DefMap* theDefMap);
 void DefinitionFreeMap(DefMap* theDefMap, void* theDefinition);
 

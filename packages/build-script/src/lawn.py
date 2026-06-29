@@ -65,7 +65,15 @@ def _run_build(argv: list[str]) -> int:
     # source generation should happen before configuring
     _generate_buildinfo_inc()
 
-    if args.is_clean or args.do_ninja or not _build.is_dir_configured(ninja_dir):
+    ninja_dirty = False
+    if not args.is_release:
+        for flavor in target_flavors:
+            build_dir = build_root / flavor
+            if _build.is_ninja_dirty_in_build_dir(build_dir):
+                ninja_dirty = True
+                break
+
+    if ninja_dirty or args.is_clean or args.do_ninja or not _build.is_dir_configured(ninja_dir):
         status = _build.cmake_configure_ninja(
             lawn_root,
             PRESET,

@@ -10,6 +10,7 @@
 #include <SexyAppFramework/Font.h>
 #include <SexyAppFramework/MemoryImage.h>
 #include <SexyAppFramework/PerfTimer.h>
+#include <format>
 
 int gReanimatorDefCount;
 ReanimatorDefinition* gReanimatorDefArray;
@@ -230,8 +231,9 @@ void ReanimationFillInMissingData(void*& thePrev, void*& theValue) {
         thePrev = theValue;
 }
 
-bool ReanimationLoadDefinition(const SexyString& theFileName, ReanimatorDefinition* theDefinition) {
-    if (!DefinitionLoadXML(theFileName, &gReanimatorDefMap, theDefinition))
+bool ReanimationLoadDefinition(const SexyString& theFileName, ReanimatorDefinition* theDefinition,
+                               bool recompile) {
+    if (!DefinitionLoadXML(theFileName, &gReanimatorDefMap, theDefinition, recompile))
         return false;
 
     for (int aTrackIndex = 0; aTrackIndex < theDefinition->mTrackCount; aTrackIndex++) {
@@ -1029,8 +1031,12 @@ Reanimation* ReanimationHolder::AllocReanimation(float theX, float theY, int the
     aReanim->ReanimationInitializeType(theX, theY, theReanimationType);
     return aReanim;
 }
-
 void ReanimatorEnsureDefinitionLoaded(ReanimationType theReanimType, bool theIsPreloading) {
+    ReanimatorEnsureDefinitionRecompiled(theReanimType, theIsPreloading, false);
+}
+
+void ReanimatorEnsureDefinitionRecompiled(ReanimationType theReanimType, bool theIsPreloading,
+                                          bool recompile) {
     TOD_ASSERT(theReanimType >= 0 && theReanimType < gReanimatorDefCount);
     ReanimatorDefinition* aReanimDef = &gReanimatorDefArray[(int)theReanimType];
     if (aReanimDef->mTracks != nullptr)
@@ -1051,14 +1057,9 @@ void ReanimatorEnsureDefinitionLoaded(ReanimationType theReanimType, bool theIsP
     PerfTimer aTimer;
     aTimer.Start();
     TodHesitationBracket aHesitation("Load Reanim '%s'", aReanimParams->mReanimFileName);
-    if (!ReanimationLoadDefinition(aReanimParams->mReanimFileName, aReanimDef)) {
-        char aBuf[1024];
-#ifdef _WIN32
-        sprintf_s<1024U>(aBuf, "Failed to load reanim '%s'", aReanimParams->mReanimFileName);
-#else
-        snprintf(aBuf, 1024, "Failed to load reanim '%s'", aReanimParams->mReanimFileName);
-#endif
-        TodErrorMessageBox(aBuf, "Error");
+    if (!ReanimationLoadDefinition(aReanimParams->mReanimFileName, aReanimDef, recompile)) {
+        auto aMessage = std::format("Failed to load reanim '{}'", aReanimParams->mReanimFileName);
+        TodErrorMessageBox(aMessage.c_str(), "Error");
     }
     int aDuration = aTimer.GetDuration();
     if (aDuration > 100) // (beta only) - report if took too long
@@ -1067,7 +1068,7 @@ void ReanimatorEnsureDefinitionLoaded(ReanimationType theReanimType, bool theIsP
 }
 
 void ReanimatorLoadDefinitions(ReanimationParams* theReanimationParamArray,
-                               int theReanimationParamArraySize) {
+                               int theReanimationParamArraySize, bool recompile) {
     TodHesitationBracket aHesitation("ReanimatorLoadDefinitions");
     TOD_ASSERT(!gReanimationParamArray && !gReanimatorDefArray);
     gReanimationParamArraySize = theReanimationParamArraySize;
@@ -1078,8 +1079,11 @@ void ReanimatorLoadDefinitions(ReanimationParams* theReanimationParamArray,
     for (int i = 0; i < gReanimationParamArraySize; i++) {
         ReanimationParams* aReanimationParams = &theReanimationParamArray[i];
         TOD_ASSERT(aReanimationParams->mReanimationType == i);
-        if (DefinitionIsCompiled(StringToSexyString(aReanimationParams->mReanimFileName)))
-            ReanimatorEnsureDefinitionLoaded(aReanimationParams->mReanimationType, true);
+        if (recompile ||
+            DefinitionIsCompiled(StringToSexyString(aReanimationParams->mReanimFileName))) {
+            ReanimatorEnsureDefinitionRecompiled(aReanimationParams->mReanimationType, true,
+                                                 recompile);
+        }
     }
 }
 

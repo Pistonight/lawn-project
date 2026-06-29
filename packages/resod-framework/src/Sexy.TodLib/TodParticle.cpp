@@ -5,6 +5,7 @@
 #include <Sexy.TodLib/TodParticle.h>
 #include <SexyAppFramework/Graphics.h>
 #include <SexyAppFramework/Renderer.h>
+#include <format>
 
 int gParticleDefCount;                    // [0x6A9F08]
 TodParticleDefinition* gParticleDefArray; // [0x6A9F0C]
@@ -120,63 +121,62 @@ ParticleParams gLawnParticleArray[(int)ParticleEffect::NUM_PARTICLES] = {
     {ParticleEffect::PARTICLE_PERSENT_PICK_UP_ARROW, "particles/UpsellArrow.xml"},
 };
 
-bool TodParticleLoadADef(TodParticleDefinition* theParticleDef, const char* theParticleFileName) {
+bool TodParticleLoadADef(TodParticleDefinition* theParticleDef, const char* theParticleFileName,
+                         bool recompile) {
     TodHesitationBracket("Load Particle %s", theParticleFileName);
-    if (!DefinitionLoadXML(theParticleFileName, &gParticleDefMap, theParticleDef)) {
-        char aBuf[512];
-        sprintf(aBuf, "Failed to load particle '%s'", theParticleFileName);
-        TodErrorMessageBox(aBuf, "Error");
+    if (!DefinitionLoadXML(theParticleFileName, &gParticleDefMap, theParticleDef, recompile)) {
+
+        auto aMessage = std::format("Failed to load particle '{}'", theParticleFileName);
+        TodErrorMessageBox(aMessage.c_str(), "Error");
         return false;
-    } else {
-        for (int i = 0; i < theParticleDef->mEmitterDefCount; i++) {
-            TodEmitterDefinition& aDef = theParticleDef->mEmitterDefs[i];
-            FloatTrackSetDefault(aDef.mSystemDuration, 0.0f);
-            FloatTrackSetDefault(aDef.mSpawnRate, 0.0f);
-            FloatTrackSetDefault(aDef.mSpawnMinActive, -1.0f);
-            FloatTrackSetDefault(aDef.mSpawnMaxActive, -1.0f);
-            FloatTrackSetDefault(aDef.mSpawnMaxLaunched, -1.0f);
-            FloatTrackSetDefault(aDef.mEmitterRadius, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterOffsetX, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterOffsetY, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterBoxX, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterBoxY, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterSkewX, 0.0f);
-            FloatTrackSetDefault(aDef.mEmitterSkewY, 0.0f);
-            FloatTrackSetDefault(aDef.mParticleDuration, 100.0f);
-            FloatTrackSetDefault(aDef.mLaunchSpeed, 0.0f);
-            FloatTrackSetDefault(aDef.mSystemRed, 1.0f);
-            FloatTrackSetDefault(aDef.mSystemGreen, 1.0f);
-            FloatTrackSetDefault(aDef.mSystemBlue, 1.0f);
-            FloatTrackSetDefault(aDef.mSystemAlpha, 1.0f);
-            FloatTrackSetDefault(aDef.mSystemBrightness, 1.0f);
-            FloatTrackSetDefault(aDef.mLaunchAngle, 0.0f);
-            FloatTrackSetDefault(aDef.mCrossFadeDuration, 0.0f);
-            FloatTrackSetDefault(aDef.mParticleRed, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleGreen, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleBlue, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleAlpha, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleBrightness, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleSpinAngle, 0.0f);
-            FloatTrackSetDefault(aDef.mParticleSpinSpeed, 0.0f);
-            FloatTrackSetDefault(aDef.mParticleScale, 1.0f);
-            FloatTrackSetDefault(aDef.mParticleStretch, 1.0f);
-            FloatTrackSetDefault(aDef.mCollisionReflect, 0.0f);
-            FloatTrackSetDefault(aDef.mCollisionSpin, 0.0f);
-            FloatTrackSetDefault(aDef.mClipTop, 0.0f);
-            FloatTrackSetDefault(aDef.mClipBottom, 0.0f);
-            FloatTrackSetDefault(aDef.mClipLeft, 0.0f);
-            FloatTrackSetDefault(aDef.mClipRight, 0.0f);
-            FloatTrackSetDefault(aDef.mAnimationRate, 0.0f);
-            if (aDef.mImage)
-                ((MemoryImage*)aDef.mImage)->mGPUFlags |=
-                    ImageFlags::ImageFlag_MinimizeNumSubdivisions;
-        }
-        return true;
     }
+    for (int i = 0; i < theParticleDef->mEmitterDefCount; i++) {
+        TodEmitterDefinition& aDef = theParticleDef->mEmitterDefs[i];
+        FloatTrackSetDefault(aDef.mSystemDuration, 0.0f);
+        FloatTrackSetDefault(aDef.mSpawnRate, 0.0f);
+        FloatTrackSetDefault(aDef.mSpawnMinActive, -1.0f);
+        FloatTrackSetDefault(aDef.mSpawnMaxActive, -1.0f);
+        FloatTrackSetDefault(aDef.mSpawnMaxLaunched, -1.0f);
+        FloatTrackSetDefault(aDef.mEmitterRadius, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterOffsetX, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterOffsetY, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterBoxX, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterBoxY, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterSkewX, 0.0f);
+        FloatTrackSetDefault(aDef.mEmitterSkewY, 0.0f);
+        FloatTrackSetDefault(aDef.mParticleDuration, 100.0f);
+        FloatTrackSetDefault(aDef.mLaunchSpeed, 0.0f);
+        FloatTrackSetDefault(aDef.mSystemRed, 1.0f);
+        FloatTrackSetDefault(aDef.mSystemGreen, 1.0f);
+        FloatTrackSetDefault(aDef.mSystemBlue, 1.0f);
+        FloatTrackSetDefault(aDef.mSystemAlpha, 1.0f);
+        FloatTrackSetDefault(aDef.mSystemBrightness, 1.0f);
+        FloatTrackSetDefault(aDef.mLaunchAngle, 0.0f);
+        FloatTrackSetDefault(aDef.mCrossFadeDuration, 0.0f);
+        FloatTrackSetDefault(aDef.mParticleRed, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleGreen, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleBlue, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleAlpha, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleBrightness, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleSpinAngle, 0.0f);
+        FloatTrackSetDefault(aDef.mParticleSpinSpeed, 0.0f);
+        FloatTrackSetDefault(aDef.mParticleScale, 1.0f);
+        FloatTrackSetDefault(aDef.mParticleStretch, 1.0f);
+        FloatTrackSetDefault(aDef.mCollisionReflect, 0.0f);
+        FloatTrackSetDefault(aDef.mCollisionSpin, 0.0f);
+        FloatTrackSetDefault(aDef.mClipTop, 0.0f);
+        FloatTrackSetDefault(aDef.mClipBottom, 0.0f);
+        FloatTrackSetDefault(aDef.mClipLeft, 0.0f);
+        FloatTrackSetDefault(aDef.mClipRight, 0.0f);
+        FloatTrackSetDefault(aDef.mAnimationRate, 0.0f);
+        if (aDef.mImage)
+            ((MemoryImage*)aDef.mImage)->mGPUFlags |= ImageFlags::ImageFlag_MinimizeNumSubdivisions;
+    }
+    return true;
 }
 
 void TodParticleLoadDefinitions(ParticleParams* theParticleParamArray,
-                                int theParticleParamArraySize) {
+                                int theParticleParamArraySize, bool recompile) {
     TodHesitationBracket aHesitiation("TodParticleLoadDefinitions");
     TOD_ASSERT(!gParticleParamArray && !gParticleDefArray);
     gParticleParamArraySize = theParticleParamArraySize;
@@ -187,7 +187,8 @@ void TodParticleLoadDefinitions(ParticleParams* theParticleParamArray,
     for (int i = 0; i < gParticleParamArraySize; i++) {
         ParticleParams& aParticleParams = gParticleParamArray[i];
         TOD_ASSERT(aParticleParams.mParticleEffect == i);
-        if (!TodParticleLoadADef(&gParticleDefArray[i], aParticleParams.mParticleFileName)) {
+        if (!TodParticleLoadADef(&gParticleDefArray[i], aParticleParams.mParticleFileName,
+                                 recompile)) {
             char aBuf[512];
             sprintf(aBuf, "Failed to load particle '%s'", aParticleParams.mParticleFileName);
             TodErrorMessageBox(aBuf, "Error");

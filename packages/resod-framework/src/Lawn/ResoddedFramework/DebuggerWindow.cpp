@@ -205,6 +205,10 @@ DebuggerWindow::~DebuggerWindow() {
 // Main Update
 // ─────────────────────────────────────────────────────────────
 void DebuggerWindow::Update() {
+#ifdef PISTON_PATCH
+    ImGui::SetNextWindowSize({800, 650}, ImGuiCond_FirstUseEver);
+#endif
+
     MTRand::gIgnoreAssert = true;
     ImGui::Begin("LawnTools", nullptr, ImGuiWindowFlags_MenuBar);
 

@@ -69,8 +69,8 @@ public:
 
 class FloatParameterTrack {
 public:
-    FloatParameterTrackNode* mNodes;
-    int mCountNodes;
+    FloatParameterTrackNode* mNodes{};
+    int mCountNodes{};
 };
 
 class ParticleField {
@@ -152,9 +152,10 @@ public:
 extern int gParticleParamArraySize;         // [0x6A9F10]
 extern ParticleParams* gParticleParamArray; // [0x6A9F14]
 
-bool TodParticleLoadADef(TodParticleDefinition* theParticleDef, const char* theParticleFileName);
+bool TodParticleLoadADef(TodParticleDefinition* theParticleDef, const char* theParticleFileName,
+                         bool recompile);
 void TodParticleLoadDefinitions(ParticleParams* theParticleParamArray,
-                                int theParticleParamArraySize);
+                                int theParticleParamArraySize, bool recompile);
 void TodParticleFreeDefinitions();
 
 extern ParticleParams gLawnParticleArray[(int)ParticleEffect::NUM_PARTICLES];

@@ -47,7 +47,7 @@ tasks:
     - cp -R ../pvz-assets/properties ResoddedFramework/Export
 
   run:
-    - cd ResoddedFramework/Export && ./LawnProject.exe
+    - cd ResoddedFramework/Export && ./LawnProject.exe {{.CLI_ARGS}}
   devenv:
     - cd ../build-script && uv run src/main.py upstream devenv
 

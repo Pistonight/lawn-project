@@ -97,4 +97,18 @@ inline Sexy::Font* GetTooltipBoldFont() {
     return MapZhFont(Sexy::FONT_TINYBOLD);
 }
 
+inline Sexy::Font* GetHugeWaveFont() {
+    if (!System::IsChinese()) {
+        return Sexy::FONT_HOUSEOFTERROR28;
+    }
+    return Sexy::FONT_HUGEWAVEZH;
+}
+
+inline Sexy::Font* GetLevelProgressFont() {
+    return Sexy::FONT_DWARVENTODCRAFT12ZH;
+}
+inline Sexy::Font* GetLevelNameFont() {
+    return Sexy::FONT_HOUSEOFTERROR16ZH;
+}
+
 } // namespace Piston

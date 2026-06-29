@@ -6,16 +6,27 @@ tasks:
       - Taskfile.yml
       - resources.yaml
       - 'shaders/**/*'
-      - 'scripts/**/*'
       - 'mod/**/*'
       - 'framework/**/*'
       - ../build-script/src/assetbuild/_cnfont.py
     generates:
       - ../../target/run/mainen.pak
       - ../../target/run/mainzh.pak
-      - ../../target/run/shared.pak
+      - ../../target/run/main.pak
     cmds:
       - cd ../build-script && uv run src/main.py assets build
+      - rm -rf ../../target/run/fresh_compiled
+
+  compile:
+    sources:
+      - Taskfile.yml
+      - resources.yaml
+      - 'mod/shared/particles/*'
+      - 'mod/shared/reanim/*'
+      - 'mod/override/particles/*'
+      - 'mod/override/reanim/*'
+    cmds:
+      - cd ../build-script && uv run src/main.py assets compile
 
   clean:
     - rm -rf ../../target/assets

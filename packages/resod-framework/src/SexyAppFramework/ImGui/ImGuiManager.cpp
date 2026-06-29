@@ -120,6 +120,11 @@ void ImGuiManager::Init() {
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
     (void)io;
     ImGui::StyleColorsDark();
+#ifdef PISTON_PATCH
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.FontScaleMain = 1.5f; // global font scale (1.92: replaces io.FontGlobalScale)
+    style.ScaleAllSizes(1.5f);  // scale padding/spacing/widget sizes to match
+#endif
     switch (mApp->mRenderer->mCurrentBackend) {
 #if SEXY_USE_OPENGL
     case RenderingBackend::BACKEND_OPENGL: {

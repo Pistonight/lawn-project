@@ -1137,9 +1137,22 @@ void LawnApp::Init() {
 #endif
     mTimer.Start();
 
-    ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS);
+    if (mRunInCompileMode) {
+        TodTraceAndLog("[LawnProject] compile mode - will recompile definitions and exit");
+        TodTraceAndLog("[LawnProject] compiling reanims");
+    }
+
+    ReanimatorLoadDefinitions(gLawnReanimationArray, ReanimationType::NUM_REANIMS,
+                              mRunInCompileMode);
     ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_SPROUT, true);
     ReanimatorEnsureDefinitionLoaded(ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD, true);
+
+    if (mRunInCompileMode) {
+        TodTraceAndLog("[LawnProject] compiling trails");
+        TrailLoadDefinitions(gLawnTrailArray, LENGTH(gLawnTrailArray), true);
+        TodTraceAndLog("[LawnProject] compiling particles");
+        TodParticleLoadDefinitions(gLawnParticleArray, LENGTH(gLawnParticleArray), true);
+    }
 
 #ifdef _DEBUG
     aDuration = mTimer.GetDuration();
@@ -1160,6 +1173,7 @@ void LawnApp::Start() {
 }
 
 bool LawnApp::DebugKeyDown(int theKey) {
+#ifndef PISTON_PATCH
     if (theKey == KEYCODE_F1) {
 #if LAWN_DEBUG_TOOLS
         if (mDebugWindow == nullptr)
@@ -1170,18 +1184,20 @@ bool LawnApp::DebugKeyDown(int theKey) {
 #endif
         return true;
     } else
+#endif
         return SexyAppBase::DebugKeyDown(theKey);
 }
 
 void LawnApp::HandleCmdLineParam(const std::string& theParamName,
                                  const std::string& theParamValue) {
-#ifndef _DEBUG
     if (theParamName == "-tod") {
+#ifndef _DEBUG
         mTodCheatKeys = true;
         mDebugKeysEnabled = true;
-    } else
 #endif
-    {
+    } else if (theParamName == "-compile") {
+        mRunInCompileMode = true;
+    } else {
         SexyApp::HandleCmdLineParam(theParamName, theParamValue);
     }
 }
@@ -1460,13 +1476,14 @@ void LawnApp::LoadingThreadProc() {
     if (!TodLoadResources("LoaderBar"))
         return;
 
-#ifdef PISTON_PATCH
-    Piston::InitLoadingScreen(*this);
-#endif
-
     TodStringListLoad("properties/LawnStrings.txt");
     TodStringListLoad("properties/ZombatarTOS.txt");
     TodStringListLoad("properties/FrameworkStrings.txt");
+
+#ifdef PISTON_PATCH
+    // load after strings so mod strings can override them
+    Piston::InitLoadingScreen(*this);
+#endif
 
     if (mTitleScreen) {
         mTitleScreen->mLoaderScreenIsLoaded = true;
@@ -1514,12 +1531,12 @@ void LawnApp::LoadingThreadProc() {
     TodTraceAndLog("[LawnProject] - loading '%s' %d ms", "stuff", (int)aTimer.GetDuration());
     aTimer.Start();
 
-    TrailLoadDefinitions(gLawnTrailArray, LENGTH(gLawnTrailArray));
+    TrailLoadDefinitions(gLawnTrailArray, LENGTH(gLawnTrailArray), mRunInCompileMode);
     TodTraceAndLog("[LawnProject] - loading '%s' %d ms", "trail", (int)aTimer.GetDuration());
     aTimer.Start();
     TodHesitationTrace("trail");
 
-    TodParticleLoadDefinitions(gLawnParticleArray, LENGTH(gLawnParticleArray));
+    TodParticleLoadDefinitions(gLawnParticleArray, LENGTH(gLawnParticleArray), mRunInCompileMode);
     aDuration = std::max(aTimer.GetDuration(), 0.0);
     aTimer.Start();
 

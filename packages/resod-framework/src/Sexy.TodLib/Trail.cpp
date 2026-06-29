@@ -11,22 +11,13 @@ TrailParams* gTrailParamArray;
 TrailParams gLawnTrailArray[(int)TrailType::NUM_TRAILS] = {
     {TrailType::TRAIL_ICE, "particles/IceTrail.trail"}};
 
-TrailDefinition::TrailDefinition() {
-    memset(this, 0, sizeof(TrailDefinition));
-    mMinPointDistance = 1.0f;
-    mMaxPoints = 2;
-    mTrailFlags = 0U;
-    mImage = nullptr;
-}
-
-TrailDefinition::~TrailDefinition() {}
-
 TrailPoint::TrailPoint() {}
 
-bool TrailLoadADef(TrailDefinition* theTrailDef, const char* theTrailFileName) {
+bool TrailLoadADef(TrailDefinition* theTrailDef, const char* theTrailFileName, bool recompile) {
     TodHesitationBracket aHesitation("Load Trail '%s'", theTrailFileName);
 
-    if (!DefinitionLoadXML(StringToSexyString(theTrailFileName), &gTrailDefMap, theTrailDef))
+    if (!DefinitionLoadXML(StringToSexyString(theTrailFileName), &gTrailDefMap, theTrailDef,
+                           recompile))
         return false;
 
     FloatTrackSetDefault(theTrailDef->mWidthOverLength, 1.0f);
@@ -37,7 +28,8 @@ bool TrailLoadADef(TrailDefinition* theTrailDef, const char* theTrailFileName) {
     return true;
 }
 
-void TrailLoadDefinitions(TrailParams* theTrailParamArray, int theTrailParamArraySize) {
+void TrailLoadDefinitions(TrailParams* theTrailParamArray, int theTrailParamArraySize,
+                          bool recompile) {
     TodHesitationBracket aHesitation("TrailLoadDefinitions");
     TOD_ASSERT(!gTrailParamArray && !gTrailDefArray);
 
@@ -49,7 +41,7 @@ void TrailLoadDefinitions(TrailParams* theTrailParamArray, int theTrailParamArra
     for (int i = 0; i < gTrailParamArraySize; i++) {
         TrailParams* aTrailParams = &theTrailParamArray[i];
         TOD_ASSERT(aTrailParams->mTrailType == (TrailType)i);
-        if (!TrailLoadADef(&gTrailDefArray[i], aTrailParams->mTrailFileName)) {
+        if (!TrailLoadADef(&gTrailDefArray[i], aTrailParams->mTrailFileName, recompile)) {
             char aBuf[512];
             sprintf(aBuf, "Failed to load trail '%s'", aTrailParams->mTrailFileName);
             TodErrorMessageBox(aBuf, "Error");

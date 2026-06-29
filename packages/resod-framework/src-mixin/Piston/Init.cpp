@@ -19,7 +19,6 @@ void InitMain(LawnApp& app) {
     auto& system = Piston::System::Instance();
     Sexy::SetAppDataFolder(system.GetCurrPath());
     // load our multi-lang pak files
-    gPakInterface->AddPakFile("shared.pak");
     if (system.IsChinese()) {
         gPakInterface->AddPakFile("mainzh.pak");
     } else {
@@ -29,11 +28,13 @@ void InitMain(LawnApp& app) {
 
 void InitLoadingScreen(LawnApp& app) {
     std::println("Piston::InitLoadingScreen");
+    TodStringListLoad("properties/ExtraLawnStrings.txt");
     TodStringListLoad("properties/ModStrings.txt");
 }
 
 void InitLoadingMain(LawnApp& app) {
     std::println("Piston::InitLoadingMain");
+    app.LoadGroup("LoadingFontsZHShare", 10);
     if (Piston::System::Instance().IsChinese()) {
         app.LoadGroup("LoadingFontsZH", 10);
     }

@@ -50,6 +50,10 @@
 #define SEXY_PERF_ENABLED
 #include <SexyAppFramework/PerfTimer.h>
 
+#ifdef PISTON_MIXIN
+#include <Piston/Font.h>
+#endif
+
 // #define SEXY_MEMTRACE
 // #include "../SexyAppFramework/memmgr.h"
 
@@ -2976,7 +2980,7 @@ void Board::UpdateToolTip() {
 
     int aPlantCost = GetCurrentPlantCost(aSeedPacket->mPacketType, aSeedPacket->mImitaterType);
     if (mApp->mEasyPlantingCheat) {
-        mToolTip->SetWarningText("FREE_PLANTING_CHEAT");
+        mToolTip->SetWarningText("[FREE_PLANTING_CHEAT]");
     } else if (!aSeedPacket->mActive &&
                (gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED ||
                 gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED_TWIST)) {
@@ -6253,30 +6257,55 @@ void Board::DrawProgressMeter(Graphics* g) {
         mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED_TWIST) {
         SexyString aMatchStr = StrFormat("%d / %d %s", mChallenge->mChallengeScore, 75,
                                          TodStringTranslate("[MATCHES]").c_str());
+#ifdef PISTON_PATCH
+        TodDrawString(g, aMatchStr, aPosX, 589, Piston::GetLevelProgressFont(), aColor,
+                      DrawStringJustification::DS_ALIGN_CENTER);
+#else
         TodDrawString(g, aMatchStr, aPosX, 589, Sexy::FONT_DWARVENTODCRAFT12, aColor,
                       DrawStringJustification::DS_ALIGN_CENTER);
+#endif
     } else if (mApp->IsSquirrelLevel()) {
         SexyString aMatchStr = StrFormat("%d / %d %s", mChallenge->mChallengeScore, 7,
                                          TodStringTranslate("[SQUIRRELS]").c_str());
+#ifdef PISTON_PATCH
+        TodDrawString(g, aMatchStr, aPosX, 589, Piston::GetLevelProgressFont(), aColor,
+                      DrawStringJustification::DS_ALIGN_CENTER);
+#else
         TodDrawString(g, aMatchStr, aPosX, 589, Sexy::FONT_DWARVENTODCRAFT12, aColor,
                       DrawStringJustification::DS_ALIGN_CENTER);
+#endif
     } else if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_SLOT_MACHINE) {
         int aSunMoney = ClampInt(mSunMoney, 0, 2000);
         SexyString aMatchStr =
             StrFormat("%d / %d %s", aSunMoney, 2000, TodStringTranslate("[SUN]").c_str());
+#ifdef PISTON_PATCH
+        TodDrawString(g, aMatchStr, aPosX, 589, Piston::GetLevelProgressFont(), aColor,
+                      DrawStringJustification::DS_ALIGN_CENTER);
+#else
         TodDrawString(g, aMatchStr, aPosX, 589, Sexy::FONT_DWARVENTODCRAFT12, aColor,
                       DrawStringJustification::DS_ALIGN_CENTER);
+#endif
     } else if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_ZOMBIQUARIUM) {
         int aSunMoney = ClampInt(mSunMoney, 0, 1000);
         SexyString aMatchStr =
             StrFormat("%d / %d %s", aSunMoney, 1000, TodStringTranslate("[SUN]").c_str());
+#ifdef PISTON_PATCH
+        TodDrawString(g, aMatchStr, aPosX, 589, Piston::GetLevelProgressFont(), aColor,
+                      DrawStringJustification::DS_ALIGN_CENTER);
+#else
         TodDrawString(g, aMatchStr, aPosX, 589, Sexy::FONT_DWARVENTODCRAFT12, aColor,
                       DrawStringJustification::DS_ALIGN_CENTER);
+#endif
     } else if (mApp->IsIZombieLevel()) {
         SexyString aMatchStr = StrFormat("%d / %d %s", mChallenge->mChallengeScore, 5,
                                          TodStringTranslate("[BRAINS]").c_str());
+#ifdef PISTON_PATCH
+        TodDrawString(g, aMatchStr, aPosX, 589, Piston::GetLevelProgressFont(), aColor,
+                      DrawStringJustification::DS_ALIGN_CENTER);
+#else
         TodDrawString(g, aMatchStr, aPosX, 589, Sexy::FONT_DWARVENTODCRAFT12, aColor,
                       DrawStringJustification::DS_ALIGN_CENTER);
+#endif
     } else if (ProgressMeterHasFlags()) {
         int aNumWavesPerFlag = GetNumWavesPerFlag();
         int aNumFlagWaves = mNumWaves / aNumWavesPerFlag;
@@ -6394,8 +6423,13 @@ void Board::DrawLevel(Graphics* g) {
         aPosY += TodAnimateCurve(50, 0, mChallenge->mChallengeStateCounter, 0, 50,
                                  TodCurves::CURVE_EASE_IN_OUT);
     }
+#ifdef PISTON_PATCH
+    TodDrawString(g, aLevelStr, aPosX, aPosY, Piston::GetLevelNameFont(), Color(224, 187, 98),
+                  DrawStringJustification::DS_ALIGN_RIGHT);
+#else
     TodDrawString(g, aLevelStr, aPosX, aPosY, Sexy::FONT_HOUSEOFTERROR16, Color(224, 187, 98),
                   DrawStringJustification::DS_ALIGN_RIGHT);
+#endif
 }
 
 void Board::DrawZenWheelBarrowButton(Graphics* g, int theOffsetY) {

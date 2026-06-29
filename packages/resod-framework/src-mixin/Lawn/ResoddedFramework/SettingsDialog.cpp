@@ -32,6 +32,8 @@ SettingsDialog::SettingsDialog(LawnApp* theApp)
         MakeNewCheckbox(SettingsDialog::SETTINGS_VSYNC, this, theApp->mWaitForVSync));
     mHighQualityCheckbox.reset(
         MakeNewCheckbox(SettingsDialog::SETTINGS_HIGHQUALITY, this, theApp->mIs3D));
+    mDebuggerCheckbox.reset(MakeNewCheckbox(SettingsDialog::SETTINGS_DEBUGGER, this,
+                                            Piston::LawnAppMixin(theApp).IsDebugWindowEnabled()));
 
     auto appFilterMode = mApp->mScreenFiltering;
     auto upscaleMode = mApp->mPistonMixin.mUpscaleMode;
@@ -77,17 +79,23 @@ void SettingsDialog::Draw(Graphics* g) {
     Sexy::Font* aFont = Piston::GetSettingsDialogFont();
 
     int checkboxX = 40;
-    constexpr int checkboxGap = 38;
+    constexpr int checkboxGap = 36;
     int checkboxY = 0;
-    DrawCheckbox(g, *mFullscreenCheckbox, "[MOD_SETTINGS_FULLSCREEN]", checkboxX, checkboxY,
-                 *aFont);
+    Sexy::Color regularCheckboxColor(107, 109, 145);
+    Sexy::Color yellow(240, 240, 9);
+    DrawCheckbox(g, *mFullscreenCheckbox, "[MOD_SETTINGS_FULLSCREEN]", checkboxX, checkboxY, *aFont,
+                 regularCheckboxColor);
     checkboxY += checkboxGap;
-    DrawCheckbox(g, *mVSyncCheckbox, "[MOD_SETTINGS_VSYNC]", checkboxX, checkboxY, *aFont);
+    DrawCheckbox(g, *mVSyncCheckbox, "[MOD_SETTINGS_VSYNC]", checkboxX, checkboxY, *aFont,
+                 regularCheckboxColor);
     checkboxY += checkboxGap;
     DrawCheckbox(g, *mHighQualityCheckbox, "[MOD_SETTINGS_HIGHQUALITY]", checkboxX, checkboxY,
-                 *aFont);
+                 *aFont, regularCheckboxColor);
+    checkboxY += checkboxGap;
+    DrawCheckbox(g, *mDebuggerCheckbox, "[MOD_SETTINGS_DEBUGGER]", checkboxX, checkboxY, *aFont,
+                 yellow);
 
-    int buttonX = 220;
+    int buttonX = 350;
     constexpr int buttonGap = 50;
     int buttonY = 0;
     UpdateButtonPosition(*mFilterModeButton, buttonX, buttonY);
@@ -207,6 +215,7 @@ void SettingsDialog::AddedToManager(WidgetManager* theWidgetManager) {
     AddWidget(mFullscreenCheckbox.get());
     AddWidget(mSaveFileButton.get());
     AddWidget(mHighQualityCheckbox.get());
+    AddWidget(mDebuggerCheckbox.get());
     AddWidget(mFilterModeButton.get());
     AddWidget(mWindowSizeButton.get());
     AddWidget(mLanguageButton.get());
@@ -220,6 +229,7 @@ void SettingsDialog::RemovedFromManager(WidgetManager* theWidgetManager) {
     RemoveWidget(mFullscreenCheckbox.get());
     RemoveWidget(mSaveFileButton.get());
     RemoveWidget(mHighQualityCheckbox.get());
+    RemoveWidget(mDebuggerCheckbox.get());
     RemoveWidget(mFilterModeButton.get());
     RemoveWidget(mWindowSizeButton.get());
     RemoveWidget(mLanguageButton.get());
@@ -331,53 +341,27 @@ void SettingsDialog::CheckboxChecked(int theId, bool checked) {
         UpdateWidgets();
         break;
     }
+    case SettingsDialog::SETTINGS_DEBUGGER: {
+        Piston::LawnAppMixin appMixin(mApp);
+        appMixin.SetDebugWindowEnabled(checked);
+        UpdateWidgets();
+    }
     }
 }
 
-// void SettingsDialog::ListClicked(int theId, int theIdx, int theClickCount) {
-// if (theId == SETTINGS_RENDER_LIST) {
-//     if (theIdx != mApp->mDesiredBackend - 1) {
-//         mRendererList->SetSelect(theIdx);
-//         mApp->mDesiredBackend = (RenderingBackend)(theIdx + 1);
-//         SexyString aBackendName = "";
-//         for (int i = RenderingBackend::BACKEND_NONE + 1; i < RenderingBackend::NUM_BACKENDS;
-//              i++) {
-//             for (auto backend : gRenderBackends) {
-//                 if (backend.first == mApp->mDesiredBackend)
-//                     aBackendName = backend.second;
-//             }
-//         }
-//         mApp->RegistryWriteInteger("DesiredBackend", mApp->mDesiredBackend);
-//         mApp->WriteToRegistry();
-//
-//         if (mApp->mDesiredBackend != mApp->mRenderer->mCurrentBackend) {
-//             SexyString anInfoString = StrFormat("Rendering Backend has been changed to "
-//                                                 "%s\nRestart the game to apply the changes",
-//                                                 aBackendName.c_str());
-//             mApp->DoDialog(Dialogs::DIALOG_INFO, true, "", anInfoString, "OK",
-//                            Dialog::BUTTONS_FOOTER);
-//         }
-//     }
-// } else if (theId == SETTINGS_FILTER_LIST) {
-//     if (theIdx != mApp->mScreenFiltering) {
-//         mFilterList->SetSelect(theIdx);
-//         mApp->mScreenFiltering = (OutputFilteringMode)(theIdx);
-//     }
-// } else if (theId == SETTINGS_WINDOW_SIZES) {
-//
-//     if (theIdx < mValidSizes.size()) {
-//     }
-//     mSizesList->SetSelect(theIdx);
-// }
-// }
-//
 void SettingsDialog::UpdateWidgets() {
     mIsUpdatingWidgets = true;
+
     auto windowSize = GetCurrentWindowSize();
     bool isFullScreen = windowSize == WindowSize::Fullscreen;
     mFullscreenCheckbox->SetChecked(isFullScreen);
     // mVSyncCheckbox - can't check as app doesn't store the state
     mHighQualityCheckbox->SetChecked(mApp->mIs3D);
+
+    Piston::LawnAppMixin appMixin(mApp);
+
+    mDebuggerCheckbox->SetChecked(appMixin.IsDebugWindowEnabled());
+
     auto appFilterMode = mApp->mScreenFiltering;
     auto upscaleMode = mApp->mPistonMixin.mUpscaleMode;
     mFilterModeButton->SetLabel(GetFilterModeText(appFilterMode, upscaleMode));
@@ -525,7 +509,8 @@ void SettingsDialog::CycleWindowSize() {
 }
 
 void SettingsDialog::DrawCheckbox(Graphics* g, Sexy::Checkbox& theCheckbox,
-                                  const std::string& theTitle, int theX, int theY, Font& theFont) {
+                                  const std::string& theTitle, int theX, int theY, Font& theFont,
+                                  const Color& theColor) {
     float aScrollOffset = mOptionsSlider->GetValue();
     theCheckbox.Resize(theX, theY - aScrollOffset + GetTop(), 46, 45);
 
@@ -534,14 +519,13 @@ void SettingsDialog::DrawCheckbox(Graphics* g, Sexy::Checkbox& theCheckbox,
         (theCheckbox.mY + mY) >
             (mOptionsSlider->mAllowedMouseZone.mY + mOptionsSlider->mAllowedMouseZone.mHeight);
 
-    Sexy::Color aTextColor(107, 109, 145);
-    TodDrawString(g, theTitle, theCheckbox.mX + 10, theY + 35, &theFont, aTextColor,
+    TodDrawString(g, theTitle, theCheckbox.mX + 10, theY + 35, &theFont, theColor,
                   DrawStringJustification::DS_ALIGN_LEFT);
 }
 
 void SettingsDialog::UpdateButtonPosition(LawnStoneButton& theButton, int theX, int theY) {
     float aScrollOffset = mOptionsSlider->GetValue();
-    theButton.Resize(theX, theY - aScrollOffset + GetTop(), 275, 46);
+    theButton.Resize(theX, theY - aScrollOffset + GetTop(), 180, 46);
     theButton.mDisabled =
         (theButton.mY + mY + theButton.mHeight) < mOptionsSlider->mAllowedMouseZone.mY ||
         (theButton.mY + mY) >

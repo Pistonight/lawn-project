@@ -66,11 +66,14 @@ extern ReanimationParams* gReanimationParamArray;
 
 void ReanimationFillInMissingData(float& thePrev, float& theValue);
 void ReanimationFillInMissingData(void*& thePrev, void*& theValue);
-bool ReanimationLoadDefinition(const SexyString& theFileName, ReanimatorDefinition* theDefinition);
+bool ReanimationLoadDefinition(const SexyString& theFileName, ReanimatorDefinition* theDefinition,
+                               bool recompile);
 void ReanimationFreeDefinition(ReanimatorDefinition* theDefinition);
 void _cdecl ReanimatorEnsureDefinitionLoaded(ReanimationType theReanimType, bool theIsPreloading);
+void ReanimatorEnsureDefinitionRecompiled(ReanimationType theReanimType, bool theIsPreloading,
+                                          bool recompile);
 void ReanimatorLoadDefinitions(ReanimationParams* theReanimationParamArray,
-                               int theReanimationParamArraySize);
+                               int theReanimationParamArraySize, bool recompile);
 void ReanimatorFreeDefinitions();
 
 extern ReanimationParams gLawnReanimationArray[(int)ReanimationType::NUM_REANIMS];

@@ -24,6 +24,7 @@ tasks:
     - task: assets:build
     - task: lawn:build
     - task: lib:build
+    - task: assets:compile
 
   run:
     - cd target/run && ./PlantsVsZombies.exe
