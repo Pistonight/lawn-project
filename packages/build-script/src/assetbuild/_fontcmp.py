@@ -15,8 +15,18 @@ import tkinter as tk
 from PIL import Image, ImageTk
 
 def open_comparer(a, b) -> int:
+    if a is None and b is None:
+        print(">>> nothing to compare!")
+        return 0
+    if a is None:
+        a = b
+        b = None
+
     img_a = Image.open(a).convert("RGBA")
-    img_b = Image.open(b).convert("RGBA")
+    if b:
+        img_b = Image.open(b).convert("RGBA")
+    else:
+        img_b = Image.new("RGBA", (img_a.width, img_a.height), (0,0,0,0))
 
     if img_a.size != img_b.size:
         print(f"Image dimensions differ: "

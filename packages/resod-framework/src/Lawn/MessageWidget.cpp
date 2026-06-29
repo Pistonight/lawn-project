@@ -283,6 +283,10 @@ void MessageWidget::DrawReanimatedText(Graphics* g, Font* theFont, const Color& 
 
 Font* MessageWidget::GetFont() {
     switch (mMessageStyle) {
+#ifdef PISTON_PATCH
+    case MessageStyle::MESSAGE_STYLE_HUGE_WAVE:
+        return Piston::GetHugeWaveFont();
+#endif
     case MessageStyle::MESSAGE_STYLE_TUTORIAL_LEVEL1:
     case MessageStyle::MESSAGE_STYLE_TUTORIAL_LEVEL1_STAY:
     case MessageStyle::MESSAGE_STYLE_TUTORIAL_LEVEL2:
@@ -297,7 +301,9 @@ Font* MessageWidget::GetFont() {
     case MessageStyle::MESSAGE_STYLE_BIG_MIDDLE:
     case MessageStyle::MESSAGE_STYLE_BIG_MIDDLE_FAST:
     case MessageStyle::MESSAGE_STYLE_HOUSE_NAME:
+#ifndef PISTON_PATCH
     case MessageStyle::MESSAGE_STYLE_HUGE_WAVE:
+#endif
     case MessageStyle::MESSAGE_STYLE_ZEN_GARDEN_LONG:
     case MessageStyle::MESSAGE_STYLE_ACHIEVEMENT:
 #ifdef PISTON_PATCH

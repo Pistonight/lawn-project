@@ -8,6 +8,10 @@
 #include <Sexy.TodLib/TodStringFile.h>
 #include <SexyAppFramework/WidgetManager.h>
 
+#ifdef PISTON_PATCH
+#include <Piston/Font.h>
+#endif
+
 int gDefaultScrollValue = 30;
 
 AchievementsWidget::AchievementsWidget(LawnApp* theApp) {
@@ -102,6 +106,10 @@ void AchievementsWidget::Draw(Graphics* g) {
         AchievementDefinition aDefinition =
             Achievements::GetAchievementDefinition((AchievementID)i);
 
+#ifdef PISTON_PATCH
+        auto* FONT_DWARVENTODCRAFT15 = Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT15);
+        auto* FONT_DWARVENTODCRAFT12 = Piston::MapZhFont(Sexy::FONT_DWARVENTODCRAFT12);
+#endif
         g->SetFont(FONT_DWARVENTODCRAFT15);
         g->SetColor(Color(21, 175, 0));
 

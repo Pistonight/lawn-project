@@ -1,7 +1,8 @@
 #pragma once
 
-#include <LawnApp/LawnApp.h>
 #include <Piston/RendererMixinState.h>
+
+class LawnApp;
 
 namespace Piston {
 
@@ -12,6 +13,8 @@ public:
     void WriteToRegistry();
     void ReadFromRegistry();
     OpenGLRendererMixinState& GetRendererMixin();
+    void SetDebugWindowEnabled(bool enabled);
+    bool IsDebugWindowEnabled() const;
 
 private:
     LawnApp* mApp;

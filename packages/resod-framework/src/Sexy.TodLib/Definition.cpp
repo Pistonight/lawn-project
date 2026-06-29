@@ -1293,9 +1293,14 @@ bool DefinitionCompileAndLoad(const SexyString& theXMLFilePath, DefMap* theDefMa
 
     PerfTimer aTimer;
     aTimer.Start();
+#ifdef PISTON_PATCH
+    bool aResult =
+        DefinitionCompileFile(theXMLFilePath, aCompiledFilePath, theDefMap, theDefinition);
+#else
     bool aResult = DefinitionCompileFile(
         theXMLFilePath, "fresh_" + aCompiledFilePath, theDefMap,
         theDefinition); // write to fresh_compiled to not overwrite on game re-compile by accident
+#endif
     TodTraceAndLog("[TodLib] - compile %d ms:'%s'", (int)aTimer.GetDuration(),
                    aCompiledFilePath.c_str());
     TodHesitationTrace("compiled %s", aCompiledFilePath.c_str());

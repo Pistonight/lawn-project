@@ -29,11 +29,13 @@ void InitMain(LawnApp& app) {
 
 void InitLoadingScreen(LawnApp& app) {
     std::println("Piston::InitLoadingScreen");
+    TodStringListLoad("properties/ExtraLawnStrings.txt");
     TodStringListLoad("properties/ModStrings.txt");
 }
 
 void InitLoadingMain(LawnApp& app) {
     std::println("Piston::InitLoadingMain");
+    app.LoadGroup("LoadingFontsZHShare", 10);
     if (Piston::System::Instance().IsChinese()) {
         app.LoadGroup("LoadingFontsZH", 10);
     }

@@ -1160,6 +1160,7 @@ void LawnApp::Start() {
 }
 
 bool LawnApp::DebugKeyDown(int theKey) {
+#ifndef PISTON_PATCH
     if (theKey == KEYCODE_F1) {
 #if LAWN_DEBUG_TOOLS
         if (mDebugWindow == nullptr)
@@ -1170,6 +1171,7 @@ bool LawnApp::DebugKeyDown(int theKey) {
 #endif
         return true;
     } else
+#endif
         return SexyAppBase::DebugKeyDown(theKey);
 }
 
@@ -1460,13 +1462,14 @@ void LawnApp::LoadingThreadProc() {
     if (!TodLoadResources("LoaderBar"))
         return;
 
-#ifdef PISTON_PATCH
-    Piston::InitLoadingScreen(*this);
-#endif
-
     TodStringListLoad("properties/LawnStrings.txt");
     TodStringListLoad("properties/ZombatarTOS.txt");
     TodStringListLoad("properties/FrameworkStrings.txt");
+
+#ifdef PISTON_PATCH
+    // load after strings so mod strings can override them
+    Piston::InitLoadingScreen(*this);
+#endif
 
     if (mTitleScreen) {
         mTitleScreen->mLoaderScreenIsLoaded = true;

@@ -72,7 +72,7 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
     BLACK = (0,0,0,255)
     INSET_DARK=[(-1,-2),(-1,-1),(-1,0)]
     INSET_LIGHT=[(1,1), (1,0)]
-    return [
+    output = [
         _exec_make_font(
             pool,
             RenderArgs(
@@ -123,7 +123,8 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
             pool,
             RenderArgs(
                 font_ttf="FZJianZhi-M23S", font_pt=10.5,
-                box_offset=(4,3), supersampling=4, gamma=1
+                box_offset=(4,3), supersampling=4, gamma=1,
+                inset_dark=BLACK, inset_dark_offsets=[(-1,-1), (1,1), (-1,1), (1,-1)]
             ),
             name="DwarvenTodcraft12ZH", orig_name="DwarvenTodcraft12", orig_png="DwarvenTodcraft12.png"
         ),
@@ -132,7 +133,7 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
             RenderArgs(
                 font_ttf="FZJianZhi-M23S", font_pt=14.2,
                 box_offset=(4.5,3.5), supersampling=4, gamma=1,
-                inset_dark=DWARVEN_SHADE, inset_dark_offsets=[(-1,-1)]
+                inset_dark=BLACK, inset_dark_offsets=[(-1,-1), (1,1), (-1,1), (1,-1)]
             ),
             name="DwarvenTodcraft15ZH", orig_name="DwarvenTodcraft15", orig_png="DwarvenTodcraft15.png"
         ),
@@ -293,6 +294,35 @@ def _exec_make_fonts(pool: ThreadPoolExecutor | None):
         ),
     ]
 
+    _fabricate_font(
+        RenderArgs(
+            font_ttf="FZJianZhi-M23S", font_pt=42,
+            box_offset=(3,0), color=(255,50,50), 
+            inset_dark=BLACK, inset_dark_offsets=[
+                
+                       (0,-3),(1,-3),(2,-3),(3,-3),(4,-3),
+               (-1,-2),                                   (5,-2),
+       (-2,-1),                                                  (6,-1),
+(-3,0),(-2, 0),                                                         (7,0),
+(-3,1),(-2, 1),                                                         (7,1),(8,1),
+(-3,2),(-2, 2),                                                         (7,2),(8,2),
+(-3,3),(-2, 3),                                                         (7,3),(8,3),
+(-3,4),(-2, 4),                                                         (7,4),(8,4),
+(-3,5),(-2, 5),                                                         (7,5),
+       (-2, 6),(-1, 6),                                   (5, 6),(6, 6),
+               (-1, 7),              (2, 7),(3, 7),(4, 7),(5, 7),
+                       (0, 8),(1, 8),(2, 8),
+            ],
+        ),
+        name="HugeWaveZH",
+        chars="一大群僵尸即将来袭一大波僵尸正在靠近！！",
+        box_size=52,
+        box_offset=(0,0), width=40, ascent=30, height=42,
+        point_size=42
+    )
+
+    return output
+
 def _exec_make_font(
     pool: ThreadPoolExecutor | None,
     args: RenderArgs,
@@ -335,16 +365,69 @@ def _make_font(
     orig_png: str,
 ) -> tuple[str, int]:
     return _make_font_multilayer(
-        layers={
-            'Main': MultiLayerRenderArgs(
-                args=args,
-                orig_png=orig_png,
-                output_stem=name,
-            )
-        },
+        layers={ 'Main': MultiLayerRenderArgs( args=args, orig_png=orig_png, output_stem=name,) },
         desc_name=name,
         orig_desc_name=orig_name
     )
+
+def _fabricate_font(
+    args: RenderArgs,
+    *,
+    name: str,
+    chars: str,
+    box_size: int,
+    box_offset: Xy,
+    width: int,
+    ascent: int,
+    height: int,
+    point_size: int,
+) -> tuple[str, int]:
+    is_test = bool(TEST_NAME and TEST_NAME == name)
+    if is_test:
+        print(f"{_fmt.YELLOW}>>> testing: {TEST_NAME}{_fmt.RESET}")
+    if TEST_NAME and not is_test:
+        return name, 0
+    target_data = _common.get_root_root() / "target" / "assets" / "shared" / "data"
+    target_desc_path = target_data / (name + ".txt")
+    font_chars, _ = _create_chars(chars)
+    all_chars = " " + font_chars
+    target_atlas_path = target_data / (name + ".png")
+    status = _create_atlas_png(
+        args,
+        target_png=target_atlas_path,
+        orig_png=None,
+        box_size=box_size,
+        alpha=True,
+        chars=all_chars,
+        test=is_test,
+        test_rect=is_test
+    )
+    print(f"{_fmt.CLEAR_LINE}  Render: {name} (Fabricate)" , end="", flush=True)
+    if status != 0: return name, status
+
+    desc = MiniDesc(
+        widthlist=[width],
+        offsetlist=[box_offset],
+        box_size=box_size,
+        raw="",
+        layer_to_commands={
+            "Main": [
+                "LayerSetBaseOrder         Main 0;",
+                f"LayerSetAscent            Main {ascent};",
+                f"LayerSetHeight            Main {height};",
+                "LayerSetCharWidths        Main CharList0 WidthList0;",
+                "LayerSetImageMap          Main CharList0 RectList0;",
+                "LayerSetCharOffsets       Main CharList0 OffsetList0;",
+                f"LayerSetPointSize         Main {point_size};",
+                f"SetDefaultPointSize {point_size};",
+            ]
+        },
+        defines=[]
+    )
+    serialized_desc, status = _create_desc(desc, { "Main": name }, all_chars)
+    if status != 0: return name, status
+    target_desc_path.write_bytes(serialized_desc.encode("utf-8"))
+    return name, 0
 
 def _make_font_multilayer(
     *,
@@ -388,7 +471,7 @@ def _make_font_multilayer(
                 test=is_test and layer == TEST_LAYER
             )
             if status != 0: return desc_name, status
-            print(f". {_fmt.CLEAR_LINE}Render: {desc_name} (Layer={layer})" , end="", flush=True)
+            print(f"{_fmt.CLEAR_LINE}  Render: {desc_name} (Layer={layer})" , end="", flush=True)
         layer_to_image[layer] = args.output_stem
     serialized_desc, status = _create_desc(desc, layer_to_image, all_chars)
     if status != 0: return desc_name, status
@@ -408,11 +491,12 @@ def _create_atlas_png(
     args: RenderArgs,
     *,
     target_png: Path,
-    orig_png: Path,
+    orig_png: Path | None,
     box_size: int,
     alpha: bool,
     chars: str,
-    test: bool
+    test: bool,
+    test_rect: bool=False,
 ) -> int:
     font_ttf = args.font_ttf
     font_pt = args.font_pt
@@ -435,7 +519,7 @@ def _create_atlas_png(
     if not ttf_path.exists():
         print(f"{_fmt.RED}>>> cannot find font {font_ttf}.ttf {_fmt.RESET}")
         return 1
-    if not orig_png.exists():
+    if orig_png and not orig_png.exists():
         print(f"{_fmt.RED}>>> cannot find original font atlas {orig_png} {_fmt.RESET}")
         return 1
 
@@ -447,7 +531,11 @@ def _create_atlas_png(
     # - compute draw constants
     box_size_scaled = box_size * supersampling
     font = ImageFont.truetype(str(ttf_path), font_pt * supersampling)
-    start_index = START_ROW* CHAR_PER_ROW + START_COL
+    if chars.startswith(" "):
+        chars = chars.strip()
+        start_index = 0
+    else:
+        start_index = START_ROW* CHAR_PER_ROW + START_COL
     last_index = start_index + len(chars) - 1
     rows = last_index // CHAR_PER_ROW + 1
     image_width_scaled = CHAR_PER_ROW * box_size_scaled
@@ -515,17 +603,29 @@ def _create_atlas_png(
         bg = Image.new("RGBA", out.size, (0,0,0,255))
         out = Image.alpha_composite(bg, out)
 
-    # steal the original pixels for DEFAULT_CHARS (every cell before start_index),
-    # which are the english/punctuation glyphs we don't re-render because they have variable positions
-    orig = Image.open(orig_png).convert("RGBA")
-    top = START_ROW * box_size
-    left = START_COL * box_size
-    out.paste(orig.crop((0, 0, CHAR_PER_ROW * box_size, top)), (0, 0))
-    out.paste(orig.crop((0, top, left, top + box_size)), (0, top))
+    if start_index != 0 and orig_png:
+        # steal the original pixels for DEFAULT_CHARS (every cell before start_index),
+        # which are the english/punctuation glyphs we don't re-render because they have variable positions
+        orig = Image.open(orig_png).convert("RGBA")
+        top = START_ROW * box_size
+        left = START_COL * box_size
+        out.paste(orig.crop((0, 0, CHAR_PER_ROW * box_size, top)), (0, 0))
+        out.paste(orig.crop((0, top, left, top + box_size)), (0, top))
 
     # drop the (now fully-opaque) alpha channel so the png is saved as RGB
     if not alpha:
         out = out.convert("RGB")
+
+    if test_rect:
+        # overlay the box_size cell grid in cyan to eyeball glyph placement
+        cyan = (0, 255, 255, 255) if out.mode == "RGBA" else (0, 255, 255)
+        grid_draw = ImageDraw.Draw(out)
+        for col in range(CHAR_PER_ROW + 1):
+            x = min(col * box_size, out.width - 1)
+            grid_draw.line([(x, 0), (x, out.height - 1)], fill=cyan)
+        for row in range(rows + 1):
+            y = min(row * box_size, out.height - 1)
+            grid_draw.line([(0, y), (out.width - 1, y)], fill=cyan)
 
     out.save(target_png)
 
@@ -603,12 +703,12 @@ class MiniDesc:
     raw: str
 
 def _create_desc(desc: MiniDesc, layer_to_image: dict[str, str], chars: str) -> tuple[str, int]:
-    if len(chars) < 105:
-        raise Exception("chars too short, probably a bug")
+    # if len(chars) < 105:
+    #     raise Exception("chars too short, probably a bug")
     if chars[0] != ' ':
         raise Exception("chars must start with space, probably a bug")
-    if len(desc.widthlist) < 106:
-        raise Exception("desc.widthlist too short, probably a bug")
+    # if len(desc.widthlist) < 106:
+    #     raise Exception("desc.widthlist too short, probably a bug")
     lines = []
     lines.append(f"Define CharList0")
     charlist = []

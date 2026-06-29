@@ -32,6 +32,7 @@ protected:
         SETTINGS_CYCLE_WINDOW_SIZE,
         SETTINGS_CYCLE_LANGUAGE,
         SETTINGS_OPEN_SAVE_FOLDER,
+        SETTINGS_DEBUGGER,
     };
 
 private:
@@ -40,6 +41,7 @@ private:
     std::unique_ptr<LawnStoneButton> mSaveFileButton;
     std::unique_ptr<Sexy::Checkbox> mVSyncCheckbox;
     std::unique_ptr<Sexy::Checkbox> mHighQualityCheckbox;
+    std::unique_ptr<Sexy::Checkbox> mDebuggerCheckbox;
     std::unique_ptr<LawnStoneButton> mFilterModeButton;
     std::unique_ptr<LawnStoneButton> mWindowSizeButton;
     std::unique_ptr<LawnStoneButton> mLanguageButton;
@@ -70,7 +72,7 @@ private:
 
     void CheckboxChecked(int theId, bool checked);
     void DrawCheckbox(Graphics* g, Sexy::Checkbox& theCheckbox, const std::string& theTitle,
-                      int theX, int theY, Font& theFont);
+                      int theX, int theY, Font& theFont, const Color& theColor);
     void UpdateButtonPosition(LawnStoneButton& theButton, int theX, int theY);
 
     static const char* GetFilterModeText(Sexy::OutputFilteringMode appMode,
