@@ -328,8 +328,9 @@ bool DefinitionLoadFont(Font** theFont, const SexyString& theName) {
     return aFont != nullptr;
 }
 
-bool DefinitionLoadXML(const SexyString& theFileName, DefMap* theDefMap, void* theDefinition) {
-    return DefinitionCompileAndLoad(theFileName, theDefMap, theDefinition);
+bool DefinitionLoadXML(const SexyString& theFileName, DefMap* theDefMap, void* theDefinition,
+                       bool recompile) {
+    return DefinitionCompileAndLoad(theFileName, theDefMap, theDefinition, recompile);
 }
 
 bool DefReadFromCacheArray(void*& theReadPtr, DefinitionArrayDef* theArray, DefMap* theDefMap) {
@@ -544,15 +545,15 @@ bool DefinitionReadCompiledFile(const SexyString& theCompiledFilePath, DefMap* t
 
     PerfTimer aTimer;
     aTimer.Start();
-    FILE* pFile = fopen(theCompiledFilePath.c_str(), "rb");
+    PFILE* pFile = p_fopen(theCompiledFilePath.c_str(), "rb");
     if (pFile) {
-        fseek(pFile, 0, 2);
-        size_t aFileSize = ftell(pFile);
-        fseek(pFile, 0, 0);
+        p_fseek(pFile, 0, 2);
+        size_t aFileSize = p_ftell(pFile);
+        p_fseek(pFile, 0, 0);
         aCompiledFile.mData.resize(aFileSize);
         bool aReadCompressedFailed =
-            fread(aCompiledFile.mData.data(), sizeof(uint8_t), aFileSize, pFile) != aFileSize;
-        fclose(pFile);
+            p_fread(aCompiledFile.mData.data(), sizeof(uint8_t), aFileSize, pFile) != aFileSize;
+        p_fclose(pFile);
         if (aReadCompressedFailed) {
             TodTraceAndLog("[TodLib] - Failed to read compiled file: %s\n",
                            theCompiledFilePath.c_str());
@@ -579,6 +580,10 @@ bool DefinitionReadCompiledFile(const SexyString& theCompiledFilePath, DefMap* t
             }
 
             bool aResult = DefMapReadFromCache(anUncompressedData, theDefMap, theDefinition);
+            if (!aResult) {
+                TodTraceAndLog("[TodLib] - Failed to read from cache: %s\n",
+                               theCompiledFilePath.c_str());
+            }
 
             return aResult;
         } else {
@@ -595,6 +600,7 @@ bool DefinitionReadCompiledFile(const SexyString& theCompiledFilePath, DefMap* t
             }
             return aResult;
 #else
+            TodTraceAndLog("[TodLib] - Cache is not valid: %s\n", theCompiledFilePath.c_str());
             return false;
 #endif
         }
@@ -1279,28 +1285,28 @@ bool DefinitionCompileFile(const SexyString theXMLFilePath, const SexyString& th
 }
 
 bool DefinitionCompileAndLoad(const SexyString& theXMLFilePath, DefMap* theDefMap,
-                              void* theDefinition) {
+                              void* theDefinition, bool recompile) {
     SexyString aCompiledFilePath = DefinitionGetCompiledFilePathFromXMLFilePath(theXMLFilePath);
     TodHesitationTrace("predef");
 
-    try {
-        if (DefinitionReadCompiledFile(aCompiledFilePath, theDefMap, theDefinition)) {
-            TodHesitationTrace("loaded %s", aCompiledFilePath.c_str());
-            return true;
+    if (!recompile) {
+        try {
+            if (DefinitionReadCompiledFile(aCompiledFilePath, theDefMap, theDefinition)) {
+                TodHesitationTrace("loaded %s", aCompiledFilePath.c_str());
+                return true;
+            }
+        } catch (int anErrorCode) {
         }
-    } catch (int anErrorCode) {
     }
 
     PerfTimer aTimer;
     aTimer.Start();
-#ifdef PISTON_PATCH
+    if (!recompile) {
+        // write to fresh_compiled to not overwrite on game re-compile by accident
+        aCompiledFilePath = "fresh_" + aCompiledFilePath;
+    }
     bool aResult =
         DefinitionCompileFile(theXMLFilePath, aCompiledFilePath, theDefMap, theDefinition);
-#else
-    bool aResult = DefinitionCompileFile(
-        theXMLFilePath, "fresh_" + aCompiledFilePath, theDefMap,
-        theDefinition); // write to fresh_compiled to not overwrite on game re-compile by accident
-#endif
     TodTraceAndLog("[TodLib] - compile %d ms:'%s'", (int)aTimer.GetDuration(),
                    aCompiledFilePath.c_str());
     TodHesitationTrace("compiled %s", aCompiledFilePath.c_str());

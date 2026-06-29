@@ -135,6 +135,7 @@ public:
     TrialType mTrialType;
     bool mDebugTrialLocked;
     bool mMuteSoundsForCutscene;
+    bool mRunInCompileMode{};
 
 #ifdef PISTON_MIXIN
     Piston::LawnAppMixinState mPistonMixin;

@@ -2980,11 +2980,7 @@ void Board::UpdateToolTip() {
 
     int aPlantCost = GetCurrentPlantCost(aSeedPacket->mPacketType, aSeedPacket->mImitaterType);
     if (mApp->mEasyPlantingCheat) {
-#ifdef PISTON_PATCH_UPSTREAM
         mToolTip->SetWarningText("[FREE_PLANTING_CHEAT]");
-#else
-        mToolTip->SetWarningText("FREE_PLANTING_CHEAT");
-#endif
     } else if (!aSeedPacket->mActive &&
                (gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED ||
                 gLawnApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_BEGHOULED_TWIST)) {
